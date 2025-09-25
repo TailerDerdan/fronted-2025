@@ -6,8 +6,8 @@ import { Background } from "./types/background/Background";
 
 type SlideMaker = {
     slideList: Map<Id, Slide>;
-    slideListInTheDirectOrder: Array<Id>;
-    selectedSlides: Array<Id>;
+    slideOrder: Array<Id>;
+    selectedSlides: Array<Id>;//TODO: currentSlide = selectedSlide[0]
     currentSlide: Id | null;
     name: string;
 }
@@ -69,12 +69,11 @@ function deepClone<T>(source: T): T
 
 function createSlideMaker(): SlideMaker
 {
-    const idNewSlide = generateId();
     return {
-        slideList: new Map<Id, Slide>().set(idNewSlide, createSlide()),
-        slideListInTheDirectOrder: [idNewSlide],
-        selectedSlides: [idNewSlide],
-        currentSlide: idNewSlide,
+        slideList: new Map<Id, Slide>(),
+        slideOrder: [],
+        selectedSlides: [],
+        currentSlide: null,
         name: "",
     }
 }
@@ -84,9 +83,12 @@ function addSlide(slideMaker: SlideMaker): SlideMaker
     deepFreeze(slideMaker);
     const slide = createSlide();
     const idNewSlide = generateId();
+    const slideOrder: Array<String> = deepClone(slideMaker.slideOrder);
+    slideOrder.push(idNewSlide);
     return {
         ...slideMaker,
         slideList: slideMaker.slideList.set(idNewSlide, slide),
+        slideOrder: slideOrder,
     }
 }
 
@@ -94,31 +96,43 @@ function deleteSlide(slideMaker: SlideMaker, idSlide: Id): SlideMaker
 {
     deepFreeze(slideMaker);
     const slideList: Map<Id, Slide> = deepClone(slideMaker.slideList);
-    const slideListInTheDirectOrder: Array<Id> = deepClone(slideMaker.slideListInTheDirectOrder);
+    const slideOrder: Array<Id> = deepClone(slideMaker.slideOrder);
+    const selectedSlides: Array<Id> = deepClone(slideMaker.selectedSlides);
 
-    if (idSlide !== null)
+    if (idSlide)
     {
         slideList.delete(idSlide);
     }
 
     let newCurrentSlide: Id | null = null;
 
-    if (slideMaker.currentSlide !== null && slideMaker.slideList.size > 0)
+    if (slideMaker.currentSlide && slideList.size > 0)
     {
-        let indexNewCurrentSlide = slideListInTheDirectOrder.indexOf(idSlide);
-        if (indexNewCurrentSlide >= slideMaker.slideList.size)
+        let indexNewCurrentSlide = slideOrder.indexOf(idSlide);
+        if (indexNewCurrentSlide >= slideList.size)
         {
             indexNewCurrentSlide--;
         }
-        newCurrentSlide = slideListInTheDirectOrder[indexNewCurrentSlide];
-        slideListInTheDirectOrder.splice(indexNewCurrentSlide, 1);
-        
+        slideOrder.splice(indexNewCurrentSlide, 1);
+        newCurrentSlide = slideOrder[indexNewCurrentSlide];
+    }
+
+    const indexIdSlideInSelected = selectedSlides.indexOf(idSlide);
+    if (indexIdSlideInSelected >= 0)
+    {
+        selectedSlides.splice(indexIdSlideInSelected, 1);
+        if (newCurrentSlide && selectedSlides.indexOf(newCurrentSlide) < 0)
+        {
+            selectedSlides.push(newCurrentSlide);
+        }
     }
 
     return {
         ...slideMaker,
         slideList: slideList,
-        slideListInTheDirectOrder: slideListInTheDirectOrder
+        slideOrder: slideOrder,
+        currentSlide: newCurrentSlide,
+        selectedSlides: selectedSlides,
     }
 }
 
@@ -146,13 +160,13 @@ function setNameSlideMaker(slideMaker: SlideMaker, name: string): SlideMaker
 function setPositionSlide(slideMaker: SlideMaker, fromIndex: number, toIndex: number): SlideMaker
 {
     deepFreeze(slideMaker);
-    const slideListInTheDirectOrder: Array<Id> = deepClone(slideMaker.slideListInTheDirectOrder);
-    let element = slideListInTheDirectOrder[fromIndex];
-    slideListInTheDirectOrder.splice(fromIndex, 1);
-    slideListInTheDirectOrder.splice(toIndex, 0, element);
+    const slideOrder: Array<Id> = deepClone(slideMaker.slideOrder);
+    let element = slideOrder[fromIndex];
+    slideOrder.splice(fromIndex, 1);
+    slideOrder.splice(toIndex, 0, element);
     return {
         ...slideMaker,
-        slideListInTheDirectOrder: slideListInTheDirectOrder,
+        slideOrder: slideOrder,
     }
 }
 
@@ -213,9 +227,16 @@ function getSelectedSlides(slideMaker: SlideMaker): Array<Slide>
 function setSelectedSlide(slideMaker: SlideMaker, newSelectedSlide: number): SlideMaker
 {
     deepFreeze(slideMaker);
+    const currentSlide = slideMaker.slideOrder[newSelectedSlide] ? slideMaker.slideOrder[newSelectedSlide] : slideMaker.currentSlide;
+    const selectedSlides = [];
+    if (currentSlide)
+    {
+        selectedSlides.push(currentSlide);
+    }
     return {
         ...slideMaker,
-        currentSlide: slideMaker.slideListInTheDirectOrder[newSelectedSlide] ? slideMaker.slideListInTheDirectOrder[newSelectedSlide] : slideMaker.currentSlide,
+        currentSlide: currentSlide,
+        selectedSlides: selectedSlides,
     }
 }
 
@@ -223,9 +244,9 @@ function addSelectedSlide(slideMaker: SlideMaker, newSelectedSlide: number): Sli
 {
     deepFreeze(slideMaker);
     const newSelectedSlides: Array<Id> = deepClone(slideMaker.selectedSlides);
-    if (slideMaker.slideListInTheDirectOrder[newSelectedSlide])
+    if (slideMaker.slideOrder[newSelectedSlide])
     {
-        newSelectedSlides.push(slideMaker.slideListInTheDirectOrder[newSelectedSlide]);
+        newSelectedSlides.push(slideMaker.slideOrder[newSelectedSlide]);
     }
     return {
         ...slideMaker,

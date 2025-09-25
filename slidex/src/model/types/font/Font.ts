@@ -68,4 +68,12 @@ function setUnderlinedFont(font: Font, isUnderlined: boolean): Font
 }
 
 export type { Font };
-export { createFont, setFontFamilyFont, setFontSizeFont, setFontColorFont, setBoldFont, setItalicFont, setUnderlinedFont };
+export { 
+    createFont, 
+    setFontFamilyFont, 
+    setFontSizeFont, 
+    setFontColorFont, 
+    setBoldFont, 
+    setItalicFont, 
+    setUnderlinedFont 
+};

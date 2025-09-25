@@ -47,6 +47,10 @@ function setHeightRect(rect: Rect, height: number): Rect
     }
 }
 
+export type {
+    Rect,
+}
+
 export {
-    Rect, createRect, setXRect, setYRect, setWidthRect, setHeightRect
+    createRect, setXRect, setYRect, setWidthRect, setHeightRect
 }

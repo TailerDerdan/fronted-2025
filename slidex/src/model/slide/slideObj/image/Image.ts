@@ -1,11 +1,11 @@
-import { Picture } from "../../../types/picture/Picture.ts"
-import { Rect, setHeightRect, setWidthRect, setXRect, setYRect } from "../../../types/rect/Rect.ts"
+import { Picture } from "../../../types/picture/Picture"
+import { Rect, setHeightRect, setWidthRect, setXRect, setYRect } from "../../../types/rect/Rect"
 
 type Image = Picture & {
     rect: Rect,
 };
 
-function createPicture(src: string, rect: Rect): Image
+function createImage(src: string, rect: Rect): Image
 {
     return {
         src: src,
@@ -70,4 +70,4 @@ function setHeightPicture(height: number, picture: Image): Image
 }
 
 export type { Image };
-export { createPicture, setRectPicture, setSrcPicture, setHeightPicture, setWidthPicture, setXPicture, setYPicture };
+export { createImage, setRectPicture, setSrcPicture, setHeightPicture, setWidthPicture, setXPicture, setYPicture };

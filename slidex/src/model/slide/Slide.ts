@@ -1,9 +1,9 @@
-import { generateId, Id } from "./slideObj/id/Id.ts"
-import { Image } from "./slideObj/image/Image.ts"
-import { TextBox } from "./slideObj/textbox/Textbox.ts"
-import { Background } from "../types/background/Background.ts"
-import { Color } from "../types/color/Color.ts"
-import { Picture } from "../types/picture/Picture.ts"
+import { generateId, Id } from "./slideObj/id/Id"
+import { Image } from "./slideObj/image/Image"
+import { TextBox } from "./slideObj/textbox/Textbox"
+import { Background } from "../types/background/Background"
+import { Color } from "../types/color/Color"
+import { Picture } from "../types/picture/Picture"
 
 type SlideObj = Image | TextBox;
 
@@ -33,16 +33,27 @@ function addObjectInSlide(slide: Slide, object: Image | TextBox): Slide
     return newSlide;
 }
 
-function deleteObjectInSlide(slide: Slide, id: Id): Slide
+function deleteObjectInSlide(slide: Slide, id: Id | undefined): Slide
 {
     const newSlide = {...slide};
+    if (!id)
+    {
+        return newSlide;
+    }
     newSlide.objects.delete(id);
+    newSlide.layersOfSlide.splice(newSlide.layersOfSlide.indexOf(id), 1);
+    newSlide.selectedObj.splice(newSlide.layersOfSlide.indexOf(id), 1);
     return newSlide;
 }
 
-function moveObjectToForeground(slide: Slide, id: Id): Slide
+function moveObjectToForeground(slide: Slide, id: Id | undefined): Slide
 {
     const newSlide = {...slide};
+    if (!id)
+    {
+        return newSlide;
+    }
+    
     const indexOfObj = newSlide.layersOfSlide.indexOf(id);
     if (indexOfObj != newSlide.layersOfSlide.length - 1)
     {

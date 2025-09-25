@@ -1,4 +1,4 @@
-type Id = string;
+type Id = String;
 
 function generateId()
 {

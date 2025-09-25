@@ -1,7 +1,7 @@
-import { Alignment } from "../../../types/alignment/Alignment.ts";
-import { createFont, Font, setBoldFont, setFontColorFont, setFontFamilyFont, setFontSizeFont, setItalicFont, setUnderlinedFont } from "../../../types/font/Font.ts";
-import { Rect, setHeightRect, setWidthRect, setXRect, setYRect } from "../../../types/rect/Rect.ts"
-import { generateId, Id } from "../id/Id.ts";
+import { Alignment } from "../../../types/alignment/Alignment";
+import { createFont, Font, setBoldFont, setFontColorFont, setFontFamilyFont, setFontSizeFont, setItalicFont, setUnderlinedFont } from "../../../types/font/Font";
+import { Rect, setHeightRect, setWidthRect, setXRect, setYRect } from "../../../types/rect/Rect"
+import { generateId, Id } from "../id/Id";
 
 type Text = {
     id: Id;
@@ -87,7 +87,7 @@ function setUnderlinedText(text: Text, isUnderlined: boolean): Text
     }
 }
 
-function cretaeTextBox(rect: Rect) : TextBox
+function createTextBox(rect: Rect) : TextBox
 {
     return {
         rect: rect,
@@ -157,9 +157,12 @@ function setHeightTextBox(height: number, textBox: TextBox): TextBox
     }
 }
 
-export {
+export type {
     Text,
     TextBox,
+}
+
+export {
     createText, 
     setFontSizeText,
     setFontColorText,
@@ -168,7 +171,7 @@ export {
     setItalicText,
     setUnderlinedText,
     setContent,
-    cretaeTextBox,
+    createTextBox,
     setAlignment,
     addTextInTextBox,
     deleteTextInTextBox,
