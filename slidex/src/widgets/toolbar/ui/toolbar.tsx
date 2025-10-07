@@ -20,7 +20,7 @@ export const Toolbar = () => {
 					className="icon_toolbar"
 					icon={<TextIcon />}
 				>
-					<span></span>
+					<p className={styles.text_button_icon}>Текст</p>
 				</IconButton>
 			</div>
 			<div className={styles.wrapper_button_icon}>
@@ -31,7 +31,7 @@ export const Toolbar = () => {
 					className="icon_toolbar"
 					icon={<ImageIcon />}
 				>
-					<span></span>
+					<p className={styles.text_button_icon}>Медиа</p>
 				</IconButton>
 			</div>
 			<div className={styles.wrapper_button_icon}>
@@ -42,7 +42,7 @@ export const Toolbar = () => {
 					className="icon_toolbar"
 					icon={<FileImportIcon />}
 				>
-					<span></span>
+					<p className={styles.text_button_icon}>Импорт</p>
 				</IconButton>
 			</div>
 			<div className={styles.wrapper_button_icon}>
@@ -53,7 +53,7 @@ export const Toolbar = () => {
 					className="icon_toolbar"
 					icon={<FileExportIcon />}
 				>
-					<span></span>
+					<p className={styles.text_button_icon}>Экспорт</p>
 				</IconButton>
 			</div>
 			<div className={styles.wrapper_button_icon}>
@@ -64,7 +64,7 @@ export const Toolbar = () => {
 					className="icon_toolbar"
 					icon={<UndoIcon />}
 				>
-					<span></span>
+					<p className={styles.text_button_icon}>Назад</p>
 				</IconButton>
 			</div>
 			<div className={styles.wrapper_button_icon}>
@@ -75,7 +75,7 @@ export const Toolbar = () => {
 					className="icon_toolbar"
 					icon={<RedoIcon />}
 				>
-					<span></span>
+					<p className={styles.text_button_icon}>Вперед</p>
 				</IconButton>
 			</div>
 		</div>

@@ -1,0 +1,14 @@
+* {
+	margin: 0;
+	padding: 0;
+	border: none;
+	overflow: hidden;
+}
+
+.presentation__workfield {
+	display: flex;
+	flex-direction: row;
+	min-width: 100vw;
+	min-height: 87vh;
+	padding-top: 1.951219512%;
+}

@@ -1,0 +1,20 @@
+.slide {
+	width: calc(100% / 0.8);
+	display: flex;
+	flex-direction: row;
+	transform: scale(0.8);
+	transform-origin: top left;
+	justify-content: space-between;
+	border: 3px solid red;
+}
+
+.slide_objs {
+	width: 100%;
+	height: calc(20vh / 0.8);
+	background-color: #d9d9d9;
+	border-radius: 20px;
+}
+
+.slide__seqNum {
+	font-size: 35px;
+}

@@ -14,7 +14,17 @@ export const SlideList = (props: SlideListProps) => {
 	const slideListReactNode = slideOrder.map((id: Id, index: number) => {
 		const slide = slideList.get(id);
 		if (slide) {
-			return <SlideView key={id} slide={slide} sequenceNum={index} />;
+			return (
+				<div key={id} className={styles.wrapper_slide}>
+					<SlideView
+						slide={slide}
+						sequenceNum={index + 1}
+						slideId={id}
+						scaleX={0.1875}
+						scaleY={0.161481481}
+					/>
+				</div>
+			);
 		}
 	});
 

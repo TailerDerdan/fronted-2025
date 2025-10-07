@@ -1,0 +1,21 @@
+.slideList {
+	width: 18.75%;
+	padding: 2% 0%;
+	border: 1px solid green;
+	overflow-y: auto;
+	overflow-x: hidden;
+}
+
+.slideList::-webkit-scrollbar {
+	display: none;
+}
+
+.wrapper_slide {
+	margin-bottom: 2%;
+}
+
+.slideList__objs {
+	display: flex;
+	flex-direction: column;
+	justify-content: space-evenly;
+}

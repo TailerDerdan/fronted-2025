@@ -3,8 +3,10 @@ import { ImageView } from '../../image/ui/image';
 import { TextboxView } from '../../text-box/ui/textbox';
 import { Slide } from '../model/types';
 import styles from './slide.module.css';
+import { Background } from '../../../shared/types/background/Background';
+import { Id } from '../../../shared/types/id/Id';
 
-export function getReactNodeObjs(slide: Slide | undefined): Array<ReactNode> {
+export function getReactNodeObjs(slide: Slide | undefined, scaleX: number, scaleY: number): Array<ReactNode> {
 	if (slide) {
 		const objsOnSlide: Array<ReactNode> = slide.layersOfSlide.map((elem: string) => {
 			const objOnSlide = slide.objects.get(elem);
@@ -15,6 +17,9 @@ export function getReactNodeObjs(slide: Slide | undefined): Array<ReactNode> {
 						type={objOnSlide.type}
 						rect={objOnSlide.rect}
 						src={objOnSlide.src}
+						scaleX={scaleX}
+						scaleY={scaleY}
+						objId={elem}
 					/>
 				);
 			}
@@ -26,6 +31,9 @@ export function getReactNodeObjs(slide: Slide | undefined): Array<ReactNode> {
 						texts={objOnSlide.texts}
 						rect={objOnSlide.rect}
 						alignment={objOnSlide.alignment}
+						scaleX={scaleX}
+						scaleY={scaleY}
+						objId={elem}
 					/>
 				);
 			}
@@ -36,20 +44,39 @@ export function getReactNodeObjs(slide: Slide | undefined): Array<ReactNode> {
 	return [];
 }
 
+export function getStyleBackground(background: Background): React.CSSProperties {
+	if (background && typeof background === 'object' && 'src' in background) {
+		return {
+			backgroundImage: `url("${background.src}")`,
+		};
+	} else {
+		return {
+			backgroundColor: background,
+		};
+	}
+}
+
 type SlideProps = {
 	slide: Slide;
 	sequenceNum: number;
+	slideId: Id;
+	scaleX: number;
+	scaleY: number;
 };
 
 export const SlideView = (props: SlideProps) => {
-	const { slide, sequenceNum } = props;
+	const { slide, sequenceNum, slideId, scaleX, scaleY } = props;
 
-	const objsOnSlide = getReactNodeObjs(slide);
+	const objsOnSlide = getReactNodeObjs(slide, scaleX, scaleY);
+
+	const styleSlide = getStyleBackground(slide.background);
 
 	return (
-		<div className={styles.slide}>
-			<p className={styles.slide__seqNum}>{sequenceNum}</p>
-			<div className={styles.slide_objs}>{objsOnSlide}</div>
+		<div className={styles.slide} onClick={() => console.log(slideId)}>
+			<span className={styles.slide__seqNum}>{sequenceNum}</span>
+			<div className={styles.slide_objs} style={styleSlide}>
+				{objsOnSlide}
+			</div>
 		</div>
 	);
 };

@@ -9,7 +9,7 @@ export const PresentationNameView = (props: PresentationNameViewProps) => {
 
 	return (
 		<div className={styles.presName}>
-			<input type="text" value={name} className={styles.presName__input} />
+			<input type="text" id="presName" value={name} className={styles.presName__input} />
 		</div>
 	);
 };

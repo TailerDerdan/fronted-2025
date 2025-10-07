@@ -1,0 +1,27 @@
+.header {
+	width: 100%;
+	display: flex;
+	justify-content: space-between;
+	flex-direction: row;
+	align-items: center;
+	padding-top: 1.006968641%;
+}
+
+.header__presName {
+	padding: 0 3.623592374% 0;
+}
+
+.header__toolbar {
+	display: flex;
+	align-items: center;
+	min-width: 35%;
+}
+
+.header__slideShow {
+	display: flex;
+	align-items: center;
+	min-width: 10%;
+	height: 5em;
+	padding: 0% 1.2% 0;
+	/* border: 1px solid black; */
+}

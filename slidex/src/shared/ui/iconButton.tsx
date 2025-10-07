@@ -7,11 +7,12 @@ type IconButtonProps = TextButtonProps & {
 };
 
 export const IconButton = (props: IconButtonProps) => {
-	const { onClick, className, icon } = props;
+	const { onClick, className, icon, children } = props;
 
 	return (
 		<button onClick={onClick} className={styles[className]}>
 			{icon}
+			{children}
 		</button>
 	);
 };
