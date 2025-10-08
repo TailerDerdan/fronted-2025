@@ -1,24 +1,38 @@
 .wrapper_workspace {
 	width: 100%;
-	border: 1px solid black;
+	display: flex;
+	flex-direction: column;
+	justify-content: flex-start;
+	align-items: center;
 }
 
 .workspace {
+	width: 93.142740924%;
+	border: 1px solid black;
+	border-radius: 10px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	position: relative;
+}
+
+.visble_workspace {
 	background-color: #d9d9d9;
-	border-radius: 20px;
-	height: 80%;
+	width: 89.0485969%;
+	height: 36.787028074vw;
 	position: relative;
 	background-size: cover;
 	background-repeat: no-repeat;
 	background-position: center;
+	border: 1px solid black;
 }
 
 .wrapper_workspace__background {
 	display: flex;
 	flex-direction: row;
 	justify-content: center;
-	height: 20%;
-	border: 1px solid black;
+	height: 11.397214014%;
+	width: 100%;
 }
 
 .group_buttons {
@@ -26,13 +40,17 @@
 	flex-direction: row;
 	justify-content: center;
 	align-items: center;
-	width: 20%;
-	border: 1px solid black;
+	width: 12%;
 }
 
-.background__button_color,
-.background__button_image {
-	height: 20%;
-	padding: 5%;
+.background__button {
 	border-radius: 20px;
+	width: 100%;
+	padding: 5% 2%;
+}
+
+.button_text {
+	font-size: 30px;
+	font-weight: 500;
+	width: 100%;
 }

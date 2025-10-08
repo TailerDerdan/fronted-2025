@@ -10,24 +10,21 @@ type WorkspaceProps = {
 export const Workspace = (props: WorkspaceProps) => {
 	const { slide } = props;
 
-	const objsOnSlide = getReactNodeObjs(slide, 0.8234375, 0.694444444);
+	const objsOnSlide = getReactNodeObjs(slide, 1, 1);
 	const styleSlide = slide ? getStyleBackground(slide.background) : {};
 
 	return (
 		<div className={styles.wrapper_workspace}>
-			<div className={styles.workspace} style={styleSlide}>
-				{objsOnSlide}
+			<div className={styles.workspace}>
+				<div className={styles.visble_workspace} style={styleSlide}>
+					{objsOnSlide}
+				</div>
 			</div>
 			<div className={styles.wrapper_workspace__background}>
 				<div className={styles.group_buttons}>
-					<div className={styles.background__button_color}>
-						<TextButton onClick={() => console.log('Цвет фона')} className="">
-							<span>Цвет Фона</span>
-						</TextButton>
-					</div>
-					<div className={styles.background__button_image}>
-						<TextButton onClick={() => console.log('Картинка на фон')} className="">
-							<span>Картинка на фон</span>
+					<div className={styles.background__button}>
+						<TextButton onClick={() => console.log('Фон слайд')} className="icon_background">
+							<span className={styles.button_text}>Фон слайд</span>
 						</TextButton>
 					</div>
 				</div>
