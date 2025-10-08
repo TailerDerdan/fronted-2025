@@ -1,11 +1,15 @@
 import { Text } from '../model/types';
 
-export const TextView = (props: Text) => {
-	const { id, content, font } = props;
+type TextProps = Text & {
+	scaleX: number;
+};
+
+export const TextView = (props: TextProps) => {
+	const { id, content, font, scaleX } = props;
 
 	const styleFont = {
 		fontFamily: font.fontFamily,
-		fontSize: font.fontSize,
+		fontSize: Math.floor(font.fontSize * scaleX).toString() + 'px',
 		color: font.fontColor,
 		fontWeight: font.isBold ? 'bold' : 'normal',
 		fontStyle: font.isItalic ? 'italic' : 'normal',

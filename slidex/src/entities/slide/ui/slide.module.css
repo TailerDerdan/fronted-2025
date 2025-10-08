@@ -1,18 +1,17 @@
 .slide {
-	width: calc(100% / 0.8);
-	display: flex;
-	flex-direction: row;
-	transform: scale(0.8);
-	transform-origin: top left;
-	justify-content: space-between;
-	border: 3px solid red;
+	width: 16vw;
+	height: 9vw;
+	position: relative;
+	border: 1px solid black;
+	border-radius: 10px;
 }
 
 .slide_objs {
 	width: 100%;
-	height: calc(20vh / 0.8);
+	height: 100%;
 	background-color: #d9d9d9;
-	border-radius: 20px;
+	position: relative;
+	flex-shrink: 0;
 }
 
 .slide__seqNum {

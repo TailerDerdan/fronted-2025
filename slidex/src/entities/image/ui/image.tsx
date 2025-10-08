@@ -13,8 +13,8 @@ export const ImageView = (props: ImageProps) => {
 	const { rect, src, scaleX, scaleY, objId } = props;
 
 	const styleForImage: CSSProperties = {
-		width: `calc(100% * ${scaleX})`,
-		height: `calc(100% * ${scaleY})`,
+		width: '100%',
+		height: '100%',
 	};
 
 	return (

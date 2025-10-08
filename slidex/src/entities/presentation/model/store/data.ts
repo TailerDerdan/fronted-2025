@@ -41,4 +41,4 @@ const image = createImage(
 slideMaker = addObjOnCurrentSlide(slideMaker, image);
 
 slideMaker = setNameSlideMaker(slideMaker, 'Презентация с max data');
-slideMaker = setSelectedSlide(slideMaker, 1);
+slideMaker = setSelectedSlide(slideMaker, 0);

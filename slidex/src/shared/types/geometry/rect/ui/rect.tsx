@@ -17,8 +17,8 @@ export const RectView = (props: RectProps) => {
 	const styleRect = {
 		top: rect.x * scaleX,
 		left: rect.y * scaleY,
-		width: rect.width * 1,
-		height: rect.height * 1,
+		width: rect.width * scaleX,
+		height: rect.height * scaleY,
 		textAlign: aligment ? aligment : '',
 		position: 'absolute',
 	} as React.CSSProperties;

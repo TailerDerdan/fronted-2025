@@ -47,36 +47,32 @@ export function getReactNodeObjs(slide: Slide | undefined, scaleX: number, scale
 export function getStyleBackground(background: Background): React.CSSProperties {
 	if (background && typeof background === 'object' && 'src' in background) {
 		return {
-			backgroundImage: `url("${background.src}")`,
+			background: `center / cover no-repeat url("${background.src}")`,
 		};
 	} else {
 		return {
-			backgroundColor: background,
+			background: background,
 		};
 	}
 }
 
 type SlideProps = {
 	slide: Slide;
-	sequenceNum: number;
 	slideId: Id;
 	scaleX: number;
 	scaleY: number;
 };
 
 export const SlideView = (props: SlideProps) => {
-	const { slide, sequenceNum, slideId, scaleX, scaleY } = props;
+	const { slide, slideId, scaleX, scaleY } = props;
 
 	const objsOnSlide = getReactNodeObjs(slide, scaleX, scaleY);
 
 	const styleSlide = getStyleBackground(slide.background);
 
 	return (
-		<div className={styles.slide} onClick={() => console.log(slideId)}>
-			<span className={styles.slide__seqNum}>{sequenceNum}</span>
-			<div className={styles.slide_objs} style={styleSlide}>
-				{objsOnSlide}
-			</div>
+		<div className={styles.slide} onClick={() => console.log(slideId)} style={styleSlide}>
+			{objsOnSlide}
 		</div>
 	);
 };

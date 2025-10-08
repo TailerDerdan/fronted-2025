@@ -13,7 +13,7 @@ export const TextboxView = (props: TextboxProps) => {
 	const { texts, rect, alignment, scaleX, scaleY, objId } = props;
 
 	const renderedTexts = texts.map((elem: Text) => (
-		<TextView key={elem.id} content={elem.content} id={elem.id} font={elem.font} />
+		<TextView key={elem.id} content={elem.content} id={elem.id} font={elem.font} scaleX={scaleX} />
 	));
 
 	return (

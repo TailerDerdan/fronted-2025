@@ -1,13 +1,9 @@
 .presName {
-	/* border: 1px solid black; */
 	border-bottom: 5px solid #2a39b8;
-	/* border-radius: 20px; */
-	/* padding: 1%; */
 }
 
 .presName__input {
 	font-size: 35px;
-	/* padding: 1%; */
 	outline: none;
 }
 
