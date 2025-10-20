@@ -1,3 +1,8 @@
+import { createImage } from '../../../entities/image/lib/image';
+import { addObjOnCurrentSlide } from '../../../entities/presentation/lib/presentation';
+import { createTextBox } from '../../../entities/text-box/lib/textbox';
+import { dispatch } from '../../../features/presentation-editor/model/editor';
+import { createRect } from '../../../shared/model/geometry/rect/model/types';
 import { IconButton } from '../../../shared/ui/iconButton';
 import {
 	FileExportIcon,
@@ -15,7 +20,7 @@ export const Toolbar = () => {
 			<div className={styles.wrapper_button_icon}>
 				<IconButton
 					onClick={() => {
-						console.log('create text');
+						dispatch(addObjOnCurrentSlide, createTextBox(createRect(500, 100, 100, 100)));
 					}}
 					className="icon_toolbar"
 					icon={<TextIcon />}
@@ -26,7 +31,7 @@ export const Toolbar = () => {
 			<div className={styles.wrapper_button_icon}>
 				<IconButton
 					onClick={() => {
-						console.log('create image');
+						dispatch(addObjOnCurrentSlide, createImage('', createRect(100, 100, 100, 100)));
 					}}
 					className="icon_toolbar"
 					icon={<ImageIcon />}

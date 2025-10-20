@@ -1,10 +1,11 @@
+import { Color } from '../../../shared/model/color/Color';
 import {
 	Rect,
 	setHeightRect,
 	setWidthRect,
 	setXRect,
 	setYRect,
-} from '../../../shared/types/geometry/rect/model/types';
+} from '../../../shared/model/geometry/rect/model/types';
 import { Image } from '../model/types';
 
 function createImage(src: string, rect: Rect): Image {
@@ -12,6 +13,7 @@ function createImage(src: string, rect: Rect): Image {
 		type: 'image',
 		src: src,
 		rect: rect,
+		borderColor: Color.CORAL,
 	};
 }
 
@@ -19,6 +21,14 @@ function setSrcImage(src: string, image: Image): Image {
 	return {
 		...image,
 		src: src,
+	};
+}
+
+function setFileImage(file: File, image: Image): Image {
+	return {
+		...image,
+		src: window.URL.createObjectURL(file),
+		file: file,
 	};
 }
 
@@ -65,4 +75,13 @@ function setHeightImage(height: number, image: Image): Image {
 	};
 }
 
-export { createImage, setHeightImage, setRectImage, setSrcImage, setWidthImage, setXImage, setYImage };
+export {
+	createImage,
+	setHeightImage,
+	setRectImage,
+	setSrcImage,
+	setWidthImage,
+	setXImage,
+	setYImage,
+	setFileImage,
+};

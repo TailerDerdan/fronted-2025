@@ -1,4 +1,4 @@
-import { Id } from '../../../shared/types/id/Id';
+import { Id } from '../../../shared/model/id/Id';
 import { Slide } from '../../slide/model/types';
 
 type Presentation = {

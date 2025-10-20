@@ -1,5 +1,6 @@
 type Picture = {
 	src: string;
+	file?: File;
 };
 
 function createPicture(src: string): Picture {

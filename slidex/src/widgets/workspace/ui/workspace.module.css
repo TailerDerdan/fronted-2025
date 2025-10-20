@@ -7,7 +7,7 @@
 }
 
 .workspace {
-	width: 93.142740924%;
+	width: 96.142740924%;
 	border: 1px solid black;
 	border-radius: 10px;
 	display: flex;
@@ -18,13 +18,12 @@
 
 .visble_workspace {
 	background-color: #d9d9d9;
-	width: 89.0485969%;
+	width: 93.0485969%;
 	height: 36.787028074vw;
 	position: relative;
 	background-size: cover;
 	background-repeat: no-repeat;
 	background-position: center;
-	border: 1px solid black;
 }
 
 .wrapper_workspace__background {

@@ -1,22 +1,31 @@
 {
-    "extends": [
-        "eslint:recommended",
-        "plugin:react/recommended",
-        "plugin:@typescript-eslint/recommended",
-        "prettier"
-    ],
-    "plugins": ["@typescript-eslint", "react", "prettier"],
-    "parser": "@typescript-eslint/parser",
-    "parserOptions": {
-        "sourceType": "module"
-    },
-    "env": {
-        "browser": true,
-        "node": true
-    },
-    "rules": {
-        "react/react-in-jsx-scope": "off",
-        "react/jsx-filename-extension": [1, { "extensions": [".ts", ".tsx"] }]
-    },
-    "root": true
+	"extends": [
+		"eslint:recommended",
+		"plugin:react/recommended",
+		"plugin:@typescript-eslint/recommended",
+		"prettier"
+	],
+	"plugins": ["@typescript-eslint", "react", "prettier"],
+	"parser": "@typescript-eslint/parser",
+	"parserOptions": {
+		"sourceType": "module"
+	},
+	"env": {
+		"browser": true,
+		"node": true
+	},
+	"rules": {
+		"react/react-in-jsx-scope": "off",
+		"react/jsx-filename-extension": [1, { "extensions": [".ts", ".tsx"] }],
+		"@typescript-eslint/ban-types": [
+			"error",
+			{
+				"extendDefaults": true,
+				"types": {
+					"{}": false
+				}
+			}
+		]
+	},
+	"root": true
 }

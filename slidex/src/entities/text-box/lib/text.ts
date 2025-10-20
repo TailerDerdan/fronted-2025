@@ -6,8 +6,8 @@ import {
 	setFontSizeFont,
 	setItalicFont,
 	setUnderlinedFont,
-} from '../../../shared/types/font/Font';
-import { generateId } from '../../../shared/types/id/Id';
+} from '../../../shared/model/font/Font';
+import { generateId } from '../../../shared/model/id/Id';
 import { Text } from '../model/types';
 
 function createText(content: string, font: Font): Text {

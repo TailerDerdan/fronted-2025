@@ -1,6 +1,6 @@
 import { IconButton } from '../../../shared/ui/iconButton';
-import { PresentationNameView } from '../../presentation-name/ui/presentation-name';
-import { Toolbar } from '../../toolbar/ui/toolbar';
+import { PresentationNameView } from '../../presentation-name/ui/PresentationName';
+import { Toolbar } from '../../toolbar/ui/ToolBar';
 import { IconPresent } from '../lib/iconComponent';
 import styles from './header.module.css';
 

@@ -1,0 +1,10 @@
+.selected_image_button {
+	display: flex;
+	gap: 10px;
+	align-items: center;
+}
+
+.selected_image {
+	width: 30px;
+	height: 30px;
+}

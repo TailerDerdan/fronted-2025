@@ -24,16 +24,23 @@
 }
 
 .icon_toolbar:hover,
-.icon_toolbar_present:hover,
-.icon_background:hover {
+.icon_toolbar_present:hover {
 	background-color: #dfdfdf;
+	border-radius: 10px;
+}
+.icon_background:hover {
+	background-color: #cecece;
 	border-radius: 10px;
 }
 
 .icon_toolbar:active,
-.icon_toolbar_present:active,
-.icon_background:active {
+.icon_toolbar_present:active {
 	background-color: #c7c7c7;
+	border-radius: 10px;
+}
+
+.icon_background:active {
+	background-color: #b1b1b1;
 	border-radius: 10px;
 }
 

@@ -16,6 +16,10 @@ export const TextView = (props: TextProps) => {
 		textDecoration: font.isUnderlined ? 'underline' : '',
 	} as React.CSSProperties;
 
+	//TODO: span read only
+	//TODO: атрибут content editable
+	//TODO: Selection
+
 	return (
 		<>
 			<span key={id} style={styleFont}>

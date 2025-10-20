@@ -1,19 +1,19 @@
-import { Color } from '../../../../shared/types/color/Color';
-import { createFont } from '../../../../shared/types/font/Font';
-import { createRect } from '../../../../shared/types/geometry/rect/model/types';
-import { createPicture } from '../../../../shared/types/picture/Picture';
+import { Color } from '../../../../shared/model/color/Color';
+import { createFont } from '../../../../shared/model/font/Font';
+import { createRect } from '../../../../shared/model/geometry/rect/model/types';
+import { createPicture } from '../../../../shared/model/picture/Picture';
 import { createImage } from '../../../image/lib/image';
 import { addTextInTextBox, createTextBox } from '../../../text-box/lib/textbox';
 import {
 	addObjOnCurrentSlide,
 	addSlide,
-	createSlideMaker,
+	createPresentation,
 	setBackground,
-	setNameSlideMaker,
+	setNamePresentation,
 	setSelectedSlide,
 } from '../../lib/presentation';
 
-export let slideMaker = createSlideMaker();
+export let slideMaker = createPresentation();
 slideMaker = addSlide(slideMaker);
 
 const rect = createRect(600, 400, 500, 200);
@@ -26,7 +26,7 @@ slideMaker = setSelectedSlide(slideMaker, 0);
 slideMaker = addObjOnCurrentSlide(slideMaker, textbox);
 
 const backPicture = createPicture(
-	'https://plus.unsplash.com/premium_photo-1701892428860-ca4913e92274?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8cG93ZXJwb2ludCUyMGJhY2tncm91bmR8ZW58MHx8MHx8fDA%3D',
+	'https://static.vecteezy.com/system/resources/thumbnails/048/401/283/small_2x/abstract-geometric-background-presentation-vector.jpg',
 );
 slideMaker = setBackground(slideMaker, backPicture);
 
@@ -40,5 +40,7 @@ const image = createImage(
 );
 slideMaker = addObjOnCurrentSlide(slideMaker, image);
 
-slideMaker = setNameSlideMaker(slideMaker, 'Презентация с max data');
-slideMaker = setSelectedSlide(slideMaker, 0);
+slideMaker = setNamePresentation(slideMaker, 'Презентация с max data');
+slideMaker = setSelectedSlide(slideMaker, 1);
+slideMaker = addSlide(slideMaker);
+slideMaker = setSelectedSlide(slideMaker, 2);

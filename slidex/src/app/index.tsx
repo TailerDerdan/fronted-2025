@@ -1,11 +1,17 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { PresentationMaker } from '../pages/presentation-maker';
-import { slideMaker } from '../entities/presentation/model/store/data';
+import { addEditorChangeHandler, getEditor } from '../features/presentation-editor/model/editor';
+import { handleDelete } from '../features/presentation-editor/lib/handleDelete';
 
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement);
-root.render(
-	<React.StrictMode>
-		<PresentationMaker pres={slideMaker} />
-	</React.StrictMode>,
-);
+function render() {
+	root.render(
+		//<React.StrictMode>
+		<PresentationMaker pres={getEditor()} />,
+		//</React.StrictMode>,
+	);
+}
+addEditorChangeHandler(render);
+render();
+window.addEventListener('keydown', handleDelete);

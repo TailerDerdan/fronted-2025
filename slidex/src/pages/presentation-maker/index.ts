@@ -1,1 +1,1 @@
-export { PresentationMaker } from './ui/presentation-maker';
+export { PresentationMaker } from './ui/PresentationMaker';

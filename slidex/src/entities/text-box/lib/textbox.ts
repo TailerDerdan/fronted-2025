@@ -1,13 +1,14 @@
-import { Alignment } from '../../../shared/types/alignment/Alignment';
-import { Font } from '../../../shared/types/font/Font';
+import { Alignment } from '../../../shared/model/alignment/Alignment';
+import { Color } from '../../../shared/model/color/Color';
+import { createFont, Font } from '../../../shared/model/font/Font';
 import {
 	Rect,
 	setHeightRect,
 	setWidthRect,
 	setXRect,
 	setYRect,
-} from '../../../shared/types/geometry/rect/model/types';
-import { Id } from '../../../shared/types/id/Id';
+} from '../../../shared/model/geometry/rect/model/types';
+import { Id } from '../../../shared/model/id/Id';
 import { Text, TextBox } from '../model/types';
 import { createText } from './text';
 
@@ -15,7 +16,7 @@ function createTextBox(rect: Rect): TextBox {
 	return {
 		type: 'textbox',
 		rect: rect,
-		texts: [],
+		texts: [createText('Text', createFont('Inter', 14, Color.DARKKHAKI, false, false, false))],
 		alignment: Alignment.LEFT,
 	};
 }

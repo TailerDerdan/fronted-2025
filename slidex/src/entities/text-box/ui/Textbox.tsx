@@ -1,16 +1,18 @@
-import { RectView } from '../../../shared/types/geometry/rect/ui/rect';
-import { Id } from '../../../shared/types/id/Id';
+import { RectView } from '../../../shared/model/geometry/rect/ui/rect';
+import { Id } from '../../../shared/model/id/Id';
 import { Text, TextBox } from '../model/types';
 import { TextView } from './text';
 
 type TextboxProps = TextBox & {
 	scaleX: number;
 	scaleY: number;
-	objId: Id;
+	onClick?: (id: Id, event: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
+	id: Id;
+	isSelected?: boolean;
 };
 
 export const TextboxView = (props: TextboxProps) => {
-	const { texts, rect, alignment, scaleX, scaleY, objId } = props;
+	const { texts, rect, alignment, scaleX, scaleY, onClick, id, isSelected } = props;
 
 	const renderedTexts = texts.map((elem: Text) => (
 		<TextView key={elem.id} content={elem.content} id={elem.id} font={elem.font} scaleX={scaleX} />
@@ -22,7 +24,9 @@ export const TextboxView = (props: TextboxProps) => {
 			aligment={alignment}
 			scaleX={scaleX}
 			scaleY={scaleY}
-			onClick={() => console.log(objId)}
+			onClick={onClick}
+			id={id}
+			isSelected={isSelected}
 		>
 			{renderedTexts}
 		</RectView>

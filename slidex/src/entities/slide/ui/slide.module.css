@@ -1,9 +1,14 @@
 .slide {
-	width: 16vw;
-	height: 9vw;
+	width: 98%;
+	height: 98%;
 	position: relative;
-	border: 1px solid black;
 	border-radius: 10px;
+	border: 1.5px solid #9b9b9b;
+	top: -1px;
+}
+
+.slide_selected {
+	outline: 3px solid #2a39b8;
 }
 
 .slide_objs {

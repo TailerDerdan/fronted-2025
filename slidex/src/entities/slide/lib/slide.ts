@@ -1,7 +1,7 @@
-import { Picture } from '../../../shared/types/picture/Picture';
+import { Picture } from '../../../shared/model/picture/Picture';
 import { Slide, SlideObj } from '../model/types';
-import { generateId, Id } from '../../../shared/types/id/Id';
-import { Color } from '../../../shared/types/color/Color';
+import { generateId, Id } from '../../../shared/model/id/Id';
+import { Color } from '../../../shared/model/color/Color';
 import { Image } from '../../image/model/types';
 import { TextBox } from '../../text-box/model/types';
 
