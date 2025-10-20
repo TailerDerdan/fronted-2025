@@ -5,6 +5,7 @@ import { Slide } from '../model/types';
 import styles from './slide.module.css';
 import { Background } from '../../../shared/model/background/Background';
 import { Id } from '../../../shared/model/id/Id';
+import { Rect } from '../../../shared/model/geometry/rect/model/types';
 
 type PropsForSlideObj = {
 	slide: Slide;
@@ -13,10 +14,12 @@ type PropsForSlideObj = {
 	onClickImageView?: (id: Id, event: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
 	onClickTextBoxView?: (id: Id, event: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
 	selectedObj?: Array<Id>;
+	handleUpdateRect?: (idObj: Id, newRect: Rect) => void;
 };
 
 export function getReactNodeObjs(props: PropsForSlideObj): Array<ReactNode> {
-	const { scaleX, scaleY, slide, onClickImageView, onClickTextBoxView, selectedObj } = props;
+	const { scaleX, scaleY, slide, onClickImageView, onClickTextBoxView, selectedObj, handleUpdateRect } =
+		props;
 
 	let isSelected: boolean = false;
 
@@ -33,11 +36,13 @@ export function getReactNodeObjs(props: PropsForSlideObj): Array<ReactNode> {
 					type={objOnSlide.type}
 					rect={objOnSlide.rect}
 					src={objOnSlide.src}
+					borderColor={objOnSlide.borderColor}
 					scaleX={scaleX}
 					scaleY={scaleY}
 					onClick={onClickImageView}
 					id={elem}
 					isSelected={isSelected}
+					handleUpdateRect={handleUpdateRect}
 				/>
 			);
 		}
@@ -54,6 +59,7 @@ export function getReactNodeObjs(props: PropsForSlideObj): Array<ReactNode> {
 					onClick={onClickTextBoxView}
 					id={elem}
 					isSelected={isSelected}
+					handleUpdateRect={handleUpdateRect}
 				/>
 			);
 		}

@@ -2,10 +2,12 @@ import {
 	addSelectedObj,
 	clearSelectionObjs,
 	setSelectedObj,
+	updateRectObj,
 } from '../../../entities/presentation/lib/presentation';
 import { Slide } from '../../../entities/slide/model/types';
 import { getReactNodeObjs, getStyleBackground } from '../../../entities/slide/ui/Slide';
 import { dispatch } from '../../../features/presentation-editor/model/editor';
+import { Rect } from '../../../shared/model/geometry/rect/model/types';
 import { Id } from '../../../shared/model/id/Id';
 import { TextButton } from '../../../shared/ui/textButton';
 import { SCALE_X, SCALE_Y } from '../lib/consts';
@@ -36,6 +38,10 @@ export const Workspace = (props: WorkspaceProps) => {
 		}
 	};
 
+	const handleUpdateRect = (idObj: Id, newRect: Rect) => {
+		dispatch(updateRectObj, { idObj: idObj, newRect: newRect });
+	};
+
 	const objsOnSlide = getReactNodeObjs({
 		slide,
 		scaleX: SCALE_X,
@@ -43,6 +49,7 @@ export const Workspace = (props: WorkspaceProps) => {
 		onClickImageView: handleClickImage,
 		onClickTextBoxView: handleClickTextBox,
 		selectedObj: slide.selectedObj,
+		handleUpdateRect: handleUpdateRect,
 	});
 
 	const styleSlide = slide ? getStyleBackground(slide.background) : {};
@@ -52,7 +59,10 @@ export const Workspace = (props: WorkspaceProps) => {
 			<div
 				className={styles.workspace}
 				onClick={event => {
-					setIsToggleOfBack(!isToggleOfBack);
+					if (event.ctrlKey) {
+						setIsToggleOfBack(!isToggleOfBack);
+					}
+
 					dispatch(clearSelectionObjs);
 					event.stopPropagation();
 					event.isDefaultPrevented();
@@ -62,7 +72,9 @@ export const Workspace = (props: WorkspaceProps) => {
 					className={styles.visble_workspace}
 					style={styleSlide}
 					onClick={event => {
-						setIsToggleOfBack(!isToggleOfBack);
+						if (event.ctrlKey) {
+							setIsToggleOfBack(!isToggleOfBack);
+						}
 						dispatch(clearSelectionObjs);
 						event.stopPropagation();
 						event.isDefaultPrevented();

@@ -1,6 +1,7 @@
 import { deepClone } from '../../../shared/lib/deepClone';
 import { deepFreeze } from '../../../shared/lib/deepFreeze';
 import { Background } from '../../../shared/model/background/Background';
+import { Rect } from '../../../shared/model/geometry/rect/model/types';
 import { generateId, Id } from '../../../shared/model/id/Id';
 import { Image } from '../../image/model/types';
 import { addObjectInSlide, createSlide, deleteObjectInSlide } from '../../slide/lib/slide';
@@ -403,6 +404,37 @@ function updateImage(slideMaker: Presentation, props: UpdateImageProps): Present
 	};
 }
 
+export type UpdateRectObjProps = {
+	idObj: Id;
+	newRect: Rect;
+};
+
+function updateRectObj(slideMaker: Presentation, props: UpdateRectObjProps): Presentation {
+	const { idObj, newRect } = props;
+	deepFreeze(slideMaker);
+
+	const slideList: Map<Id, Slide> = deepClone(slideMaker.slideList);
+
+	if (slideMaker.currentSlide === null) {
+		return slideMaker;
+	}
+
+	const currentSlide: Slide | undefined = slideList.get(slideMaker.currentSlide);
+	if (!currentSlide) {
+		return slideMaker;
+	}
+
+	if (currentSlide.objects.get(idObj)) {
+		currentSlide.objects.get(idObj)!.rect = newRect;
+	}
+
+	slideList.set(slideMaker.currentSlide, currentSlide);
+	return {
+		...slideMaker,
+		slideList: slideList,
+	};
+}
+
 function setBackground(slideMaker: Presentation, newBackground: Background): Presentation {
 	const slideList: Map<Id, Slide> = deepClone(slideMaker.slideList);
 
@@ -442,6 +474,7 @@ export {
 	deleteSelectedObjs,
 	updateTextBox,
 	updateImage,
+	updateRectObj,
 	setBackground,
 	getCurrentSlide,
 	clearSelectionObjs,

@@ -1,4 +1,8 @@
-import { UpdateImageProps, UpdateTextBoxProps } from '../../../entities/presentation/lib/presentation';
+import {
+	UpdateImageProps,
+	UpdateRectObjProps,
+	UpdateTextBoxProps,
+} from '../../../entities/presentation/lib/presentation';
 import { slideMaker } from '../../../entities/presentation/model/store/data';
 import { Presentation } from '../../../entities/presentation/model/types';
 import { SlideObj } from '../../../entities/slide/model/types';
@@ -11,6 +15,7 @@ type PayloadObjectFn = (presentation: Presentation, payload: object) => Presenta
 type PayloadSlideObjectFn = (presentation: Presentation, payload: SlideObj) => Presentation;
 type PayloadUpdImageObjectFn = (presentation: Presentation, payload: UpdateImageProps) => Presentation;
 type PayloadUpdTextBoxObjectFn = (presentation: Presentation, payload: UpdateTextBoxProps) => Presentation;
+type PayloadUpdateRectObjectFn = (presentation: Presentation, payload: UpdateRectObjProps) => Presentation;
 type PayloadBackgroundObjectFn = (presentation: Presentation, payload: Background) => Presentation;
 type PayloadNumberFn = (presentation: Presentation, payload: number) => Presentation;
 type PayloadStringFn = (presentation: Presentation, payload: string) => Presentation;
@@ -22,7 +27,8 @@ type ModifyFn =
 	| PayloadSlideObjectFn
 	| PayloadUpdImageObjectFn
 	| PayloadUpdTextBoxObjectFn
-	| PayloadBackgroundObjectFn;
+	| PayloadBackgroundObjectFn
+	| PayloadUpdateRectObjectFn;
 
 export function getEditor() {
 	return editor;
