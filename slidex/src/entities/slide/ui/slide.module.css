@@ -1,3 +1,15 @@
+.wrapper_slide {
+	margin-bottom: 5.936832106%;
+	display: flex;
+	flex-direction: column;
+	justify-content: flex-end;
+	align-items: center;
+	overflow: hidden;
+	width: 16vw;
+	height: 9vw;
+	min-height: 9vw;
+}
+
 .slide {
 	width: 98%;
 	height: 98%;

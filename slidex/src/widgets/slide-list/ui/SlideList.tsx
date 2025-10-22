@@ -1,8 +1,10 @@
+import { useRef, useState } from 'react';
 import {
 	addSelectedSlide,
 	addSlide,
 	clearSelectionObjs,
 	clearSelectionSlides,
+	setPositionSlide,
 	setSelectedSlide,
 } from '../../../entities/presentation/lib/presentation';
 import { Slide } from '../../../entities/slide/model/types';
@@ -21,6 +23,8 @@ type SlideListProps = {
 
 export const SlideList = (props: SlideListProps) => {
 	const { slideOrder, slideList, selectedSlides } = props;
+	const slidesRef = useRef<HTMLDivElement>(null);
+	const [slideCoords, setCoordsSlide] = useState({ x: 0, y: 0 });
 
 	let isSelected: boolean = false;
 
@@ -31,25 +35,31 @@ export const SlideList = (props: SlideListProps) => {
 			if (selectedSlides.indexOf(id) >= 0) {
 				isSelected = true;
 			}
+			const handleOnClick = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+				dispatch(clearSelectionObjs);
+				if (event.ctrlKey) {
+					dispatch(addSelectedSlide, index);
+				} else {
+					dispatch(clearSelectionSlides);
+					dispatch(setSelectedSlide, index);
+				}
+			};
 			return (
-				<div
+				<SlideView
 					key={id}
-					className={styles.wrapper_slide}
-					onClick={event => {
-						dispatch(clearSelectionObjs);
-						if (event.ctrlKey) {
-							dispatch(addSelectedSlide, index);
-						} else {
-							dispatch(clearSelectionSlides);
-							dispatch(setSelectedSlide, index);
-						}
-
-						event.stopPropagation();
-						event.isDefaultPrevented();
+					slide={slide}
+					scaleX={SCALE_X}
+					scaleY={SCALE_Y}
+					isSelected={isSelected}
+					slideCoords={slideCoords}
+					setCoordsSlide={setCoordsSlide}
+					refOnSlides={slidesRef}
+					indexOfSlide={index}
+					updateOrder={(from: number, to: number) => {
+						dispatch(setPositionSlide, { fromIndex: from, toIndex: to });
 					}}
-				>
-					<SlideView slide={slide} scaleX={SCALE_X} scaleY={SCALE_Y} isSelected={isSelected} />
-				</div>
+					handleOnClick={handleOnClick}
+				/>
 			);
 		}
 	});
@@ -71,7 +81,9 @@ export const SlideList = (props: SlideListProps) => {
 					</TextButton>
 				</div>
 			</div>
-			<div className={styles.slideList__objs}>{slideListReactNode}</div>
+			<div className={styles.slideList__objs} ref={slidesRef}>
+				{slideListReactNode}
+			</div>
 		</div>
 	);
 };

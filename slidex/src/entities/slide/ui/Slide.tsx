@@ -1,4 +1,4 @@
-import { ReactNode } from 'react';
+import { MutableRefObject, ReactNode, useEffect, useRef } from 'react';
 import { ImageView } from '../../image/ui/Image';
 import { TextboxView } from '../../text-box/ui/Textbox';
 import { Slide } from '../model/types';
@@ -6,6 +6,7 @@ import styles from './slide.module.css';
 import { Background } from '../../../shared/model/background/Background';
 import { Id } from '../../../shared/model/id/Id';
 import { Rect } from '../../../shared/model/geometry/rect/model/types';
+import { useDragAndDrop } from '../../../shared/lib/useDragAndDrop';
 
 type PropsForSlideObj = {
 	slide: Slide;
@@ -85,20 +86,78 @@ type SlideProps = {
 	scaleX: number;
 	scaleY: number;
 	isSelected: boolean;
+	slideCoords: { x: number; y: number };
+	setCoordsSlide: (coords: { x: number; y: number }) => void;
+	refOnSlides: MutableRefObject<HTMLDivElement | null>;
+	indexOfSlide: number;
+	updateOrder: (from: number, to: number) => void;
+	handleOnClick: (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
 };
 
 export const SlideView = (props: SlideProps) => {
-	const { slide, scaleX, scaleY, isSelected } = props;
+	const {
+		slide,
+		scaleX,
+		scaleY,
+		isSelected,
+		slideCoords,
+		setCoordsSlide,
+		refOnSlides,
+		indexOfSlide,
+		updateOrder,
+		handleOnClick,
+	} = props;
+	const slideEl = useRef<HTMLDivElement>(null);
+	// const indexOfSlideRef = useRef<number>(indexOfSlide);
 
 	const objsOnSlide = getReactNodeObjs({ slide, scaleX, scaleY });
-
 	const styleSlide = getStyleBackground(slide.background);
-
 	const styleForSelected = isSelected ? styles.slide_selected : ``;
 
+	useEffect(() => {
+		if (slideEl.current && refOnSlides?.current) {
+			const relativeX =
+				slideEl.current.getBoundingClientRect().left -
+				refOnSlides?.current.getBoundingClientRect().left;
+			const relativeY =
+				slideEl.current.getBoundingClientRect().top -
+				refOnSlides?.current.getBoundingClientRect().top -
+				slideCoords.y;
+			if (
+				(Math.abs(relativeX - slideCoords.x) > 1 || Math.abs(relativeY - slideCoords.y) > 1) &&
+				slideEl.current.style.position == 'relative'
+			) {
+				slideCoords.x = relativeX;
+				slideCoords.y = relativeY;
+			}
+		}
+	}, [slideEl, slideCoords, setCoordsSlide]);
+
+	useDragAndDrop({
+		rectEl: slideEl,
+		isSlide: true,
+		rectCoords: slideCoords,
+		setCoordsRect: setCoordsSlide,
+		refOnSlides: refOnSlides,
+		indexSlide: indexOfSlide,
+		updateOrder: updateOrder,
+		isObjOnSlideBar: false,
+	});
+
 	return (
-		<div className={`${styles.slide} ${styleForSelected}`} style={styleSlide}>
-			{objsOnSlide}
+		<div
+			className={styles.wrapper_slide}
+			onMouseDown={event => {
+				event.stopPropagation();
+				event.preventDefault();
+				handleOnClick(event);
+				console.log(indexOfSlide);
+			}}
+			ref={slideEl}
+		>
+			<div className={`${styles.slide} ${styleForSelected}`} style={styleSlide}>
+				{objsOnSlide}
+			</div>
 		</div>
 	);
 };

@@ -14,7 +14,7 @@ type RectProps = {
 	onClick?: (id: Id, event: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
 	id: Id;
 	isSelected?: boolean;
-	dispatchUpdateObject: (x: number, y: number) => void;
+	dispatchUpdateObject?: (x: number, y: number) => void;
 };
 
 export const RectView = (props: RectProps) => {
@@ -30,11 +30,18 @@ export const RectView = (props: RectProps) => {
 		}
 	}, [rect, scaleX, scaleY]);
 
+	let isObjOnSlideBar = false;
+	if (onClick === undefined) {
+		isObjOnSlideBar = true;
+	}
+
 	useDragAndDrop({
 		rectEl: rectEl,
 		rectCoords: coords,
 		setCoordsRect: setCoords,
 		updateCoordsRect: dispatchUpdateObject,
+		isSlide: false,
+		isObjOnSlideBar: isObjOnSlideBar,
 	});
 
 	const styleRect = {

@@ -1,4 +1,5 @@
 import {
+	PropsSetPositionSlide,
 	UpdateImageProps,
 	UpdateRectObjProps,
 	UpdateTextBoxProps,
@@ -16,10 +17,10 @@ type PayloadSlideObjectFn = (presentation: Presentation, payload: SlideObj) => P
 type PayloadUpdImageObjectFn = (presentation: Presentation, payload: UpdateImageProps) => Presentation;
 type PayloadUpdTextBoxObjectFn = (presentation: Presentation, payload: UpdateTextBoxProps) => Presentation;
 type PayloadUpdateRectObjectFn = (presentation: Presentation, payload: UpdateRectObjProps) => Presentation;
+type PayloadSetPositionSlideFn = (presentation: Presentation, payload: PropsSetPositionSlide) => Presentation;
 type PayloadBackgroundObjectFn = (presentation: Presentation, payload: Background) => Presentation;
 type PayloadNumberFn = (presentation: Presentation, payload: number) => Presentation;
 type PayloadStringFn = (presentation: Presentation, payload: string) => Presentation;
-
 type ModifyFn =
 	| PayloadObjectFn
 	| PayloadNumberFn
@@ -28,7 +29,8 @@ type ModifyFn =
 	| PayloadUpdImageObjectFn
 	| PayloadUpdTextBoxObjectFn
 	| PayloadBackgroundObjectFn
-	| PayloadUpdateRectObjectFn;
+	| PayloadUpdateRectObjectFn
+	| PayloadSetPositionSlideFn;
 
 export function getEditor() {
 	return editor;
