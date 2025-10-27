@@ -4,6 +4,7 @@ import { Alignment } from '../../../alignment/Alignment';
 import { Id } from '../../../id/Id';
 import styles from './rect.module.css';
 import { useDragAndDrop } from '../../../../lib/useDragAndDrop';
+import { Corner } from '../../../../ui/Corner';
 
 type RectProps = {
 	rect: Rect;
@@ -14,7 +15,7 @@ type RectProps = {
 	onClick?: (id: Id, event: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
 	id: Id;
 	isSelected?: boolean;
-	dispatchUpdateObject?: (x: number, y: number) => void;
+	dispatchUpdateObject?: (x: number, y: number, width: number, height: number) => void;
 };
 
 export const RectView = (props: RectProps) => {
@@ -28,30 +29,41 @@ export const RectView = (props: RectProps) => {
 		} else {
 			setCoords({ x: rect.x, y: rect.y });
 		}
-	}, [rect, scaleX, scaleY]);
+	}, [rect, scaleX, scaleY, onClick]);
 
 	let isObjOnSlideBar = false;
 	if (onClick === undefined) {
 		isObjOnSlideBar = true;
 	}
 
+	const onEnd = (newX: number, newY: number) => {
+		if (!dispatchUpdateObject) return;
+		dispatchUpdateObject(newX, newY, rect.width, rect.height);
+	};
+
 	useDragAndDrop({
 		rectEl: rectEl,
 		rectCoords: coords,
 		setCoordsRect: setCoords,
-		updateCoordsRect: dispatchUpdateObject,
 		isSlide: false,
 		isObjOnSlideBar: isObjOnSlideBar,
+		onEnd: onEnd,
 	});
 
 	const styleRect = {
+		position: 'absolute',
+		transformOrigin: 'top center',
 		top: coords.y,
 		left: coords.x,
-		width: rect.width * scaleX,
-		height: rect.height * scaleY,
+		width: rect.width,
+		height: rect.height,
 		textAlign: aligment ? aligment : '',
-		position: 'absolute',
 	} as React.CSSProperties;
+
+	if (onClick === undefined) {
+		styleRect.width = rect.width * scaleX;
+		styleRect.height = rect.height * scaleY;
+	}
 
 	const styleForSelected = isSelected ? styles.obj_selected : ``;
 
@@ -70,6 +82,36 @@ export const RectView = (props: RectProps) => {
 			ref={rectEl}
 			draggable={false}
 		>
+			{isSelected ? (
+				<>
+					<Corner
+						type="top_left"
+						rect={{ ...rect, x: coords.x, y: coords.y }}
+						rectEl={rectEl}
+						updateDataRect={dispatchUpdateObject}
+					/>
+					<Corner
+						type="top_right"
+						rect={{ ...rect, x: coords.x, y: coords.y }}
+						rectEl={rectEl}
+						updateDataRect={dispatchUpdateObject}
+					/>
+					<Corner
+						type="bottom_left"
+						rect={{ ...rect, x: coords.x, y: coords.y }}
+						rectEl={rectEl}
+						updateDataRect={dispatchUpdateObject}
+					/>
+					<Corner
+						type="bottom_right"
+						rect={{ ...rect, x: coords.x, y: coords.y }}
+						rectEl={rectEl}
+						updateDataRect={dispatchUpdateObject}
+					/>
+				</>
+			) : (
+				<></>
+			)}
 			{children}
 		</div>
 	);

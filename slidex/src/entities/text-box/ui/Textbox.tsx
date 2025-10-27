@@ -29,9 +29,9 @@ export const TextboxView = (props: TextboxProps) => {
 			onClick={onClick}
 			id={id}
 			isSelected={isSelected}
-			dispatchUpdateObject={(newX: number, newY: number) => {
+			dispatchUpdateObject={(newX: number, newY: number, width: number, height: number) => {
 				if (handleUpdateRect) {
-					handleUpdateRect(id, { ...rect, x: newX, y: newY });
+					handleUpdateRect(id, { width: width, height: height, x: newX, y: newY });
 				}
 			}}
 		>

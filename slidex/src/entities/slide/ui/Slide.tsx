@@ -87,7 +87,7 @@ type SlideProps = {
 	scaleY: number;
 	isSelected: boolean;
 	slideCoords: { x: number; y: number };
-	setCoordsSlide: (coords: { x: number; y: number }) => void;
+	setCoordsSlide: (rect: { x: number; y: number }) => void;
 	refOnSlides: MutableRefObject<HTMLDivElement | null>;
 	indexOfSlide: number;
 	updateOrder: (from: number, to: number) => void;
@@ -108,7 +108,7 @@ export const SlideView = (props: SlideProps) => {
 		handleOnClick,
 	} = props;
 	const slideEl = useRef<HTMLDivElement>(null);
-	// const indexOfSlideRef = useRef<number>(indexOfSlide);
+	const originalStyle = useRef({ position: '', top: ``, left: `` });
 
 	const objsOnSlide = getReactNodeObjs({ slide, scaleX, scaleY });
 	const styleSlide = getStyleBackground(slide.background);
@@ -133,15 +133,62 @@ export const SlideView = (props: SlideProps) => {
 		}
 	}, [slideEl, slideCoords, setCoordsSlide]);
 
+	const onEnd = (newX: number, newY: number) => {
+		if (!slideEl.current) return;
+		slideEl.current.style.position = '';
+		slideEl.current.style.top = originalStyle.current.top;
+		slideEl.current.style.left = originalStyle.current.left;
+		slideEl.current.style.zIndex = '1';
+		if (refOnSlides?.current && updateOrder && indexOfSlide !== undefined) {
+			const childrenArray = Array.from(refOnSlides.current.children);
+
+			const oldY =
+				childrenArray[indexOfSlide].getBoundingClientRect().top -
+				refOnSlides.current.getBoundingClientRect().top;
+
+			let newIndex = indexOfSlide;
+
+			for (let i = 0; i < childrenArray.length - 1; i += 2) {
+				const child = childrenArray[i];
+				const childNext = childrenArray[i + 1];
+				if (
+					oldY + newY >=
+						child.getBoundingClientRect().top - refOnSlides.current.getBoundingClientRect().top &&
+					oldY + newY <=
+						childNext.getBoundingClientRect().top -
+							refOnSlides.current.getBoundingClientRect().top
+				) {
+					newIndex = indexOfSlide == 0 ? i : i + 1;
+					break;
+				}
+			}
+
+			if (oldY + newY < 0) {
+				newIndex = 0;
+			}
+
+			if (
+				oldY + newY >=
+				childrenArray[childrenArray.length - 1].getBoundingClientRect().top -
+					refOnSlides.current.getBoundingClientRect().top
+			) {
+				newIndex = childrenArray.length - 1;
+			}
+
+			if (indexOfSlide != newIndex) {
+				updateOrder(indexOfSlide, newIndex);
+			}
+		}
+	};
+
 	useDragAndDrop({
 		rectEl: slideEl,
 		isSlide: true,
 		rectCoords: slideCoords,
 		setCoordsRect: setCoordsSlide,
-		refOnSlides: refOnSlides,
-		indexSlide: indexOfSlide,
-		updateOrder: updateOrder,
 		isObjOnSlideBar: false,
+		onEnd: onEnd,
+		originalStyle: originalStyle,
 	});
 
 	return (

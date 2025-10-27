@@ -1,3 +1,4 @@
 .obj_selected {
 	outline: 3px solid #2a39b8;
+	overflow: visible;
 }

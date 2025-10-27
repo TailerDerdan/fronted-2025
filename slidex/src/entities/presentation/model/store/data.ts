@@ -43,4 +43,4 @@ slideMaker = addObjOnCurrentSlide(slideMaker, image);
 slideMaker = setNamePresentation(slideMaker, 'Презентация с max data');
 slideMaker = setSelectedSlide(slideMaker, 1);
 slideMaker = addSlide(slideMaker);
-slideMaker = setSelectedSlide(slideMaker, 2);
+slideMaker = setSelectedSlide(slideMaker, 1);
