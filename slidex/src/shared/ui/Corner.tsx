@@ -32,6 +32,18 @@ export const Corner = (props: PropsCorner) => {
 		case 'bottom_right':
 			style = styles.cornerBottomRight;
 			break;
+		case 'top_center':
+			style = styles.cornerTopCenter;
+			break;
+		case 'right_center':
+			style = styles.cornerRightCenter;
+			break;
+		case 'bottom_center':
+			style = styles.cornerBottomCenter;
+			break;
+		case 'left_center':
+			style = styles.cornerLeftCenter;
+			break;
 		default:
 			break;
 	}

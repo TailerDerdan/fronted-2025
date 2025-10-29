@@ -1,4 +1,5 @@
 import { MutableRefObject, useEffect, useLayoutEffect, useRef } from 'react';
+import { TCorner } from '../model/corner/corner';
 
 type PropsDragAndDrop = {
 	rectEl: MutableRefObject<HTMLDivElement | null>;
@@ -11,10 +12,12 @@ type PropsDragAndDrop = {
 	onEnd: (newX: number, newY: number) => void;
 
 	originalStyle?: MutableRefObject<{ position: string; top: string; left: string }>;
+	typeCorner?: TCorner;
 };
 
 export const useDragAndDrop = (props: PropsDragAndDrop) => {
-	const { rectEl, rectCoords, setCoordsRect, isSlide, isObjOnSlideBar, onEnd, originalStyle } = props;
+	const { rectEl, rectCoords, setCoordsRect, isSlide, isObjOnSlideBar, onEnd, originalStyle, typeCorner } =
+		props;
 
 	const startsCoord = useRef({ x: 0, y: 0 });
 
@@ -38,6 +41,8 @@ export const useDragAndDrop = (props: PropsDragAndDrop) => {
 					};
 				}
 
+				console.log(rectCoords, 'zdes jmem');
+
 				startsCoord.current = { x: event.pageX, y: event.pageY };
 
 				if (isSlide) {
@@ -53,11 +58,28 @@ export const useDragAndDrop = (props: PropsDragAndDrop) => {
 				const newX = rectCoords.x - startsCoord.current.x + event.pageX;
 				const newY = rectCoords.y - startsCoord.current.y + event.pageY;
 
-				if (isSlide) {
-					rectEl.current.style.left = `${rectCoords.x}px`;
-					rectEl.current.style.top = `${newY}px`;
+				console.log(newX, newY, 'zdes peretaskivaem');
+
+				if (typeCorner) {
+					if (
+						typeCorner == 'top_left' ||
+						typeCorner == 'top_right' ||
+						typeCorner == 'bottom_right' ||
+						typeCorner == 'bottom_left'
+					) {
+						setCoordsRect({ x: newX, y: newY });
+					} else if (typeCorner == 'top_center' || typeCorner == 'bottom_center') {
+						setCoordsRect({ x: rectCoords.x, y: newY });
+					} else if (typeCorner == 'left_center' || typeCorner == 'right_center') {
+						setCoordsRect({ x: newX, y: rectCoords.y });
+					}
 				} else {
-					setCoordsRect({ x: newX, y: newY });
+					if (isSlide) {
+						rectEl.current.style.left = `${rectCoords.x}px`;
+						rectEl.current.style.top = `${newY}px`;
+					} else {
+						setCoordsRect({ x: newX, y: newY });
+					}
 				}
 			};
 

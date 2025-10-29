@@ -91,7 +91,19 @@ export const RectView = (props: RectProps) => {
 						updateDataRect={dispatchUpdateObject}
 					/>
 					<Corner
+						type="top_center"
+						rect={{ ...rect, x: coords.x, y: coords.y }}
+						rectEl={rectEl}
+						updateDataRect={dispatchUpdateObject}
+					/>
+					<Corner
 						type="top_right"
+						rect={{ ...rect, x: coords.x, y: coords.y }}
+						rectEl={rectEl}
+						updateDataRect={dispatchUpdateObject}
+					/>
+					<Corner
+						type="right_center"
 						rect={{ ...rect, x: coords.x, y: coords.y }}
 						rectEl={rectEl}
 						updateDataRect={dispatchUpdateObject}
@@ -103,7 +115,19 @@ export const RectView = (props: RectProps) => {
 						updateDataRect={dispatchUpdateObject}
 					/>
 					<Corner
+						type="bottom_center"
+						rect={{ ...rect, x: coords.x, y: coords.y }}
+						rectEl={rectEl}
+						updateDataRect={dispatchUpdateObject}
+					/>
+					<Corner
 						type="bottom_right"
+						rect={{ ...rect, x: coords.x, y: coords.y }}
+						rectEl={rectEl}
+						updateDataRect={dispatchUpdateObject}
+					/>
+					<Corner
+						type="left_center"
 						rect={{ ...rect, x: coords.x, y: coords.y }}
 						rectEl={rectEl}
 						updateDataRect={dispatchUpdateObject}

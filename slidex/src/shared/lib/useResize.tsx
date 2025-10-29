@@ -40,6 +40,30 @@ export const useResize = (props: PropsResize) => {
 				cornerEl.current.style.left = '';
 				cornerEl.current.style.right = `-${MARGIN_CORNER}px`;
 				break;
+			case 'top_center':
+				cornerEl.current.style.top = `-${MARGIN_CORNER}px`;
+				cornerEl.current.style.bottom = ``;
+				cornerEl.current.style.left = `${50}%`;
+				cornerEl.current.style.right = ``;
+				break;
+			case 'right_center':
+				cornerEl.current.style.top = `${50}%`;
+				cornerEl.current.style.bottom = ``;
+				cornerEl.current.style.left = ``;
+				cornerEl.current.style.right = `-${MARGIN_CORNER}px`;
+				break;
+			case 'bottom_center':
+				cornerEl.current.style.top = '';
+				cornerEl.current.style.bottom = `-${MARGIN_CORNER}px`;
+				cornerEl.current.style.left = `${50}%`;
+				cornerEl.current.style.right = ``;
+				break;
+			case 'left_center':
+				cornerEl.current.style.top = `${50}%`;
+				cornerEl.current.style.bottom = ``;
+				cornerEl.current.style.left = `-${MARGIN_CORNER}px`;
+				cornerEl.current.style.right = ``;
+				break;
 			default:
 				break;
 		}
@@ -81,6 +105,42 @@ export const useResize = (props: PropsResize) => {
 		};
 	};
 
+	const calcTopCenterCorner = (oldRect: Rect, delta: { x: number; y: number }): Rect => {
+		return {
+			x: oldRect.x,
+			y: oldRect.y + delta.y,
+			width: oldRect.width,
+			height: oldRect.height - delta.y,
+		};
+	};
+
+	const calcRightCenterCorner = (oldRect: Rect, delta: { x: number; y: number }): Rect => {
+		return {
+			x: oldRect.x,
+			y: oldRect.y,
+			width: oldRect.width + delta.x,
+			height: oldRect.height,
+		};
+	};
+
+	const calcBottomCenterCorner = (oldRect: Rect, delta: { x: number; y: number }): Rect => {
+		return {
+			x: oldRect.x,
+			y: oldRect.y,
+			width: oldRect.width,
+			height: oldRect.height + delta.y,
+		};
+	};
+
+	const calcLeftCenterCorner = (oldRect: Rect, delta: { x: number; y: number }): Rect => {
+		return {
+			x: oldRect.x + delta.x,
+			y: oldRect.y,
+			width: oldRect.width - delta.x,
+			height: oldRect.height,
+		};
+	};
+
 	const calcNewRect = (oldRect: Rect, delta: { x: number; y: number }, typeCorner: TCorner): Rect => {
 		if (typeCorner == 'top_left') {
 			return calcTopLeftCorner(oldRect, delta);
@@ -94,6 +154,18 @@ export const useResize = (props: PropsResize) => {
 		if (typeCorner == 'bottom_right') {
 			return calcBottomRightCorner(oldRect, delta);
 		}
+		if (typeCorner == 'top_center') {
+			return calcTopCenterCorner(oldRect, delta);
+		}
+		if (typeCorner == 'right_center') {
+			return calcRightCenterCorner(oldRect, delta);
+		}
+		if (typeCorner == 'bottom_center') {
+			return calcBottomCenterCorner(oldRect, delta);
+		}
+		if (typeCorner == 'left_center') {
+			return calcLeftCenterCorner(oldRect, delta);
+		}
 		return oldRect;
 	};
 
@@ -104,13 +176,16 @@ export const useResize = (props: PropsResize) => {
 		isSlide: false,
 		isObjOnSlideBar: false,
 		onEnd: (newX: number, newY: number) => {
+			setCoordsOfCorner({ x: 0, y: 0 });
 			updateRectOnEnd(calcNewRect(rect, { x: newX, y: newY }, typeCorner));
 		},
+		typeCorner: typeCorner,
 	});
 
 	useLayoutEffect(() => {
 		if (rectEl.current && cornerEl.current) {
 			updateStyleCorner(cornerEl, typeCorner);
+			console.log(newRect);
 			rectEl.current.style.left = `${newRect.x}px`;
 			rectEl.current.style.top = `${newRect.y}px`;
 			rectEl.current.style.width = `${newRect.width}px`;

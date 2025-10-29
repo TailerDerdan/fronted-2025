@@ -148,15 +148,23 @@ export const SlideView = (props: SlideProps) => {
 
 			let newIndex = indexOfSlide;
 
-			for (let i = 0; i < childrenArray.length - 1; i += 2) {
+			for (let i = 0; i < childrenArray.length; i++) {
 				const child = childrenArray[i];
-				const childNext = childrenArray[i + 1];
+
+				let topBorder = 0;
+				if (i + 1 < childrenArray.length) {
+					const childNext = childrenArray[i + 1];
+					topBorder =
+						childNext.getBoundingClientRect().top -
+						refOnSlides.current.getBoundingClientRect().top;
+				} else {
+					topBorder = Infinity;
+				}
+
 				if (
 					oldY + newY >=
 						child.getBoundingClientRect().top - refOnSlides.current.getBoundingClientRect().top &&
-					oldY + newY <=
-						childNext.getBoundingClientRect().top -
-							refOnSlides.current.getBoundingClientRect().top
+					oldY + newY <= topBorder
 				) {
 					newIndex = indexOfSlide == 0 ? i : i + 1;
 					break;
