@@ -1,8 +1,9 @@
-import { CSSProperties } from 'react';
+import { CSSProperties, MutableRefObject } from 'react';
 import { RectView } from '../../../shared/model/geometry/rect/ui/rect';
 import { Image } from '../model/types';
 import { Id } from '../../../shared/model/id/Id';
 import { Rect } from '../../../shared/model/geometry/rect/model/types';
+import { InfoAboutRect } from '../../../shared/model/setterOfCoords/setterOfCoords';
 
 type ImageProps = Image & {
 	scaleX: number;
@@ -11,10 +12,11 @@ type ImageProps = Image & {
 	id: Id;
 	isSelected?: boolean;
 	handleUpdateRect?: (idObj: Id, newRect: Rect) => void;
+	arrOfInfoObj?: MutableRefObject<Array<InfoAboutRect>>;
 };
 
 export const ImageView = (props: ImageProps) => {
-	const { rect, src, scaleX, scaleY, onClick, id, isSelected, handleUpdateRect } = props;
+	const { rect, src, scaleX, scaleY, onClick, id, isSelected, handleUpdateRect, arrOfInfoObj } = props;
 
 	const styleForImage: CSSProperties = {
 		width: '100%',
@@ -29,11 +31,8 @@ export const ImageView = (props: ImageProps) => {
 			onClick={onClick}
 			id={id}
 			isSelected={isSelected}
-			dispatchUpdateObject={(newX: number, newY: number, width: number, height: number) => {
-				if (handleUpdateRect) {
-					handleUpdateRect(id, { width: width, height: height, x: newX, y: newY });
-				}
-			}}
+			dispatchUpdateObject={handleUpdateRect}
+			arrOfInfoObj={arrOfInfoObj}
 		>
 			<img src={src} alt="image" style={styleForImage} />
 		</RectView>

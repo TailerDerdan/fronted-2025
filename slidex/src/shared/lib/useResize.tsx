@@ -1,19 +1,21 @@
-import { MutableRefObject, useEffect, useLayoutEffect, useState } from 'react';
+import { MutableRefObject, useCallback, useEffect, useLayoutEffect, useState } from 'react';
 import { useDragAndDrop } from './useDragAndDrop';
 import { Rect } from '../model/geometry/rect/model/types';
 import { TCorner } from '../model/corner/corner';
 import { MARGIN_CORNER } from '../ui/Corner';
+import { Id } from '../model/id/Id';
 
 type PropsResize = {
+	idRect: Id;
 	rectEl: MutableRefObject<HTMLDivElement | null>;
 	cornerEl: MutableRefObject<HTMLDivElement | null>;
 	typeCorner: TCorner;
 	rect: Rect;
-	updateRectOnEnd: (newRect: Rect) => void;
+	updateRectOnEnd?: (idObj: Id, newRect: Rect) => void;
 };
 
 export const useResize = (props: PropsResize) => {
-	const { rectEl, typeCorner, cornerEl, rect, updateRectOnEnd } = props;
+	const { idRect, rectEl, typeCorner, cornerEl, rect, updateRectOnEnd } = props;
 	const [coordsOfCorner, setCoordsOfCorner] = useState({ x: 0, y: 0 });
 	const [newRect, setNewRect] = useState({ ...rect });
 
@@ -71,28 +73,40 @@ export const useResize = (props: PropsResize) => {
 
 	const calcTopLeftCorner = (oldRect: Rect, delta: { x: number; y: number }): Rect => {
 		return {
-			x: oldRect.x + delta.x,
-			y: oldRect.y + delta.y,
-			width: oldRect.width - delta.x,
-			height: oldRect.height - delta.y,
+			x:
+				oldRect.width - delta.x >= 0
+					? oldRect.x + delta.x
+					: oldRect.x + delta.x + (oldRect.width - delta.x),
+			y:
+				oldRect.height - delta.y >= 0
+					? oldRect.y + delta.y
+					: oldRect.y + delta.y + (oldRect.height - delta.y),
+			width: oldRect.width - delta.x >= 0 ? oldRect.width - delta.x : 0,
+			height: oldRect.height - delta.y >= 0 ? oldRect.height - delta.y : 0,
 		};
 	};
 
 	const calcTopRightCorner = (oldRect: Rect, delta: { x: number; y: number }): Rect => {
 		return {
 			x: oldRect.x,
-			y: oldRect.y + delta.y,
-			width: oldRect.width + delta.x,
-			height: oldRect.height - delta.y,
+			y:
+				oldRect.height - delta.y >= 0
+					? oldRect.y + delta.y
+					: oldRect.y + delta.y + oldRect.height - delta.y,
+			width: oldRect.width + delta.x >= 0 ? oldRect.width + delta.x : 0,
+			height: oldRect.height - delta.y >= 0 ? oldRect.height - delta.y : 0,
 		};
 	};
 
 	const calcBottomLeftCorner = (oldRect: Rect, delta: { x: number; y: number }): Rect => {
 		return {
-			x: oldRect.x + delta.x,
+			x:
+				oldRect.width - delta.x >= 0
+					? oldRect.x + delta.x
+					: oldRect.x + delta.x + oldRect.width - delta.x,
 			y: oldRect.y,
-			width: oldRect.width - delta.x,
-			height: oldRect.height + delta.y,
+			width: oldRect.width - delta.x >= 0 ? oldRect.width - delta.x : 0,
+			height: oldRect.height + delta.y >= 0 ? oldRect.height + delta.y : 0,
 		};
 	};
 
@@ -100,17 +114,20 @@ export const useResize = (props: PropsResize) => {
 		return {
 			x: oldRect.x,
 			y: oldRect.y,
-			width: oldRect.width + delta.x,
-			height: oldRect.height + delta.y,
+			width: oldRect.width + delta.x >= 0 ? oldRect.width + delta.x : 0,
+			height: oldRect.height + delta.y >= 0 ? oldRect.height + delta.y : 0,
 		};
 	};
 
 	const calcTopCenterCorner = (oldRect: Rect, delta: { x: number; y: number }): Rect => {
 		return {
 			x: oldRect.x,
-			y: oldRect.y + delta.y,
+			y:
+				oldRect.height - delta.y >= 0
+					? oldRect.y + delta.y
+					: oldRect.y + delta.y + oldRect.height - delta.y,
 			width: oldRect.width,
-			height: oldRect.height - delta.y,
+			height: oldRect.height - delta.y >= 0 ? oldRect.height - delta.y : 0,
 		};
 	};
 
@@ -118,7 +135,7 @@ export const useResize = (props: PropsResize) => {
 		return {
 			x: oldRect.x,
 			y: oldRect.y,
-			width: oldRect.width + delta.x,
+			width: oldRect.width + delta.x >= 0 ? oldRect.width + delta.x : 0,
 			height: oldRect.height,
 		};
 	};
@@ -128,15 +145,18 @@ export const useResize = (props: PropsResize) => {
 			x: oldRect.x,
 			y: oldRect.y,
 			width: oldRect.width,
-			height: oldRect.height + delta.y,
+			height: oldRect.height + delta.y >= 0 ? oldRect.height + delta.y : 0,
 		};
 	};
 
 	const calcLeftCenterCorner = (oldRect: Rect, delta: { x: number; y: number }): Rect => {
 		return {
-			x: oldRect.x + delta.x,
+			x:
+				oldRect.width - delta.x >= 0
+					? oldRect.x + delta.x
+					: oldRect.x + delta.x + oldRect.width - delta.x,
 			y: oldRect.y,
-			width: oldRect.width - delta.x,
+			width: oldRect.width - delta.x >= 0 ? oldRect.width - delta.x : 0,
 			height: oldRect.height,
 		};
 	};
@@ -169,23 +189,32 @@ export const useResize = (props: PropsResize) => {
 		return oldRect;
 	};
 
+	const stableOnEnd = useCallback(
+		(newX: number, newY: number) => {
+			if (!updateRectOnEnd) return;
+			console.log(rect);
+			const updatedRect = calcNewRect(rect, { x: newX, y: newY }, typeCorner);
+			console.log(updatedRect);
+			updateRectOnEnd(idRect, updatedRect);
+			setNewRect(updatedRect);
+			setCoordsOfCorner({ x: 0, y: 0 });
+		},
+		[rect, typeCorner],
+	);
+
 	useDragAndDrop({
 		rectEl: cornerEl,
 		rectCoords: coordsOfCorner,
 		setCoordsRect: setCoordsOfCorner,
 		isSlide: false,
 		isObjOnSlideBar: false,
-		onEnd: (newX: number, newY: number) => {
-			setCoordsOfCorner({ x: 0, y: 0 });
-			updateRectOnEnd(calcNewRect(rect, { x: newX, y: newY }, typeCorner));
-		},
+		onEnd: stableOnEnd,
 		typeCorner: typeCorner,
 	});
 
 	useLayoutEffect(() => {
 		if (rectEl.current && cornerEl.current) {
 			updateStyleCorner(cornerEl, typeCorner);
-			console.log(newRect);
 			rectEl.current.style.left = `${newRect.x}px`;
 			rectEl.current.style.top = `${newRect.y}px`;
 			rectEl.current.style.width = `${newRect.width}px`;
@@ -195,5 +224,5 @@ export const useResize = (props: PropsResize) => {
 
 	useEffect(() => {
 		setNewRect(calcNewRect(rect, coordsOfCorner, typeCorner));
-	}, [coordsOfCorner, setCoordsOfCorner]);
+	}, [coordsOfCorner, rect, typeCorner]);
 };

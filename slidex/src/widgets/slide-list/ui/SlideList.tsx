@@ -14,7 +14,6 @@ import { Id } from '../../../shared/model/id/Id';
 import { TextButton } from '../../../shared/ui/textButton';
 import { SCALE_X, SCALE_Y } from '../lib/consts';
 import styles from './slideList.module.css';
-import { Rect } from '../../../shared/model/geometry/rect/model/types';
 
 type SlideListProps = {
 	slideOrder: Array<Id>;
@@ -25,7 +24,7 @@ type SlideListProps = {
 export const SlideList = (props: SlideListProps) => {
 	const { slideOrder, slideList, selectedSlides } = props;
 	const slidesRef = useRef<HTMLDivElement>(null);
-	const [slideCoords, setCoordsSlide] = useState<Rect>({ x: 0, y: 0, width: 0, height: 0 });
+	const [slideCoords, setCoordsSlide] = useState({ x: 0, y: 0 });
 
 	let isSelected: boolean = false;
 

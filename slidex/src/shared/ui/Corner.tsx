@@ -3,18 +3,20 @@ import { useResize } from '../lib/useResize';
 import styles from './corner.module.css';
 import { TCorner } from '../model/corner/corner';
 import { Rect } from '../model/geometry/rect/model/types';
+import { Id } from '../model/id/Id';
 
 type PropsCorner = {
+	idRect: Id;
 	type: TCorner;
 	rect: Rect;
 	rectEl: MutableRefObject<HTMLDivElement | null>;
-	updateDataRect?: (x: number, y: number, width: number, height: number) => void;
+	updateDataRect?: (idObj: Id, newRect: Rect) => void;
 };
 
 export const MARGIN_CORNER = 10;
 
 export const Corner = (props: PropsCorner) => {
-	const { type, rectEl, rect, updateDataRect } = props;
+	const { type, rectEl, rect, updateDataRect, idRect } = props;
 	const cornerRef = useRef(null);
 
 	let style: string = '';
@@ -48,17 +50,13 @@ export const Corner = (props: PropsCorner) => {
 			break;
 	}
 
-	const onEnd = (newRect: Rect) => {
-		if (!updateDataRect) return;
-		updateDataRect(newRect.x, newRect.y, newRect.width, newRect.height);
-	};
-
 	useResize({
 		rectEl: rectEl,
 		typeCorner: type,
 		cornerEl: cornerRef,
 		rect: rect,
-		updateRectOnEnd: onEnd,
+		updateRectOnEnd: updateDataRect,
+		idRect: idRect,
 	});
 
 	return <div className={style} ref={cornerRef} />;

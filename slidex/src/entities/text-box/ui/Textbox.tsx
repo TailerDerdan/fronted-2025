@@ -1,8 +1,10 @@
+import { MutableRefObject, useEffect, useRef, useState } from 'react';
 import { Rect } from '../../../shared/model/geometry/rect/model/types';
 import { RectView } from '../../../shared/model/geometry/rect/ui/rect';
 import { Id } from '../../../shared/model/id/Id';
-import { Text, TextBox } from '../model/types';
-import { TextView } from './text';
+import { TextBox } from '../model/types';
+import { InfoAboutRect } from '../../../shared/model/setterOfCoords/setterOfCoords';
+// import { TextView } from './Text';
 
 type TextboxProps = TextBox & {
 	scaleX: number;
@@ -11,14 +13,41 @@ type TextboxProps = TextBox & {
 	id: Id;
 	isSelected?: boolean;
 	handleUpdateRect?: (idObj: Id, newRect: Rect) => void;
+	arrOfInfoObj?: MutableRefObject<Array<InfoAboutRect>>;
 };
 
 export const TextboxView = (props: TextboxProps) => {
-	const { texts, rect, alignment, scaleX, scaleY, onClick, id, isSelected, handleUpdateRect } = props;
+	const { rect, alignment, scaleX, scaleY, onClick, id, isSelected, handleUpdateRect, arrOfInfoObj } =
+		props;
+	const refOnRichText = useRef<HTMLDivElement>(null);
+	const [stateEditing, setStateEditing] = useState(false);
 
-	const renderedTexts = texts.map((elem: Text) => (
-		<TextView key={elem.id} content={elem.content} id={elem.id} font={elem.font} scaleX={scaleX} />
-	));
+	// console.log(texts);
+
+	// const renderedTexts = texts.map((elem: Text) => (
+	// 	<TextView key={elem.id} content={elem.content} id={elem.id} font={elem.font} scaleX={scaleX} />
+	// ));
+
+	useEffect(() => {
+		if (refOnRichText.current) {
+			// console.log(refOnRichText.current.children);
+			// console.log(refOnRichText.current);
+		}
+	});
+
+	const handleDoubleClick = () => {
+		setStateEditing(true);
+		if (refOnRichText.current) {
+			refOnRichText.current.focus();
+		}
+	};
+
+	const handleOnBlur = () => {
+		setStateEditing(false);
+		if (refOnRichText.current) {
+			refOnRichText.current.blur();
+		}
+	};
 
 	return (
 		<RectView
@@ -29,13 +58,13 @@ export const TextboxView = (props: TextboxProps) => {
 			onClick={onClick}
 			id={id}
 			isSelected={isSelected}
-			dispatchUpdateObject={(newX: number, newY: number, width: number, height: number) => {
-				if (handleUpdateRect) {
-					handleUpdateRect(id, { width: width, height: height, x: newX, y: newY });
-				}
-			}}
+			dispatchUpdateObject={handleUpdateRect}
+			stateEditing={stateEditing}
+			handleDoubleClick={handleDoubleClick}
+			handleOnBlur={handleOnBlur}
+			arrOfInfoObj={arrOfInfoObj}
 		>
-			{renderedTexts}
+			<div contentEditable="true" ref={refOnRichText}></div>
 		</RectView>
 	);
 };

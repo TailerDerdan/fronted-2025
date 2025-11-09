@@ -8,7 +8,11 @@ import { dispatch, editor } from '../model/editor';
 export const handleDelete = (event: KeyboardEvent) => {
 	const target = event.target as HTMLElement;
 
-	if (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA') {
+	if (
+		target.tagName === 'INPUT' ||
+		target.tagName === 'TEXTAREA' ||
+		target.getAttribute('contentEditable') == 'true'
+	) {
 		return;
 	}
 

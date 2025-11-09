@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import { Slide } from '../../../entities/slide/model/types';
-import { SelectImageButton } from '../lib/SelectedImageButton';
 import styles from './sidebar.module.css';
 import {
 	setBackground,
@@ -10,8 +9,9 @@ import {
 import { dispatch } from '../../../features/presentation-editor/model/editor';
 import { setFileImage } from '../../../entities/image/lib/image';
 import { Image } from '../../../entities/image/model/types';
-import { Color } from '../../../shared/model/color/Color';
 import { Background } from '../../../shared/model/background/Background';
+import { SettingsBack } from './SettingBack';
+import { SettingsObj } from './SettingObj';
 
 type SidebarProps = {
 	currentSlide: Slide;
@@ -66,54 +66,14 @@ export const Sidebar = (props: SidebarProps) => {
 		}
 	}, [imageFileBack]);
 
-	let settingsObj;
-	if (isToggle) {
-		const obj = currentSlide.objects.get(currentSlide.selectedObj[0]);
-		if (obj && obj.type == 'image') {
-			settingsObj = (
-				<>
-					<div className={styles.fill_image}>
-						<SelectImageButton setSelectedImageUrlRef={setImageFile} />
-					</div>
-					<div className={styles.stroke}>
-						<input type="color" value={obj.borderColor} />
-					</div>
-				</>
-			);
-		} else if (obj && obj.type == 'textbox') {
-			settingsObj = <></>;
-		}
-	}
-	let settingsBack;
-	let colorOfSlide: Color = Color.WHITE;
-	if (isToggleOfBack) {
-		if (typeof currentSlide.background != 'object') {
-			colorOfSlide = currentSlide.background;
-		}
-		settingsBack = (
-			<>
-				<div className={styles.fill_back}>
-					<input
-						type="color"
-						value={colorOfSlide}
-						onChange={event => {
-							dispatch(setBackground, event.target.value);
-							event.stopPropagation();
-							event.preventDefault();
-						}}
-					/>
-				</div>
-				<div className={styles.image_back}>
-					<SelectImageButton setSelectedImageUrlRef={setImageFileBack} />
-				</div>
-			</>
-		);
-	}
+	const obj = currentSlide.objects.get(currentSlide.selectedObj[0]);
 
 	return (
 		<div className={classes}>
-			{settingsObj}
-			{settingsBack}
+			{isToggle && <SettingsObj obj={obj} setImageFile={setImageFile} />}
+			{isToggleOfBack && (
+				<SettingsBack background={currentSlide.background} setImageFileBack={setImageFileBack} />
+			)}
 		</div>
 	);
 };

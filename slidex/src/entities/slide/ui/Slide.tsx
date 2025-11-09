@@ -7,6 +7,7 @@ import { Background } from '../../../shared/model/background/Background';
 import { Id } from '../../../shared/model/id/Id';
 import { Rect } from '../../../shared/model/geometry/rect/model/types';
 import { useDragAndDrop } from '../../../shared/lib/useDragAndDrop';
+import { InfoAboutRect } from '../../../shared/model/setterOfCoords/setterOfCoords';
 
 type PropsForSlideObj = {
 	slide: Slide;
@@ -16,11 +17,20 @@ type PropsForSlideObj = {
 	onClickTextBoxView?: (id: Id, event: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
 	selectedObj?: Array<Id>;
 	handleUpdateRect?: (idObj: Id, newRect: Rect) => void;
+	arrOfInfoObj?: MutableRefObject<Array<InfoAboutRect>>;
 };
 
 export function getReactNodeObjs(props: PropsForSlideObj): Array<ReactNode> {
-	const { scaleX, scaleY, slide, onClickImageView, onClickTextBoxView, selectedObj, handleUpdateRect } =
-		props;
+	const {
+		scaleX,
+		scaleY,
+		slide,
+		onClickImageView,
+		onClickTextBoxView,
+		selectedObj,
+		handleUpdateRect,
+		arrOfInfoObj,
+	} = props;
 
 	let isSelected: boolean = false;
 
@@ -44,6 +54,7 @@ export function getReactNodeObjs(props: PropsForSlideObj): Array<ReactNode> {
 					id={elem}
 					isSelected={isSelected}
 					handleUpdateRect={handleUpdateRect}
+					arrOfInfoObj={arrOfInfoObj}
 				/>
 			);
 		}
@@ -61,6 +72,7 @@ export function getReactNodeObjs(props: PropsForSlideObj): Array<ReactNode> {
 					id={elem}
 					isSelected={isSelected}
 					handleUpdateRect={handleUpdateRect}
+					arrOfInfoObj={arrOfInfoObj}
 				/>
 			);
 		}
@@ -133,6 +145,7 @@ export const SlideView = (props: SlideProps) => {
 		}
 	}, [slideEl, slideCoords, setCoordsSlide]);
 
+	//TODO: заменить на useCallback
 	const onEnd = (newX: number, newY: number) => {
 		if (!slideEl.current) return;
 		slideEl.current.style.position = '';

@@ -1,3 +1,4 @@
+import { useRef } from 'react';
 import {
 	addSelectedObj,
 	clearSelectionObjs,
@@ -12,6 +13,7 @@ import { Id } from '../../../shared/model/id/Id';
 import { TextButton } from '../../../shared/ui/textButton';
 import { SCALE_X, SCALE_Y } from '../lib/consts';
 import styles from './workspace.module.css';
+import { InfoAboutRect } from '../../../shared/model/setterOfCoords/setterOfCoords';
 
 type WorkspaceProps = {
 	slide: Slide;
@@ -21,6 +23,7 @@ type WorkspaceProps = {
 
 export const Workspace = (props: WorkspaceProps) => {
 	const { slide, setIsToggleOfBack, isToggleOfBack } = props;
+	const arrOfInfoObj = useRef<Array<InfoAboutRect>>([]);
 
 	const handleClickTextBox = (idObj: Id, event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
 		if (event.ctrlKey || event.shiftKey) {
@@ -50,6 +53,7 @@ export const Workspace = (props: WorkspaceProps) => {
 		onClickTextBoxView: handleClickTextBox,
 		selectedObj: slide.selectedObj,
 		handleUpdateRect: handleUpdateRect,
+		arrOfInfoObj: arrOfInfoObj,
 	});
 
 	const styleSlide = slide ? getStyleBackground(slide.background) : {};

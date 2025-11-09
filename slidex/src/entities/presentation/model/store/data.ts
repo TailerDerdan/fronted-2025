@@ -19,7 +19,7 @@ slideMaker = addSlide(slideMaker);
 const rect = createRect(600, 400, 500, 200);
 const rectForImage = createRect(100, 400, 500, 500);
 let textbox = createTextBox(rect);
-const fontForHeader = createFont('montserrat', 10, Color.RED, true, false, false);
+const fontForHeader = createFont('montserrat', 30, Color.RED, true, false, false);
 textbox = addTextInTextBox('1 заголовок презентации', fontForHeader, textbox);
 
 slideMaker = setSelectedSlide(slideMaker, 0);

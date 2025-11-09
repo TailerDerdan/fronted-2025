@@ -1,5 +1,6 @@
 import { MutableRefObject, useEffect, useLayoutEffect, useRef } from 'react';
 import { TCorner } from '../model/corner/corner';
+import { InfoAboutRect } from '../model/setterOfCoords/setterOfCoords';
 
 type PropsDragAndDrop = {
 	rectEl: MutableRefObject<HTMLDivElement | null>;
@@ -13,23 +14,48 @@ type PropsDragAndDrop = {
 
 	originalStyle?: MutableRefObject<{ position: string; top: string; left: string }>;
 	typeCorner?: TCorner;
+	stateEditing?: boolean;
+	arrOfInfoObj?: MutableRefObject<Array<InfoAboutRect>>;
 };
 
 export const useDragAndDrop = (props: PropsDragAndDrop) => {
-	const { rectEl, rectCoords, setCoordsRect, isSlide, isObjOnSlideBar, onEnd, originalStyle, typeCorner } =
-		props;
+	const {
+		rectEl,
+		rectCoords,
+		setCoordsRect,
+		isSlide,
+		isObjOnSlideBar,
+		onEnd,
+		originalStyle,
+		typeCorner,
+		stateEditing,
+		arrOfInfoObj,
+	} = props;
 
 	const startsCoord = useRef({ x: 0, y: 0 });
+	const initialCoords = useRef<Array<{ x: number; y: number }>>([]);
 
 	useLayoutEffect(() => {
-		if (rectEl?.current) {
-			rectEl.current.style.left = `${rectCoords.x}px`;
-			rectEl.current.style.top = `${rectCoords.y}px`;
+		if (arrOfInfoObj) {
+			arrOfInfoObj.current.forEach(elem => {
+				if (elem.refObj.current && elem.coordsObj) {
+					if (!isNaN(elem.coordsObj.x) && !isNaN(elem.coordsObj.y)) {
+						elem.refObj.current.style.left = `${elem.coordsObj.x}px`;
+						elem.refObj.current.style.top = `${elem.coordsObj.y}px`;
+					}
+				}
+			});
+		} else {
+			if (rectEl?.current && !isNaN(rectCoords.x) && !isNaN(rectCoords.y)) {
+				rectEl.current.style.left = `${rectCoords.x}px`;
+				rectEl.current.style.top = `${rectCoords.y}px`;
+			}
 		}
-	}, [rectEl, rectCoords, setCoordsRect]);
+	}, [rectEl, rectCoords, setCoordsRect, arrOfInfoObj]);
 
 	useEffect(() => {
 		const onDrag = (event: MouseEvent) => {
+			if (stateEditing) return;
 			if (event.defaultPrevented || isObjOnSlideBar) return;
 			event.preventDefault();
 			if (rectEl?.current) {
@@ -41,9 +67,14 @@ export const useDragAndDrop = (props: PropsDragAndDrop) => {
 					};
 				}
 
-				console.log(rectCoords, 'zdes jmem');
-
 				startsCoord.current = { x: event.pageX, y: event.pageY };
+
+				if (arrOfInfoObj) {
+					initialCoords.current = arrOfInfoObj.current.map(elem => ({
+						x: elem.coordsObj.x,
+						y: elem.coordsObj.y,
+					}));
+				}
 
 				if (isSlide) {
 					rectEl.current.style.position = 'relative';
@@ -55,10 +86,35 @@ export const useDragAndDrop = (props: PropsDragAndDrop) => {
 
 			const onDragging = (event: MouseEvent) => {
 				if (isObjOnSlideBar || !rectEl.current) return;
-				const newX = rectCoords.x - startsCoord.current.x + event.pageX;
-				const newY = rectCoords.y - startsCoord.current.y + event.pageY;
 
-				console.log(newX, newY, 'zdes peretaskivaem');
+				const deltaX = event.pageX - startsCoord.current.x;
+				const deltaY = event.pageY - startsCoord.current.y;
+
+				if (isNaN(deltaX) || isNaN(deltaY)) {
+					console.error('invalid:', deltaX, deltaY);
+					return;
+				}
+
+				console.log(rectEl.current);
+
+				if (arrOfInfoObj) {
+					arrOfInfoObj.current.forEach((elem, index) => {
+						const initial = initialCoords.current[index];
+						if (initial) {
+							const newX = initial.x + deltaX;
+							const newY = initial.y + deltaY;
+
+							if (!isNaN(newX) && !isNaN(newY)) {
+								elem.setCoordsObj({ x: newX, y: newY });
+							}
+						}
+					});
+					return;
+				}
+				const newX = rectCoords.x + deltaX;
+				const newY = rectCoords.y + deltaY;
+
+				if (isNaN(newX) || isNaN(newY)) return;
 
 				if (typeCorner) {
 					if (
@@ -91,8 +147,32 @@ export const useDragAndDrop = (props: PropsDragAndDrop) => {
 
 				if (rectEl?.current) rectEl.current.removeEventListener('mousedown', onDrag);
 
-				const newX = rectCoords.x - startsCoord.current.x + event.pageX;
-				const newY = rectCoords.y - startsCoord.current.y + event.pageY;
+				const deltaX = event.pageX - startsCoord.current.x;
+				const deltaY = event.pageY - startsCoord.current.y;
+
+				if (isNaN(deltaX) || isNaN(deltaY)) {
+					console.error('invalid:', deltaX, deltaY);
+					return;
+				}
+
+				if (arrOfInfoObj) {
+					arrOfInfoObj.current.forEach((elem, index) => {
+						const initial = initialCoords.current[index];
+						if (initial) {
+							const newX = initial.x + deltaX;
+							const newY = initial.y + deltaY;
+							if (!isNaN(newX) && !isNaN(newY)) {
+								elem.onEnd(newX, newY);
+							}
+						}
+					});
+					return;
+				}
+
+				const newX = rectCoords.x + deltaX;
+				const newY = rectCoords.y + deltaY;
+
+				if (isNaN(newX) || isNaN(newY)) return;
 
 				if (isSlide) {
 					if (rectEl.current) {
