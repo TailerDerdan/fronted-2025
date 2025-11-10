@@ -43,6 +43,8 @@ export const RectView = (props: RectProps) => {
 	const [coords, setCoords] = useState({ x: rect.x, y: rect.y });
 	const rectRef = useRef({ ...rect });
 
+	console.log(rect, isSelected);
+
 	useEffect(() => {
 		rectRef.current = rect;
 	}, [rect]);
@@ -84,7 +86,7 @@ export const RectView = (props: RectProps) => {
 		} else {
 			setCoords({ x: rectRef.current.x, y: rectRef.current.y });
 		}
-	}, [scaleX, scaleY, onClick]);
+	}, [rect, scaleX, scaleY, onClick]);
 
 	useEffect(() => {
 		if (!arrOfInfoObj || !rectEl) return;

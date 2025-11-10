@@ -192,9 +192,7 @@ export const useResize = (props: PropsResize) => {
 	const stableOnEnd = useCallback(
 		(newX: number, newY: number) => {
 			if (!updateRectOnEnd) return;
-			console.log(rect);
 			const updatedRect = calcNewRect(rect, { x: newX, y: newY }, typeCorner);
-			console.log(updatedRect);
 			updateRectOnEnd(idRect, updatedRect);
 			setNewRect(updatedRect);
 			setCoordsOfCorner({ x: 0, y: 0 });

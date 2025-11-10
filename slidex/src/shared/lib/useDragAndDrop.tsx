@@ -95,8 +95,6 @@ export const useDragAndDrop = (props: PropsDragAndDrop) => {
 					return;
 				}
 
-				console.log(rectEl.current);
-
 				if (arrOfInfoObj) {
 					arrOfInfoObj.current.forEach((elem, index) => {
 						const initial = initialCoords.current[index];
