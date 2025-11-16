@@ -35,7 +35,7 @@ export function getReactNodeObjs(props: PropsForSlideObj): Array<ReactNode> {
 	let isSelected: boolean = false;
 
 	const objsOnSlide: Array<ReactNode> = slide.layersOfSlide.map((elem: string) => {
-		const objOnSlide = slide.objects.get(elem);
+		const objOnSlide = slide.objects[elem];
 		isSelected = false;
 		if (selectedObj && selectedObj.indexOf(elem) >= 0) {
 			isSelected = true;

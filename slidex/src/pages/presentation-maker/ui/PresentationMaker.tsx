@@ -1,50 +1,29 @@
-import { useState } from 'react';
-import { getCurrentSlide } from '../../../entities/presentation/lib/presentation';
-import { Presentation } from '../../../entities/presentation/model/types';
+import { useEffect, useState } from 'react';
 import { Header } from '../../../widgets/header/ui/Header';
 import { Sidebar } from '../../../widgets/sidebar/ui/Sidebar';
 import { SlideList } from '../../../widgets/slide-list/ui/SlideList';
-import { EmptyWorkspace } from '../../../widgets/workspace/ui/EmptyWorkspace';
-import { Workspace } from '../../../widgets/workspace/ui/Workspace';
 import styles from './presentation.module.css';
+import { MainWorkspace } from '../../../widgets/workspace/ui/MainWorkspace';
+import { useDeleteHandler } from '../../../features/presentation-editor/lib/handleDelete';
 
-type PresentationProps = {
-	pres: Presentation;
-};
-
-export const PresentationMaker = (props: PresentationProps) => {
-	const { pres } = props;
-	const currentSlide = getCurrentSlide(pres);
+export const PresentationMaker = () => {
 	const [isToggleOfBack, setIsToggleOfBack] = useState(false);
+	const handleDelete = useDeleteHandler();
 
-	let workspace;
-	if (currentSlide) {
-		workspace = (
-			<Workspace
-				slide={currentSlide}
-				isToggleOfBack={isToggleOfBack}
-				setIsToggleOfBack={setIsToggleOfBack}
-			/>
-		);
-	} else {
-		workspace = <EmptyWorkspace />;
-	}
-
-	console.log(isToggleOfBack);
+	useEffect(() => {
+		window.addEventListener('keydown', handleDelete);
+		return () => {
+			window.removeEventListener('keydown', handleDelete);
+		};
+	}, [handleDelete]);
 
 	return (
 		<div className={styles.presentation}>
-			<Header name={pres.name} />
-
-			{currentSlide ? <Sidebar currentSlide={currentSlide} isToggleOfBack={isToggleOfBack} /> : <></>}
-
+			<Header />
+			<Sidebar isToggleOfBack={isToggleOfBack} />
 			<div className={styles.presentation__workfield}>
-				<SlideList
-					slideList={pres.slideList}
-					slideOrder={pres.slideOrder}
-					selectedSlides={pres.selectedSlides}
-				/>
-				{workspace}
+				<SlideList />
+				<MainWorkspace isToggleOfBack={isToggleOfBack} setIsToggleOfBack={setIsToggleOfBack} />
 			</div>
 		</div>
 	);

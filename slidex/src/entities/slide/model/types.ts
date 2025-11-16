@@ -1,15 +1,11 @@
 import { Background } from '../../../shared/model/background/Background';
 import { Id } from '../../../shared/model/id/Id';
-import { Image } from '../../image/model/types';
-import { TextBox } from '../../text-box/model/types';
-
-type SlideObj = Image | TextBox;
+import { SlideObj } from '../../../shared/model/objOnSlide';
 
 type Slide = {
-	objects: Map<Id, SlideObj>;
+	objects: Record<Id, SlideObj>;
 	layersOfSlide: Array<Id>;
 	background: Background;
-	selectedObj: Array<Id>;
 };
 
-export type { Slide, SlideObj };
+export type { Slide };

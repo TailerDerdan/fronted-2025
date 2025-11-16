@@ -2,8 +2,8 @@ import { MutableRefObject, useEffect, useRef, useState } from 'react';
 import { Rect } from '../../../shared/model/geometry/rect/model/types';
 import { RectView } from '../../../shared/model/geometry/rect/ui/rect';
 import { Id } from '../../../shared/model/id/Id';
-import { TextBox } from '../model/types';
 import { InfoAboutRect } from '../../../shared/model/setterOfCoords/setterOfCoords';
+import { TextBox } from '../../../shared/model/textbox/types';
 // import { TextView } from './Text';
 
 type TextboxProps = TextBox & {

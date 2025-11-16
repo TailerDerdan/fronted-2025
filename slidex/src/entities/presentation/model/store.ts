@@ -1,0 +1,22 @@
+import { configureStore } from '@reduxjs/toolkit';
+import slidesReducer from './slideSlice';
+import selectionReducer from './selectionSlice';
+import presentationReducer from './presentationSlice';
+import { compositeMiddleware } from '../lib/compositeMiddleware';
+import { TypedUseSelectorHook, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
+import { RootState } from './rootState';
+
+export const store = configureStore({
+	reducer: {
+		slides: slidesReducer,
+		selection: selectionReducer,
+		presentation: presentationReducer,
+	},
+	middleware: getDefaultMiddleware => getDefaultMiddleware().concat(compositeMiddleware),
+});
+
+export type AppDispatch = typeof store.dispatch;
+
+export const useAppDispatch = () => useDispatch<AppDispatch>();
+export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;

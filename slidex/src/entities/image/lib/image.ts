@@ -6,7 +6,7 @@ import {
 	setXRect,
 	setYRect,
 } from '../../../shared/model/geometry/rect/model/types';
-import { Image } from '../model/types';
+import { Image } from '../../../shared/model/image/types';
 
 function createImage(src: string, rect: Rect): Image {
 	return {
@@ -28,7 +28,6 @@ function setFileImage(file: File, image: Image): Image {
 	return {
 		...image,
 		src: window.URL.createObjectURL(file),
-		file: file,
 	};
 }
 

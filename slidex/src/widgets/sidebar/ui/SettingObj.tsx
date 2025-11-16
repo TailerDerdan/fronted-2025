@@ -1,4 +1,4 @@
-import { SlideObj } from '../../../entities/slide/model/types';
+import { SlideObj } from '../../../shared/model/objOnSlide';
 import { SelectImageButton } from '../lib/SelectedImageButton';
 import styles from './sidebar.module.css';
 

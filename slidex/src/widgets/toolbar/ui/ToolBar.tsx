@@ -1,7 +1,6 @@
+import { useContext } from 'react';
 import { createImage } from '../../../entities/image/lib/image';
-import { addObjOnCurrentSlide } from '../../../entities/presentation/lib/presentation';
 import { createTextBox } from '../../../entities/text-box/lib/textbox';
-import { dispatch } from '../../../features/presentation-editor/model/editor';
 import { createRect } from '../../../shared/model/geometry/rect/model/types';
 import { IconButton } from '../../../shared/ui/iconButton';
 import {
@@ -13,14 +12,16 @@ import {
 	UndoIcon,
 } from '../lib/iconComponent';
 import styles from './toolbar.module.css';
+import { PresActionContext } from '../../../shared/lib/presentationContext';
 
 export const Toolbar = () => {
+	const actions = useContext(PresActionContext);
 	return (
 		<div className={styles.toolbar}>
 			<div className={styles.wrapper_button_icon}>
 				<IconButton
 					onClick={() => {
-						dispatch(addObjOnCurrentSlide, createTextBox(createRect(500, 100, 100, 100)));
+						actions?.addObjOnCurrentSlide(createTextBox(createRect(500, 100, 100, 100)));
 					}}
 					className="icon_toolbar"
 					icon={<TextIcon />}
@@ -31,7 +32,7 @@ export const Toolbar = () => {
 			<div className={styles.wrapper_button_icon}>
 				<IconButton
 					onClick={() => {
-						dispatch(addObjOnCurrentSlide, createImage('', createRect(100, 100, 100, 100)));
+						actions?.addObjOnCurrentSlide(createImage('', createRect(100, 100, 100, 100)));
 					}}
 					className="icon_toolbar"
 					icon={<ImageIcon />}

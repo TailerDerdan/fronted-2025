@@ -1,6 +1,6 @@
-import { setNamePresentation } from '../../../entities/presentation/lib/presentation';
-import { dispatch } from '../../../features/presentation-editor/model/editor';
+import { useContext } from 'react';
 import styles from './presentation-name.module.css';
+import { PresActionContext } from '../../../shared/lib/presentationContext';
 
 type PresentationNameViewProps = {
 	name: string;
@@ -8,6 +8,8 @@ type PresentationNameViewProps = {
 
 export const PresentationNameView = (props: PresentationNameViewProps) => {
 	const { name } = props;
+
+	const actions = useContext(PresActionContext);
 
 	return (
 		<div className={styles.presName}>
@@ -17,7 +19,7 @@ export const PresentationNameView = (props: PresentationNameViewProps) => {
 				defaultValue={name}
 				className={styles.presName__input}
 				onChange={e => {
-					dispatch(setNamePresentation, e.target.value);
+					actions?.setNamePresentation(e.target.value);
 				}}
 			/>
 		</div>

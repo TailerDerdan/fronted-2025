@@ -1,19 +1,14 @@
-import { useRef } from 'react';
-import {
-	addSelectedObj,
-	clearSelectionObjs,
-	setSelectedObj,
-	updateRectObj,
-} from '../../../entities/presentation/lib/presentation';
+import { useContext, useRef } from 'react';
 import { Slide } from '../../../entities/slide/model/types';
 import { getReactNodeObjs, getStyleBackground } from '../../../entities/slide/ui/Slide';
-import { dispatch } from '../../../features/presentation-editor/model/editor';
 import { Rect } from '../../../shared/model/geometry/rect/model/types';
 import { Id } from '../../../shared/model/id/Id';
 import { TextButton } from '../../../shared/ui/textButton';
 import { SCALE_X, SCALE_Y } from '../lib/consts';
 import styles from './workspace.module.css';
 import { InfoAboutRect } from '../../../shared/model/setterOfCoords/setterOfCoords';
+import { PresActionContext } from '../../../shared/lib/presentationContext';
+import { useAppSelector } from '../../../entities/presentation/model/store';
 
 type WorkspaceProps = {
 	slide: Slide;
@@ -23,26 +18,28 @@ type WorkspaceProps = {
 
 export const Workspace = (props: WorkspaceProps) => {
 	const { slide, setIsToggleOfBack, isToggleOfBack } = props;
+	const { selectedObj } = useAppSelector(state => state.selection);
 	const arrOfInfoObj = useRef<Array<InfoAboutRect>>([]);
+	const actions = useContext(PresActionContext);
 
 	const handleClickTextBox = (idObj: Id, event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
 		if (event.ctrlKey || event.shiftKey) {
-			dispatch(addSelectedObj, idObj);
+			actions?.addSelectedObj(idObj);
 		} else {
-			dispatch(setSelectedObj, idObj);
+			actions?.setSelectedObj(idObj);
 		}
 	};
 
 	const handleClickImage = (idObj: Id, event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
 		if (event.ctrlKey || event.shiftKey) {
-			dispatch(addSelectedObj, idObj);
+			actions?.addSelectedObj(idObj);
 		} else {
-			dispatch(setSelectedObj, idObj);
+			actions?.setSelectedObj(idObj);
 		}
 	};
 
 	const handleUpdateRect = (idObj: Id, newRect: Rect) => {
-		dispatch(updateRectObj, { idObj: idObj, newRect: newRect });
+		actions?.updateRectObj(idObj, newRect);
 	};
 
 	const objsOnSlide = getReactNodeObjs({
@@ -51,7 +48,7 @@ export const Workspace = (props: WorkspaceProps) => {
 		scaleY: SCALE_Y,
 		onClickImageView: handleClickImage,
 		onClickTextBoxView: handleClickTextBox,
-		selectedObj: slide.selectedObj,
+		selectedObj: selectedObj,
 		handleUpdateRect: handleUpdateRect,
 		arrOfInfoObj: arrOfInfoObj,
 	});
@@ -67,7 +64,7 @@ export const Workspace = (props: WorkspaceProps) => {
 						setIsToggleOfBack(!isToggleOfBack);
 					}
 
-					dispatch(clearSelectionObjs);
+					actions?.clearSelectionObjs();
 					event.stopPropagation();
 					event.isDefaultPrevented();
 				}}
@@ -79,7 +76,7 @@ export const Workspace = (props: WorkspaceProps) => {
 						if (event.ctrlKey) {
 							setIsToggleOfBack(!isToggleOfBack);
 						}
-						dispatch(clearSelectionObjs);
+						actions?.clearSelectionObjs();
 						event.stopPropagation();
 						event.isDefaultPrevented();
 					}}

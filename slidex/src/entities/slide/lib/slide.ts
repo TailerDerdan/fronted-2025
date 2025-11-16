@@ -1,23 +1,22 @@
 import { Picture } from '../../../shared/model/picture/Picture';
-import { Slide, SlideObj } from '../model/types';
+import { Slide } from '../model/types';
 import { generateId, Id } from '../../../shared/model/id/Id';
 import { Color } from '../../../shared/model/color/Color';
-import { Image } from '../../image/model/types';
-import { TextBox } from '../../text-box/model/types';
+import { Image } from '../../../shared/model/image/types';
+import { TextBox } from '../../../shared/model/textbox/types';
 
 function createSlide(): Slide {
 	return {
-		objects: new Map<Id, SlideObj>(),
+		objects: {},
 		layersOfSlide: [],
 		background: Color.WHITE,
-		selectedObj: [],
 	};
 }
 
 function addObjectInSlide(slide: Slide, object: Image | TextBox): Slide {
 	const newSlide = { ...slide };
 	const id = generateId();
-	newSlide.objects.set(id, object);
+	newSlide.objects[id] = object;
 	newSlide.layersOfSlide.push(id);
 	return newSlide;
 }
@@ -27,9 +26,8 @@ function deleteObjectInSlide(slide: Slide, id: Id | undefined): Slide {
 	if (!id) {
 		return newSlide;
 	}
-	newSlide.objects.delete(id);
+	delete newSlide.objects[id];
 	newSlide.layersOfSlide.splice(newSlide.layersOfSlide.indexOf(id), 1);
-	newSlide.selectedObj.splice(newSlide.layersOfSlide.indexOf(id), 1);
 	return newSlide;
 }
 

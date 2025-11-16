@@ -2,10 +2,10 @@ import { Id } from '../../../shared/model/id/Id';
 import { Slide } from '../../slide/model/types';
 
 type Presentation = {
-	slideList: Map<Id, Slide>;
+	slideList: Record<Id, Slide>;
 	slideOrder: Array<Id>;
 	selectedSlides: Array<Id>; //TODO: currentSlide = selectedSlide[0]
-	currentSlide: Id | null;
+	selectedObjs: Array<Id>;
 	name: string;
 };
 

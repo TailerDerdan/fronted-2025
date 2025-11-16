@@ -1,9 +1,9 @@
 import { CSSProperties, MutableRefObject } from 'react';
 import { RectView } from '../../../shared/model/geometry/rect/ui/rect';
-import { Image } from '../model/types';
 import { Id } from '../../../shared/model/id/Id';
 import { Rect } from '../../../shared/model/geometry/rect/model/types';
 import { InfoAboutRect } from '../../../shared/model/setterOfCoords/setterOfCoords';
+import { Image } from '../../../shared/model/image/types';
 
 type ImageProps = Image & {
 	scaleX: number;

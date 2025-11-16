@@ -1,47 +1,36 @@
-import { useRef, useState } from 'react';
-import {
-	addSelectedSlide,
-	addSlide,
-	clearSelectionObjs,
-	clearSelectionSlides,
-	setPositionSlide,
-	setSelectedSlide,
-} from '../../../entities/presentation/lib/presentation';
-import { Slide } from '../../../entities/slide/model/types';
+import { useContext, useRef, useState } from 'react';
 import { SlideView } from '../../../entities/slide/ui/Slide';
-import { dispatch } from '../../../features/presentation-editor/model/editor';
 import { Id } from '../../../shared/model/id/Id';
 import { TextButton } from '../../../shared/ui/textButton';
 import { SCALE_X, SCALE_Y } from '../lib/consts';
 import styles from './slideList.module.css';
+import { PresActionContext } from '../../../shared/lib/presentationContext';
+import { useAppSelector } from '../../../entities/presentation/model/store';
 
-type SlideListProps = {
-	slideOrder: Array<Id>;
-	slideList: Map<Id, Slide>;
-	selectedSlides: Array<Id>;
-};
-
-export const SlideList = (props: SlideListProps) => {
-	const { slideOrder, slideList, selectedSlides } = props;
+export const SlideList = () => {
+	const { selection, slides } = useAppSelector(state => state);
+	const { slideList, slideOrder } = slides;
+	const { selectedSlides } = selection;
 	const slidesRef = useRef<HTMLDivElement>(null);
 	const [slideCoords, setCoordsSlide] = useState({ x: 0, y: 0 });
+	const actions = useContext(PresActionContext);
 
 	let isSelected: boolean = false;
 
 	const slideListReactNode = slideOrder.map((id: Id, index: number) => {
-		const slide = slideList.get(id);
+		const slide = slideList[id];
 		if (slide) {
 			isSelected = false;
 			if (selectedSlides.indexOf(id) >= 0) {
 				isSelected = true;
 			}
 			const handleOnClick = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-				dispatch(clearSelectionObjs);
+				actions?.clearSelectionObjs();
 				if (event.ctrlKey) {
-					dispatch(addSelectedSlide, index);
+					actions?.addSelectedSlide(id);
 				} else {
-					dispatch(clearSelectionSlides);
-					dispatch(setSelectedSlide, index);
+					actions?.clearSelectionSlides();
+					actions?.setSelectedSlide(id);
 				}
 			};
 			return (
@@ -56,7 +45,7 @@ export const SlideList = (props: SlideListProps) => {
 					refOnSlides={slidesRef}
 					indexOfSlide={index}
 					updateOrder={(from: number, to: number) => {
-						dispatch(setPositionSlide, { fromIndex: from, toIndex: to });
+						actions?.setPositionSlide(from, to);
 					}}
 					handleOnClick={handleOnClick}
 				/>
@@ -70,10 +59,7 @@ export const SlideList = (props: SlideListProps) => {
 				<div className={styles.button_add_slide}>
 					<TextButton
 						onClick={() => {
-							dispatch(addSlide);
-							if (slideList.size == 1) {
-								dispatch(setSelectedSlide, 0);
-							}
+							actions?.addSlide();
 						}}
 						className="text_add_slide"
 					>

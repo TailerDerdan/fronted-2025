@@ -1,4 +1,4 @@
-import { Text } from '../model/types';
+import { Text } from '../../../shared/model/textbox/types';
 
 type TextProps = Text & {
 	scaleX: number;

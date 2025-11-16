@@ -1,15 +1,15 @@
-import { addSlide, setSelectedSlide } from '../../../entities/presentation/lib/presentation';
-import { dispatch } from '../../../features/presentation-editor/model/editor';
+import { useContext } from 'react';
 import styles from './workspace.module.css';
+import { PresActionContext } from '../../../shared/lib/presentationContext';
 
 export const EmptyWorkspace = () => {
+	const actions = useContext(PresActionContext);
 	return (
 		<div className={styles.wrapper_workspace}>
 			<div
 				className={styles.workspace}
 				onClick={event => {
-					dispatch(addSlide);
-					dispatch(setSelectedSlide, 0);
+					actions?.addSlide();
 					event.stopPropagation();
 					event.isDefaultPrevented();
 				}}
@@ -17,8 +17,7 @@ export const EmptyWorkspace = () => {
 				<div
 					className={styles.visble_workspace}
 					onClick={event => {
-						dispatch(addSlide);
-						dispatch(setSelectedSlide, 0);
+						actions?.addSlide();
 						event.stopPropagation();
 						event.isDefaultPrevented();
 					}}
