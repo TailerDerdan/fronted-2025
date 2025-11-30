@@ -15,7 +15,7 @@ export const SettingsBack = (props: PropsSettingsBack) => {
 
 	const actions = useContext(PresActionContext);
 
-	let colorOfSlide: Color = Color.WHITE;
+	let colorOfSlide: Color = '#fff';
 	if (typeof background != 'object') {
 		colorOfSlide = background;
 	}

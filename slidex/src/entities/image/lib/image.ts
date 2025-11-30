@@ -1,4 +1,3 @@
-import { Color } from '../../../shared/model/color/Color';
 import {
 	Rect,
 	setHeightRect,
@@ -13,7 +12,7 @@ function createImage(src: string, rect: Rect): Image {
 		type: 'image',
 		src: src,
 		rect: rect,
-		borderColor: Color.CORAL,
+		borderColor: '',
 	};
 }
 

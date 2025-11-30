@@ -3,7 +3,7 @@ import { Rect } from '../model/types';
 import { Alignment } from '../../../alignment/Alignment';
 import { Id } from '../../../id/Id';
 import styles from './rect.module.css';
-import { useDragAndDrop } from '../../../../lib/useDragAndDrop';
+import { OnEndArgs, useDragAndDrop } from '../../../../lib/useDragAndDrop';
 import { InfoAboutRect } from '../../../setterOfCoords/setterOfCoords';
 import { Corner } from '../../../../ui/Corner';
 
@@ -43,8 +43,6 @@ export const RectView = (props: RectProps) => {
 	const [coords, setCoords] = useState({ x: rect.x, y: rect.y });
 	const rectRef = useRef({ ...rect });
 
-	console.log(rect, isSelected);
-
 	useEffect(() => {
 		rectRef.current = rect;
 	}, [rect]);
@@ -54,17 +52,19 @@ export const RectView = (props: RectProps) => {
 	}, []);
 
 	const stableOnEnd = useCallback(
-		(newX: number, newY: number) => {
+		(args: OnEndArgs) => {
+			if ('newPos' in args) return;
+			const { x, y } = args;
 			if (!dispatchUpdateObject) return;
 
-			if (isNaN(newX) || isNaN(newY) || !rect || !rect.width || !rect.height) {
-				console.error('invalid:', newX, newY);
+			if (isNaN(x) || isNaN(y) || !rect || !rect.width || !rect.height) {
+				console.error('invalid:', x, y);
 				return;
 			}
 
 			dispatchUpdateObject(id, {
-				x: newX,
-				y: newY,
+				x: x,
+				y: y,
 				width: rectRef.current.width,
 				height: rectRef.current.height,
 			});

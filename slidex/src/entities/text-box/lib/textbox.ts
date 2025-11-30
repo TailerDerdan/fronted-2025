@@ -1,5 +1,4 @@
 import { Alignment } from '../../../shared/model/alignment/Alignment';
-import { Color } from '../../../shared/model/color/Color';
 import { createFont, Font } from '../../../shared/model/font/Font';
 import {
 	Rect,
@@ -9,14 +8,14 @@ import {
 	setYRect,
 } from '../../../shared/model/geometry/rect/model/types';
 import { Id } from '../../../shared/model/id/Id';
-import { Text, TextBox } from '../model/types';
+import { Text, TextBox } from '../../../shared/model/textbox/types';
 import { createText } from './text';
 
 function createTextBox(rect: Rect): TextBox {
 	return {
 		type: 'textbox',
 		rect: rect,
-		texts: [createText('Text', createFont('Inter', 14, Color.DARKKHAKI, false, false, false))],
+		texts: [createText('Text', createFont('Inter', 14, '#000', false, false, false))],
 		alignment: Alignment.LEFT,
 	};
 }

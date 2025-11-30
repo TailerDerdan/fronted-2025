@@ -1,23 +1,28 @@
 import { Picture } from '../../../shared/model/picture/Picture';
 import { Slide } from '../model/types';
-import { generateId, Id } from '../../../shared/model/id/Id';
-import { Color } from '../../../shared/model/color/Color';
+import { Id } from '../../../shared/model/id/Id';
+import { Color, getNextDarkerColor } from '../../../shared/model/color/Color';
 import { Image } from '../../../shared/model/image/types';
 import { TextBox } from '../../../shared/model/textbox/types';
 
+const objForColor = {
+	color: '#000',
+};
+
 function createSlide(): Slide {
+	const currentColor = objForColor.color;
+	objForColor.color = getNextDarkerColor(objForColor.color, -20);
 	return {
 		objects: {},
 		layersOfSlide: [],
-		background: Color.WHITE,
+		background: currentColor,
 	};
 }
 
-function addObjectInSlide(slide: Slide, object: Image | TextBox): Slide {
+function addObjectInSlide(slide: Slide, object: Image | TextBox, idObj: Id): Slide {
 	const newSlide = { ...slide };
-	const id = generateId();
-	newSlide.objects[id] = object;
-	newSlide.layersOfSlide.push(id);
+	newSlide.objects[idObj] = object;
+	newSlide.layersOfSlide.push(idObj);
 	return newSlide;
 }
 

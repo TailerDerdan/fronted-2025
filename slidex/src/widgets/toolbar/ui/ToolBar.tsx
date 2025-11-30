@@ -13,6 +13,7 @@ import {
 } from '../lib/iconComponent';
 import styles from './toolbar.module.css';
 import { PresActionContext } from '../../../shared/lib/presentationContext';
+import { generateId } from '../../../shared/model/id/Id';
 
 export const Toolbar = () => {
 	const actions = useContext(PresActionContext);
@@ -21,7 +22,9 @@ export const Toolbar = () => {
 			<div className={styles.wrapper_button_icon}>
 				<IconButton
 					onClick={() => {
-						actions?.addObjOnCurrentSlide(createTextBox(createRect(500, 100, 100, 100)));
+						const newId = generateId();
+						actions?.addObjOnCurrentSlide(createTextBox(createRect(500, 100, 100, 100)), newId);
+						actions?.setSelectedObj(newId);
 					}}
 					className="icon_toolbar"
 					icon={<TextIcon />}
@@ -32,7 +35,9 @@ export const Toolbar = () => {
 			<div className={styles.wrapper_button_icon}>
 				<IconButton
 					onClick={() => {
-						actions?.addObjOnCurrentSlide(createImage('', createRect(100, 100, 100, 100)));
+						const newId = generateId();
+						actions?.addObjOnCurrentSlide(createImage('', createRect(100, 100, 100, 100)), newId);
+						actions?.setSelectedObj(newId);
 					}}
 					className="icon_toolbar"
 					icon={<ImageIcon />}

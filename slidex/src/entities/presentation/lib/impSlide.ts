@@ -55,26 +55,32 @@ function deleteObjsImp(
 
 function setPositionSlideImp(
 	state: WritableDraft<SlidesState>,
-	action: PayloadAction<{ fromIndex: number; toIndex: number }>,
+	action: PayloadAction<{ newPos: Array<{ fromIndex: number; toIndex: number }> }>,
 ) {
 	const { slideOrder } = state;
-	const { payload } = action;
-	const element = slideOrder[payload.fromIndex];
-	slideOrder.splice(payload.fromIndex, 1);
-	slideOrder.splice(payload.toIndex, 0, element);
+	const { newPos } = action.payload;
+
+	if (newPos.length === 0) return;
+
+	const fromIndexes = new Set(newPos.map(move => move.fromIndex));
+	const filteredOrder = slideOrder.filter((_, index) => !fromIndexes.has(index));
+
+	newPos.forEach(moving => {
+		filteredOrder.splice(moving.toIndex, 0, slideOrder[moving.fromIndex]);
+	});
+
+	state.slideOrder = filteredOrder;
 }
 
 function addObjOnCurrentSlideImp(
 	state: WritableDraft<SlidesState>,
-	action: PayloadAction<{ idSlide: Id; slideObj: SlideObj }>,
+	action: PayloadAction<{ idSlide: Id; idObj: Id; slideObj: SlideObj }>,
 ) {
 	const { slideList } = state;
-	const { idSlide, slideObj } = action.payload;
-
+	const { idSlide, slideObj, idObj } = action.payload;
 	let currentObjSlide: Slide = slideList[idSlide];
 
-	currentObjSlide = addObjectInSlide(currentObjSlide, slideObj);
-	currentObjSlide.layersOfSlide.push(idSlide);
+	currentObjSlide = addObjectInSlide(currentObjSlide, slideObj, idObj);
 	slideList[idSlide] = currentObjSlide;
 }
 

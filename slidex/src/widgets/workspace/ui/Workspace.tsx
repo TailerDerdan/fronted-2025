@@ -1,6 +1,5 @@
 import { useContext, useRef } from 'react';
 import { Slide } from '../../../entities/slide/model/types';
-import { getReactNodeObjs, getStyleBackground } from '../../../entities/slide/ui/Slide';
 import { Rect } from '../../../shared/model/geometry/rect/model/types';
 import { Id } from '../../../shared/model/id/Id';
 import { TextButton } from '../../../shared/ui/textButton';
@@ -9,6 +8,7 @@ import styles from './workspace.module.css';
 import { InfoAboutRect } from '../../../shared/model/setterOfCoords/setterOfCoords';
 import { PresActionContext } from '../../../shared/lib/presentationContext';
 import { useAppSelector } from '../../../entities/presentation/model/store';
+import { getReactNodeObjs, getStyleBackground } from '../../../entities/slide/lib/getSlideObjs';
 
 type WorkspaceProps = {
 	slide: Slide;
@@ -19,6 +19,7 @@ type WorkspaceProps = {
 export const Workspace = (props: WorkspaceProps) => {
 	const { slide, setIsToggleOfBack, isToggleOfBack } = props;
 	const { selectedObj } = useAppSelector(state => state.selection);
+
 	const arrOfInfoObj = useRef<Array<InfoAboutRect>>([]);
 	const actions = useContext(PresActionContext);
 

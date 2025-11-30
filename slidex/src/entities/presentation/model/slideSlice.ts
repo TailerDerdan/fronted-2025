@@ -41,10 +41,16 @@ const slidesSlices = createSlice({
 		deleteObjs: (state, action: PayloadAction<{ ids: Array<Id>; idSlide: Id }>) => {
 			deleteObjsImp(state, action);
 		},
-		setPositionSlide: (state, action: PayloadAction<{ fromIndex: number; toIndex: number }>) => {
+		setPositionSlide: (
+			state,
+			action: PayloadAction<{ newPos: Array<{ fromIndex: number; toIndex: number }> }>,
+		) => {
 			setPositionSlideImp(state, action);
 		},
-		addObjOnCurrentSlide: (state, action: PayloadAction<{ idSlide: Id; slideObj: SlideObj }>) => {
+		addObjOnCurrentSlide: (
+			state,
+			action: PayloadAction<{ idSlide: Id; idObj: Id; slideObj: SlideObj }>,
+		) => {
 			addObjOnCurrentSlideImp(state, action);
 		},
 		updateTextBox: (

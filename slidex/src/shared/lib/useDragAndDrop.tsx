@@ -1,6 +1,44 @@
 import { MutableRefObject, useEffect, useLayoutEffect, useRef } from 'react';
 import { TCorner } from '../model/corner/corner';
-import { InfoAboutRect } from '../model/setterOfCoords/setterOfCoords';
+import { InfoAboutRect, InfoAboutSlide } from '../model/setterOfCoords/setterOfCoords';
+
+const getCorrectPositions = (
+	infoSelectedSlides: MutableRefObject<Array<InfoAboutSlide>>,
+	totalSlidesCount: number,
+) => {
+	const sortedSelectedSlides = infoSelectedSlides.current.sort(
+		(a, b) => a.fromIndexOfSlide - b.fromIndexOfSlide,
+	);
+	const firstInsertIndex = sortedSelectedSlides[0].toIndexOfSlide;
+	const isPosAfterForFirstInsertIndex = sortedSelectedSlides[0].positionAroundOfToIndex === 'after';
+
+	const nonSelectedIndexes = Array.from({ length: totalSlidesCount }, (value, index) => index).filter(
+		index => !sortedSelectedSlides.some(slide => slide.fromIndexOfSlide === index),
+	);
+
+	let firstInsertPos = nonSelectedIndexes.indexOf(firstInsertIndex);
+	if (firstInsertPos === -1) {
+		firstInsertPos = nonSelectedIndexes.findIndex(index => index > firstInsertIndex);
+		if (firstInsertPos === -1) firstInsertPos = nonSelectedIndexes.length;
+	}
+
+	const minOriginalIndex = sortedSelectedSlides[0].fromIndexOfSlide;
+	let insertPosition = firstInsertPos;
+	if (isPosAfterForFirstInsertIndex) insertPosition++;
+
+	const newOrder = [...nonSelectedIndexes];
+
+	sortedSelectedSlides.forEach(slide => {
+		const offset = slide.fromIndexOfSlide - minOriginalIndex;
+		const newPosition = insertPosition + offset;
+
+		newOrder.splice(newPosition, 0, slide.fromIndexOfSlide);
+
+		slide.toIndexOfSlide = newPosition;
+	});
+};
+
+export type OnEndArgs = { x: number; y: number } | { newPos: Array<{ fromIndex: number; toIndex: number }> };
 
 type PropsDragAndDrop = {
 	rectEl: MutableRefObject<HTMLDivElement | null>;
@@ -10,10 +48,22 @@ type PropsDragAndDrop = {
 	isSlide: boolean;
 	isObjOnSlideBar: boolean;
 
-	onEnd: (newX: number, newY: number) => void;
+	onEnd: (args: OnEndArgs) => void;
 
-	originalStyle?: MutableRefObject<{ position: string; top: string; left: string }>;
+	handleDetectTarget?: (
+		xCoord: number,
+		yCoord: number,
+		indexOfDragSlide: number,
+		sizeOfSlides: number,
+	) => {
+		index: number;
+		position: 'before' | 'after';
+	} | null;
+	infoSelectedSlides?: MutableRefObject<Array<InfoAboutSlide>>;
+	sizeOfSlides?: number;
+
 	typeCorner?: TCorner;
+
 	stateEditing?: boolean;
 	arrOfInfoObj?: MutableRefObject<Array<InfoAboutRect>>;
 };
@@ -26,10 +76,12 @@ export const useDragAndDrop = (props: PropsDragAndDrop) => {
 		isSlide,
 		isObjOnSlideBar,
 		onEnd,
-		originalStyle,
 		typeCorner,
 		stateEditing,
 		arrOfInfoObj,
+		handleDetectTarget,
+		infoSelectedSlides,
+		sizeOfSlides,
 	} = props;
 
 	const startsCoord = useRef({ x: 0, y: 0 });
@@ -59,14 +111,6 @@ export const useDragAndDrop = (props: PropsDragAndDrop) => {
 			if (event.defaultPrevented || isObjOnSlideBar) return;
 			event.preventDefault();
 			if (rectEl?.current) {
-				if (originalStyle?.current) {
-					originalStyle.current = {
-						position: '',
-						top: `${rectCoords.y}px`,
-						left: `${rectCoords.x}px`,
-					};
-				}
-
 				startsCoord.current = { x: event.pageX, y: event.pageY };
 
 				if (arrOfInfoObj) {
@@ -76,11 +120,23 @@ export const useDragAndDrop = (props: PropsDragAndDrop) => {
 					}));
 				}
 
-				if (isSlide) {
-					rectEl.current.style.position = 'relative';
-					rectEl.current.style.zIndex = '10';
-					rectEl.current.style.left = `${rectCoords.x}px`;
-					rectEl.current.style.top = `${rectCoords.y}px`;
+				if (isSlide && infoSelectedSlides?.current) {
+					initialCoords.current = infoSelectedSlides.current.map(slide => ({
+						x: slide.coordsSlide.x,
+						y: slide.coordsSlide.y,
+					}));
+					infoSelectedSlides.current.forEach(slide => {
+						if (slide.refObj.current) {
+							slide.originalStyle.current.position = '';
+							slide.originalStyle.current.left = `${slide.coordsSlide.x}px`;
+							slide.originalStyle.current.top = `${slide.coordsSlide.y}px`;
+
+							slide.refObj.current.style.position = 'relative';
+							slide.refObj.current.style.zIndex = '10';
+							slide.refObj.current.style.left = `${slide.coordsSlide.x}px`;
+							slide.refObj.current.style.top = `${slide.coordsSlide.y}px`;
+						}
+					});
 				}
 			}
 
@@ -92,6 +148,40 @@ export const useDragAndDrop = (props: PropsDragAndDrop) => {
 
 				if (isNaN(deltaX) || isNaN(deltaY)) {
 					console.error('invalid:', deltaX, deltaY);
+					return;
+				}
+
+				if (infoSelectedSlides?.current) {
+					console.log([...infoSelectedSlides.current]);
+					infoSelectedSlides.current.forEach((slide, index) => {
+						const initial = initialCoords.current[index];
+						if (initial && slide.refObj.current) {
+							const newY = initial.y + deltaY;
+
+							slide.refObj.current.style.left = `${slide.coordsSlide.x}px`;
+							slide.refObj.current.style.top = `${newY}px`;
+
+							slide.setCoordsSlide({ x: slide.coordsSlide.x, y: newY });
+
+							if (handleDetectTarget && sizeOfSlides) {
+								const rect = slide.refObj.current.getBoundingClientRect();
+								const centerX = rect.left + rect.width / 2;
+								const centerY = rect.top + rect.height / 2;
+
+								const target = handleDetectTarget(
+									centerX,
+									centerY,
+									slide.fromIndexOfSlide,
+									sizeOfSlides,
+								);
+
+								if (target) {
+									slide.toIndexOfSlide = target.index;
+									slide.positionAroundOfToIndex = target.position;
+								}
+							}
+						}
+					});
 					return;
 				}
 
@@ -127,14 +217,10 @@ export const useDragAndDrop = (props: PropsDragAndDrop) => {
 					} else if (typeCorner == 'left_center' || typeCorner == 'right_center') {
 						setCoordsRect({ x: newX, y: rectCoords.y });
 					}
-				} else {
-					if (isSlide) {
-						rectEl.current.style.left = `${rectCoords.x}px`;
-						rectEl.current.style.top = `${newY}px`;
-					} else {
-						setCoordsRect({ x: newX, y: newY });
-					}
+					return;
 				}
+
+				setCoordsRect({ x: newX, y: newY });
 			};
 
 			const onDrop = (event: MouseEvent) => {
@@ -160,10 +246,39 @@ export const useDragAndDrop = (props: PropsDragAndDrop) => {
 							const newX = initial.x + deltaX;
 							const newY = initial.y + deltaY;
 							if (!isNaN(newX) && !isNaN(newY)) {
-								elem.onEnd(newX, newY);
+								elem.onEnd({ x: newX, y: newY });
 							}
 						}
 					});
+					return;
+				}
+
+				if (isSlide && sizeOfSlides && infoSelectedSlides?.current) {
+					console.log('onEnd');
+
+					getCorrectPositions(infoSelectedSlides, sizeOfSlides);
+					const allMoves = infoSelectedSlides.current
+						.filter(slide => slide.fromIndexOfSlide !== slide.toIndexOfSlide)
+						.map(slide => ({
+							fromIndex: slide.fromIndexOfSlide,
+							toIndex: slide.toIndexOfSlide,
+						}));
+					console.log(allMoves);
+					onEnd({ newPos: allMoves });
+
+					infoSelectedSlides.current.forEach(slide => {
+						if (slide.refObj.current) {
+							slide.refObj.current.style.position = '';
+							slide.refObj.current.style.zIndex = '1';
+							slide.refObj.current.style.left = '';
+							slide.refObj.current.style.top = '';
+						}
+						slide.fromIndexOfSlide = slide.toIndexOfSlide;
+						slide.positionAroundOfToIndex = 'before';
+						slide.setCoordsSlide({ x: 0, y: 0 });
+					});
+
+					console.log(infoSelectedSlides);
 					return;
 				}
 
@@ -179,7 +294,7 @@ export const useDragAndDrop = (props: PropsDragAndDrop) => {
 					}
 				}
 
-				onEnd(newX, newY);
+				onEnd({ x: newX, y: newY });
 			};
 
 			window.addEventListener('mousemove', onDragging);

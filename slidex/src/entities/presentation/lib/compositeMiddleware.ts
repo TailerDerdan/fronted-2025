@@ -32,8 +32,6 @@ export const compositeMiddleware: Middleware<{}, RootState> = store => next => a
 			return next(action);
 		}
 
-		console.log(idPrevCurrentSlide, indexOfPrevSlide, slideOrder, 'middleware1');
-
 		const result = next(action);
 
 		store.dispatch(clearSelectionSlides());
@@ -46,8 +44,6 @@ export const compositeMiddleware: Middleware<{}, RootState> = store => next => a
 			? newSlideOrder[indexOfPrevSlide]
 			: newSlideOrder[newSlideOrder.length - 1];
 		store.dispatch(setSelectedSlide(idNewCurrentSlide));
-
-		console.log(idNewCurrentSlide, selectedSlides, slideOrder, 'middleware2');
 		return result;
 	}
 

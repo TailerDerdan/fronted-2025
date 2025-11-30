@@ -1,109 +1,23 @@
-import { MutableRefObject, ReactNode, useEffect, useRef } from 'react';
-import { ImageView } from '../../image/ui/Image';
-import { TextboxView } from '../../text-box/ui/Textbox';
+import { MutableRefObject, useCallback, useContext, useEffect, useRef, useState } from 'react';
 import { Slide } from '../model/types';
 import styles from './slide.module.css';
-import { Background } from '../../../shared/model/background/Background';
 import { Id } from '../../../shared/model/id/Id';
-import { Rect } from '../../../shared/model/geometry/rect/model/types';
-import { useDragAndDrop } from '../../../shared/lib/useDragAndDrop';
-import { InfoAboutRect } from '../../../shared/model/setterOfCoords/setterOfCoords';
-
-type PropsForSlideObj = {
-	slide: Slide;
-	scaleX: number;
-	scaleY: number;
-	onClickImageView?: (id: Id, event: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
-	onClickTextBoxView?: (id: Id, event: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
-	selectedObj?: Array<Id>;
-	handleUpdateRect?: (idObj: Id, newRect: Rect) => void;
-	arrOfInfoObj?: MutableRefObject<Array<InfoAboutRect>>;
-};
-
-export function getReactNodeObjs(props: PropsForSlideObj): Array<ReactNode> {
-	const {
-		scaleX,
-		scaleY,
-		slide,
-		onClickImageView,
-		onClickTextBoxView,
-		selectedObj,
-		handleUpdateRect,
-		arrOfInfoObj,
-	} = props;
-
-	let isSelected: boolean = false;
-
-	const objsOnSlide: Array<ReactNode> = slide.layersOfSlide.map((elem: string) => {
-		const objOnSlide = slide.objects[elem];
-		isSelected = false;
-		if (selectedObj && selectedObj.indexOf(elem) >= 0) {
-			isSelected = true;
-		}
-		if (objOnSlide?.type == 'image') {
-			return (
-				<ImageView
-					key={elem}
-					type={objOnSlide.type}
-					rect={objOnSlide.rect}
-					src={objOnSlide.src}
-					borderColor={objOnSlide.borderColor}
-					scaleX={scaleX}
-					scaleY={scaleY}
-					onClick={onClickImageView}
-					id={elem}
-					isSelected={isSelected}
-					handleUpdateRect={handleUpdateRect}
-					arrOfInfoObj={arrOfInfoObj}
-				/>
-			);
-		}
-		if (objOnSlide?.type == 'textbox') {
-			return (
-				<TextboxView
-					key={elem}
-					type={objOnSlide.type}
-					texts={objOnSlide.texts}
-					rect={objOnSlide.rect}
-					alignment={objOnSlide.alignment}
-					scaleX={scaleX}
-					scaleY={scaleY}
-					onClick={onClickTextBoxView}
-					id={elem}
-					isSelected={isSelected}
-					handleUpdateRect={handleUpdateRect}
-					arrOfInfoObj={arrOfInfoObj}
-				/>
-			);
-		}
-	});
-
-	return objsOnSlide;
-}
-
-export function getStyleBackground(background: Background): React.CSSProperties {
-	if (background && typeof background === 'object' && 'src' in background) {
-		return {
-			background: `center / cover no-repeat url("${background.src}")`,
-		};
-	} else {
-		return {
-			background: background,
-		};
-	}
-}
+import { OnEndArgs, useDragAndDrop } from '../../../shared/lib/useDragAndDrop';
+import { InfoAboutSlide } from '../../../shared/model/setterOfCoords/setterOfCoords';
+import { getReactNodeObjs, getStyleBackground } from '../lib/getSlideObjs';
+import { PresActionContext } from '../../../shared/lib/presentationContext';
 
 type SlideProps = {
 	slide: Slide;
 	scaleX: number;
 	scaleY: number;
 	isSelected: boolean;
-	slideCoords: { x: number; y: number };
-	setCoordsSlide: (rect: { x: number; y: number }) => void;
 	refOnSlides: MutableRefObject<HTMLDivElement | null>;
 	indexOfSlide: number;
-	updateOrder: (from: number, to: number) => void;
-	handleOnClick: (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
+	idSlide: Id;
+	handleOnClick: (event: React.MouseEvent<HTMLDivElement, MouseEvent>, idSlide: Id) => void;
+	infoSelectedSlides: MutableRefObject<Array<InfoAboutSlide>>;
+	slideOrder: Array<Id>;
 };
 
 export const SlideView = (props: SlideProps) => {
@@ -112,95 +26,100 @@ export const SlideView = (props: SlideProps) => {
 		scaleX,
 		scaleY,
 		isSelected,
-		slideCoords,
-		setCoordsSlide,
 		refOnSlides,
 		indexOfSlide,
-		updateOrder,
+		idSlide,
 		handleOnClick,
+		infoSelectedSlides,
+		slideOrder,
 	} = props;
+
+	const [slideCoords, setCoordsSlide] = useState({ x: 0, y: 0 });
+
+	const stableSetCoords = useCallback((newCoords: { x: number; y: number }) => {
+		setCoordsSlide(newCoords);
+	}, []);
+
 	const slideEl = useRef<HTMLDivElement>(null);
-	const originalStyle = useRef({ position: '', top: ``, left: `` });
+	const originalStyleRef = useRef({ position: '', top: '', left: '' });
 
 	const objsOnSlide = getReactNodeObjs({ slide, scaleX, scaleY });
 	const styleSlide = getStyleBackground(slide.background);
 	const styleForSelected = isSelected ? styles.slide_selected : ``;
+	const actions = useContext(PresActionContext);
 
 	useEffect(() => {
-		if (slideEl.current && refOnSlides?.current) {
-			const relativeX =
-				slideEl.current.getBoundingClientRect().left -
-				refOnSlides?.current.getBoundingClientRect().left;
-			const relativeY =
-				slideEl.current.getBoundingClientRect().top -
-				refOnSlides?.current.getBoundingClientRect().top -
-				slideCoords.y;
-			if (
-				(Math.abs(relativeX - slideCoords.x) > 1 || Math.abs(relativeY - slideCoords.y) > 1) &&
-				slideEl.current.style.position == 'relative'
-			) {
-				slideCoords.x = relativeX;
-				slideCoords.y = relativeY;
-			}
-		}
-	}, [slideEl, slideCoords, setCoordsSlide]);
-
-	//TODO: заменить на useCallback
-	const onEnd = (newX: number, newY: number) => {
 		if (!slideEl.current) return;
-		slideEl.current.style.position = '';
-		slideEl.current.style.top = originalStyle.current.top;
-		slideEl.current.style.left = originalStyle.current.left;
-		slideEl.current.style.zIndex = '1';
-		if (refOnSlides?.current && updateOrder && indexOfSlide !== undefined) {
-			const childrenArray = Array.from(refOnSlides.current.children);
 
-			const oldY =
-				childrenArray[indexOfSlide].getBoundingClientRect().top -
-				refOnSlides.current.getBoundingClientRect().top;
+		const indexOfSelectedSlide = infoSelectedSlides.current.findIndex(item => item.id === idSlide);
+		const currentIndex = slideOrder.findIndex(id => id == idSlide);
 
-			let newIndex = indexOfSlide;
-
-			for (let i = 0; i < childrenArray.length; i++) {
-				const child = childrenArray[i];
-
-				let topBorder = 0;
-				if (i + 1 < childrenArray.length) {
-					const childNext = childrenArray[i + 1];
-					topBorder =
-						childNext.getBoundingClientRect().top -
-						refOnSlides.current.getBoundingClientRect().top;
-				} else {
-					topBorder = Infinity;
-				}
-
+		if (isSelected) {
+			if (indexOfSelectedSlide == -1) {
+				const newInfoSlide: InfoAboutSlide = {
+					id: idSlide,
+					refObj: slideEl,
+					fromIndexOfSlide: currentIndex,
+					toIndexOfSlide: currentIndex,
+					positionAroundOfToIndex: 'before',
+					coordsSlide: slideCoords,
+					setCoordsSlide: stableSetCoords,
+					originalStyle: originalStyleRef,
+				};
+				infoSelectedSlides.current.push(newInfoSlide);
+			} else {
 				if (
-					oldY + newY >=
-						child.getBoundingClientRect().top - refOnSlides.current.getBoundingClientRect().top &&
-					oldY + newY <= topBorder
+					infoSelectedSlides.current[indexOfSelectedSlide].fromIndexOfSlide != currentIndex ||
+					infoSelectedSlides.current[indexOfSelectedSlide].toIndexOfSlide != currentIndex
 				) {
-					newIndex = indexOfSlide == 0 ? i : i + 1;
-					break;
+					infoSelectedSlides.current[indexOfSelectedSlide].fromIndexOfSlide = currentIndex;
+					infoSelectedSlides.current[indexOfSelectedSlide].toIndexOfSlide = currentIndex;
 				}
 			}
-
-			if (oldY + newY < 0) {
-				newIndex = 0;
-			}
-
-			if (
-				oldY + newY >=
-				childrenArray[childrenArray.length - 1].getBoundingClientRect().top -
-					refOnSlides.current.getBoundingClientRect().top
-			) {
-				newIndex = childrenArray.length - 1;
-			}
-
-			if (indexOfSlide != newIndex) {
-				updateOrder(indexOfSlide, newIndex);
+		} else {
+			if (indexOfSelectedSlide != -1) {
+				infoSelectedSlides.current.splice(indexOfSelectedSlide, 1);
 			}
 		}
-	};
+	}, [isSelected, idSlide, indexOfSlide, slideEl]);
+
+	const detectSlideUnderCursor = useCallback(
+		(xCoord: number, yCoord: number, indexOfDragSlide: number, sizeOfSlides: number) => {
+			if (!refOnSlides.current) return null;
+
+			if (sizeOfSlides == 1) {
+				const position: 'before' | 'after' = 'before';
+				return { index: 0, position: position };
+			}
+
+			const elements = document.elementsFromPoint(xCoord, yCoord);
+
+			for (const element of elements) {
+				if (element.getAttribute('data-typeslide') == 'wrapper') {
+					const index = parseInt(element.getAttribute('data-index') || '0');
+
+					if (indexOfDragSlide == index) continue;
+
+					const rect = element.getBoundingClientRect();
+					const position: 'before' | 'after' =
+						yCoord < rect.top + rect.height / 2 ? 'before' : 'after';
+
+					return { index, position };
+				}
+			}
+
+			return null;
+		},
+		[],
+	);
+
+	const onEnd = useCallback(
+		(args: OnEndArgs) => {
+			if ('x' in args && 'y' in args) return;
+			actions?.setPositionSlide(args.newPos);
+		},
+		[actions],
+	);
 
 	useDragAndDrop({
 		rectEl: slideEl,
@@ -209,19 +128,22 @@ export const SlideView = (props: SlideProps) => {
 		setCoordsRect: setCoordsSlide,
 		isObjOnSlideBar: false,
 		onEnd: onEnd,
-		originalStyle: originalStyle,
+		handleDetectTarget: detectSlideUnderCursor,
+		infoSelectedSlides: infoSelectedSlides,
+		sizeOfSlides: slideOrder.length,
 	});
 
 	return (
 		<div
 			className={styles.wrapper_slide}
-			onMouseDown={event => {
+			onClick={event => {
 				event.stopPropagation();
 				event.preventDefault();
-				handleOnClick(event);
-				console.log(indexOfSlide);
+				handleOnClick(event, idSlide);
 			}}
 			ref={slideEl}
+			data-index={indexOfSlide}
+			data-typeslide={'wrapper'}
 		>
 			<div className={`${styles.slide} ${styleForSelected}`} style={styleSlide}>
 				{objsOnSlide}

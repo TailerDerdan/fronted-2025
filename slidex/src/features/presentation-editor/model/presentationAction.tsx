@@ -42,8 +42,8 @@ export const usePresentationActions = (): PresAction => {
 		setNamePresentation: (newName: string) => {
 			dispatch(setNamePresentation(newName));
 		},
-		setPositionSlide: (fromIndex: number, toIndex: number) => {
-			dispatch(setPositionSlide({ fromIndex, toIndex }));
+		setPositionSlide: (newPos: Array<{ fromIndex: number; toIndex: number }>) => {
+			dispatch(setPositionSlide({ newPos: newPos }));
 		},
 
 		setSelectedSlide: (idSLide: Id) => {
@@ -60,9 +60,11 @@ export const usePresentationActions = (): PresAction => {
 			dispatch(addSelectedObj(newSelectedObjId));
 		},
 
-		addObjOnCurrentSlide: (obj: SlideObj) => {
+		addObjOnCurrentSlide: (obj: SlideObj, idObj: Id) => {
 			if (selection.selectedSlides.length == 0) return;
-			dispatch(addObjOnCurrentSlide({ idSlide: selection.selectedSlides[0], slideObj: obj }));
+			dispatch(
+				addObjOnCurrentSlide({ idSlide: selection.selectedSlides[0], idObj: idObj, slideObj: obj }),
+			);
 		},
 
 		deleteSelectedObjs: () => {

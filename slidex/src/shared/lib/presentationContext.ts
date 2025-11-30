@@ -11,7 +11,7 @@ export type PresAction = {
 	deleteSlides: () => void;
 
 	setNamePresentation: (newName: string) => void;
-	setPositionSlide: (fromIndex: number, toIndex: number) => void;
+	setPositionSlide: (newPos: Array<{ fromIndex: number; toIndex: number }>) => void;
 
 	setSelectedSlide: (idSLide: Id) => void;
 	addSelectedSlide: (idSLide: Id) => void;
@@ -19,7 +19,7 @@ export type PresAction = {
 	setSelectedObj: (newSelectedObjId: Id) => void;
 	addSelectedObj: (newSelectedObjId: Id) => void;
 
-	addObjOnCurrentSlide: (obj: SlideObj) => void;
+	addObjOnCurrentSlide: (obj: SlideObj, idObj: Id) => void;
 
 	deleteSelectedObjs: () => void;
 
