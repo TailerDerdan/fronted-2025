@@ -17,7 +17,7 @@ import {
 	updateRectObj,
 	updateTextBox,
 } from '../../../entities/presentation/model/slideSlice';
-import { setNamePresentation } from '../../../entities/presentation/model/presentationSlice';
+import { setNamePresentation, setPres } from '../../../entities/presentation/model/presentationSlice';
 import {
 	addSelectedObj,
 	addSelectedSlide,
@@ -26,6 +26,7 @@ import {
 	setSelectedObj,
 	setSelectedSlide,
 } from '../../../entities/presentation/model/selectionSlice';
+import { RootState } from '../../../entities/presentation/model/rootState';
 
 export const usePresentationActions = (): PresAction => {
 	const { selection } = useAppSelector(state => state);
@@ -37,6 +38,10 @@ export const usePresentationActions = (): PresAction => {
 		},
 		deleteSlides: () => {
 			dispatch(deleteSlides(selection.selectedSlides));
+		},
+
+		setPresState: (state: RootState) => {
+			dispatch(setPres(state));
 		},
 
 		setNamePresentation: (newName: string) => {

@@ -6,6 +6,7 @@ const getCorrectPositions = (
 	infoSelectedSlides: MutableRefObject<Array<InfoAboutSlide>>,
 	totalSlidesCount: number,
 ) => {
+	if (infoSelectedSlides.current.length == 0) return;
 	const sortedSelectedSlides = infoSelectedSlides.current.sort(
 		(a, b) => a.fromIndexOfSlide - b.fromIndexOfSlide,
 	);
@@ -152,7 +153,6 @@ export const useDragAndDrop = (props: PropsDragAndDrop) => {
 				}
 
 				if (infoSelectedSlides?.current) {
-					console.log([...infoSelectedSlides.current]);
 					infoSelectedSlides.current.forEach((slide, index) => {
 						const initial = initialCoords.current[index];
 						if (initial && slide.refObj.current) {
@@ -254,8 +254,6 @@ export const useDragAndDrop = (props: PropsDragAndDrop) => {
 				}
 
 				if (isSlide && sizeOfSlides && infoSelectedSlides?.current) {
-					console.log('onEnd');
-
 					getCorrectPositions(infoSelectedSlides, sizeOfSlides);
 					const allMoves = infoSelectedSlides.current
 						.filter(slide => slide.fromIndexOfSlide !== slide.toIndexOfSlide)
@@ -263,7 +261,6 @@ export const useDragAndDrop = (props: PropsDragAndDrop) => {
 							fromIndex: slide.fromIndexOfSlide,
 							toIndex: slide.toIndexOfSlide,
 						}));
-					console.log(allMoves);
 					onEnd({ newPos: allMoves });
 
 					infoSelectedSlides.current.forEach(slide => {
@@ -278,7 +275,6 @@ export const useDragAndDrop = (props: PropsDragAndDrop) => {
 						slide.setCoordsSlide({ x: 0, y: 0 });
 					});
 
-					console.log(infoSelectedSlides);
 					return;
 				}
 

@@ -1,7 +1,13 @@
 import { Middleware } from 'redux';
-import { addSlide, deleteSlides } from '../model/slideSlice';
+import { addSlide, deleteSlides, setSlidesState } from '../model/slideSlice';
 import { RootState } from '../model/rootState';
-import { clearSelectionObjs, clearSelectionSlides, setSelectedSlide } from '../model/selectionSlice';
+import {
+	clearSelectionObjs,
+	clearSelectionSlides,
+	setSelectedSlide,
+	setSelectionState,
+} from '../model/selectionSlice';
+import { setPres } from '../model/presentationSlice';
 
 export const compositeMiddleware: Middleware<{}, RootState> = store => next => action => {
 	const state = store.getState();
@@ -9,9 +15,9 @@ export const compositeMiddleware: Middleware<{}, RootState> = store => next => a
 	if (addSlide.match(action)) {
 		const { slideList } = state.slides;
 
-		const wasEmpty = Object.keys(slideList).length === 0;
+		const isEmpty = Object.keys(slideList).length === 0;
 		const result = next(action);
-		if (wasEmpty) {
+		if (isEmpty) {
 			store.dispatch(setSelectedSlide(action.payload));
 		}
 
@@ -45,6 +51,13 @@ export const compositeMiddleware: Middleware<{}, RootState> = store => next => a
 			: newSlideOrder[newSlideOrder.length - 1];
 		store.dispatch(setSelectedSlide(idNewCurrentSlide));
 		return result;
+	}
+
+	if (setPres.match(action)) {
+		const newData = action.payload;
+
+		store.dispatch(setSlidesState(newData.slides));
+		store.dispatch(setSelectionState(newData.selection));
 	}
 
 	return next(action);

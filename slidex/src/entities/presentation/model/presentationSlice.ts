@@ -1,4 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { RootState } from './rootState';
 
 export type PresentationState = {
 	name: string;
@@ -15,9 +16,12 @@ const presentationSlices = createSlice({
 		setNamePresentation: (state, action: PayloadAction<string>) => {
 			state.name = action.payload;
 		},
+		setPres: (state, action: PayloadAction<RootState>) => {
+			state.name = action.payload.presentation.name;
+		},
 	},
 });
 
-export const { setNamePresentation } = presentationSlices.actions;
+export const { setNamePresentation, setPres } = presentationSlices.actions;
 
 export default presentationSlices.reducer;

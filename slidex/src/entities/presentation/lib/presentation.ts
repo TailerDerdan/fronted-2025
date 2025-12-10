@@ -47,7 +47,13 @@ function getSelectedSlides(selectediIdSlides: Array<Id>, slideList: Record<Id, S
 }
 
 function getCurrentSlide(selectediIdSlides: Array<Id>, slideList: Record<Id, Slide>): Slide | undefined {
-	return selectediIdSlides[0] ? slideList[selectediIdSlides[0]] : undefined;
+	if (selectediIdSlides[0]) {
+		return slideList[selectediIdSlides[0]];
+	}
+	if (slideList[Object.keys(slideList)[0]]) {
+		return slideList[Object.keys(slideList)[0]];
+	}
+	return undefined;
 }
 
 export { createPresentation, getSelectedObjects, getSelectedSlides, getCurrentSlide };

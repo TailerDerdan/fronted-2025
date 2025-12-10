@@ -4,7 +4,7 @@ import { deleteObjs, deleteSlides } from '../../../entities/presentation/model/s
 import { useAppDispatch, useAppSelector } from '../../../entities/presentation/model/store';
 
 export const useDeleteHandler = () => {
-	const { slides, selection } = useAppSelector(state => state);
+	const { selection, slides } = useAppSelector(state => state);
 	const dispatch = useAppDispatch();
 
 	const handleDelete = useCallback(
@@ -24,7 +24,6 @@ export const useDeleteHandler = () => {
 					getSelectedObjects(selection.selectedObj, slides.slideList, selection.selectedSlides[0])
 						.length == 0
 				) {
-					console.log('delete', selection.selectedSlides);
 					dispatch(deleteSlides(selection.selectedSlides));
 				} else {
 					if (selection.selectedSlides.length == 0) return;

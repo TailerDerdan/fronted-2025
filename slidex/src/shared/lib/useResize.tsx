@@ -1,5 +1,5 @@
 import { MutableRefObject, useCallback, useEffect, useLayoutEffect, useState } from 'react';
-import { useDragAndDrop } from './useDragAndDrop';
+import { OnEndArgs, useDragAndDrop } from './useDragAndDrop';
 import { Rect } from '../model/geometry/rect/model/types';
 import { TCorner } from '../model/corner/corner';
 import { MARGIN_CORNER } from '../ui/Corner';
@@ -190,9 +190,11 @@ export const useResize = (props: PropsResize) => {
 	};
 
 	const stableOnEnd = useCallback(
-		(newX: number, newY: number) => {
+		(args: OnEndArgs) => {
+			if ('newPos' in args) return;
 			if (!updateRectOnEnd) return;
-			const updatedRect = calcNewRect(rect, { x: newX, y: newY }, typeCorner);
+			const { x, y } = args;
+			const updatedRect = calcNewRect(rect, { x: x, y: y }, typeCorner);
 			updateRectOnEnd(idRect, updatedRect);
 			setNewRect(updatedRect);
 			setCoordsOfCorner({ x: 0, y: 0 });

@@ -32,6 +32,10 @@ const slidesSlices = createSlice({
 	name: 'slides',
 	initialState,
 	reducers: {
+		setSlidesState: (state, action: PayloadAction<SlidesState>) => {
+			state.slideList = action.payload.slideList;
+			state.slideOrder = action.payload.slideOrder;
+		},
 		addSlide: (state, action: PayloadAction<Id>) => {
 			addSlideImp(state, action);
 		},
@@ -81,6 +85,7 @@ export const {
 	updateImage,
 	updateRectObj,
 	setBackground,
+	setSlidesState,
 } = slidesSlices.actions;
 
 export default slidesSlices.reducer;

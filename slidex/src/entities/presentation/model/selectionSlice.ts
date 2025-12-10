@@ -10,7 +10,7 @@ import {
 } from '../lib/impSelection';
 
 export type SelectionState = {
-	selectedSlides: Array<Id>; //TODO: currentSlide = selectedSlide[0]
+	selectedSlides: Array<Id>;
 	selectedObj: Array<Id>;
 };
 
@@ -23,6 +23,10 @@ const selectionSlices = createSlice({
 	name: 'selection',
 	initialState,
 	reducers: {
+		setSelectionState: (state, action: PayloadAction<SelectionState>) => {
+			state.selectedObj = action.payload.selectedObj;
+			state.selectedSlides = action.payload.selectedSlides;
+		},
 		setSelectedSlide: (state, action: PayloadAction<Id>) => {
 			setSelectedSlideImp(state, action);
 		},
@@ -51,6 +55,7 @@ export const {
 	addSelectedObj,
 	clearSelectionObjs,
 	clearSelectionSlides,
+	setSelectionState,
 } = selectionSlices.actions;
 
 export default selectionSlices.reducer;

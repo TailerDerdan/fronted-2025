@@ -5,8 +5,11 @@ import { TextBox } from '../model/textbox/types';
 import { Image } from '../model/image/types';
 import { Rect } from '../model/geometry/rect/model/types';
 import { Background } from '../model/background/Background';
+import { RootState } from '../../entities/presentation/model/rootState';
 
 export type PresAction = {
+	setPresState: (state: RootState) => void;
+
 	addSlide: () => void;
 	deleteSlides: () => void;
 

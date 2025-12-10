@@ -6,6 +6,7 @@ import { compositeMiddleware } from '../lib/compositeMiddleware';
 import { TypedUseSelectorHook, useDispatch } from 'react-redux';
 import { useSelector } from 'react-redux';
 import { RootState } from './rootState';
+import { historyMiddleware } from '../lib/historyMiddleware';
 
 export const store = configureStore({
 	reducer: {
@@ -13,7 +14,8 @@ export const store = configureStore({
 		selection: selectionReducer,
 		presentation: presentationReducer,
 	},
-	middleware: getDefaultMiddleware => getDefaultMiddleware().concat(compositeMiddleware),
+	middleware: getDefaultMiddleware =>
+		getDefaultMiddleware().concat(compositeMiddleware).concat(historyMiddleware),
 });
 
 export type AppDispatch = typeof store.dispatch;

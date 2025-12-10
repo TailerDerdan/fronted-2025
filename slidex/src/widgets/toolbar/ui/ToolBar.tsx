@@ -14,6 +14,7 @@ import {
 import styles from './toolbar.module.css';
 import { PresActionContext } from '../../../shared/lib/presentationContext';
 import { generateId } from '../../../shared/model/id/Id';
+import { redo, undo } from '../../../entities/history/history';
 
 export const Toolbar = () => {
 	const actions = useContext(PresActionContext);
@@ -70,7 +71,7 @@ export const Toolbar = () => {
 			<div className={styles.wrapper_button_icon}>
 				<IconButton
 					onClick={() => {
-						console.log('undo');
+						if (actions?.setPresState) undo(actions?.setPresState);
 					}}
 					className="icon_toolbar"
 					icon={<UndoIcon />}
@@ -81,7 +82,7 @@ export const Toolbar = () => {
 			<div className={styles.wrapper_button_icon}>
 				<IconButton
 					onClick={() => {
-						console.log('redo');
+						if (actions?.setPresState) redo(actions?.setPresState);
 					}}
 					className="icon_toolbar"
 					icon={<RedoIcon />}

@@ -4,7 +4,7 @@ import { Slide } from '../../slide/model/types';
 type Presentation = {
 	slideList: Record<Id, Slide>;
 	slideOrder: Array<Id>;
-	selectedSlides: Array<Id>; //TODO: currentSlide = selectedSlide[0]
+	selectedSlides: Array<Id>;
 	selectedObjs: Array<Id>;
 	name: string;
 };

@@ -1,9 +1,10 @@
-import { useContext } from 'react';
+import { useCallback, useContext } from 'react';
 import { Background } from '../../../shared/model/background/Background';
 import { Color } from '../../../shared/model/color/Color';
 import { SelectImageButton } from '../lib/SelectedImageButton';
 import styles from './sidebar.module.css';
 import { PresActionContext } from '../../../shared/lib/presentationContext';
+import { debounce } from '../../../shared/lib/debounce';
 
 type PropsSettingsBack = {
 	setImageFileBack: (file: File) => void;
@@ -14,6 +15,13 @@ export const SettingsBack = (props: PropsSettingsBack) => {
 	const { setImageFileBack, background } = props;
 
 	const actions = useContext(PresActionContext);
+
+	const debouncedSetBackground = useCallback(
+		debounce((newBack: Background) => {
+			actions?.setBackground(newBack);
+		}, 300),
+		[actions],
+	);
 
 	let colorOfSlide: Color = '#fff';
 	if (typeof background != 'object') {
@@ -27,7 +35,7 @@ export const SettingsBack = (props: PropsSettingsBack) => {
 					value={colorOfSlide}
 					onChange={event => {
 						const newBack: Background = event.target.value as Color;
-						actions?.setBackground(newBack);
+						debouncedSetBackground(newBack);
 						event.stopPropagation();
 						event.preventDefault();
 					}}
