@@ -1,7 +1,6 @@
 .slideList {
 	width: 25.691248287%;
-	overflow-y: hidden;
-	overflow-x: hidden;
+	overflow: hidden;
 }
 
 .slideList::-webkit-scrollbar {
@@ -24,7 +23,7 @@
 }
 
 .slideList__objs::-webkit-scrollbar-track {
-	background-color: #fff;
+	background-color: #ffffff;
 	border: 1px solid #2a39b8;
 	border-radius: 10px;
 }
@@ -42,7 +41,7 @@
 	align-items: center;
 	padding-bottom: 6.021962451%;
 	position: sticky;
-	top: 0px;
+	top: 0;
 	z-index: 10;
 }
 

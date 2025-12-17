@@ -13,11 +13,17 @@ import {
 	deleteSlides,
 	setBackground,
 	setPositionSlide,
+	setSlidesState,
+	SlidesState,
 	updateImage,
 	updateRectObj,
 	updateTextBox,
 } from '../../../entities/presentation/model/slideSlice';
-import { setNamePresentation, setPres } from '../../../entities/presentation/model/presentationSlice';
+import {
+	setIdPres,
+	setNamePresentation,
+	setPres,
+} from '../../../entities/presentation/model/presentationSlice';
 import {
 	addSelectedObj,
 	addSelectedSlide,
@@ -44,9 +50,17 @@ export const usePresentationActions = (): PresAction => {
 			dispatch(setPres(state));
 		},
 
+		setSlideState: (newState: SlidesState) => {
+			dispatch(setSlidesState(newState));
+		},
+
 		setNamePresentation: (newName: string) => {
 			dispatch(setNamePresentation(newName));
 		},
+		setIdPresentation: (id: string) => {
+			dispatch(setIdPres(id));
+		},
+
 		setPositionSlide: (newPos: Array<{ fromIndex: number; toIndex: number }>) => {
 			dispatch(setPositionSlide({ newPos: newPos }));
 		},

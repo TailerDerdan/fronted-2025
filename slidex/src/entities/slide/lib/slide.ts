@@ -1,17 +1,17 @@
 import { Picture } from '../../../shared/model/picture/Picture';
 import { Slide } from '../model/types';
 import { Id } from '../../../shared/model/id/Id';
-import { Color, getNextDarkerColor } from '../../../shared/model/color/Color';
+import { Color } from '../../../shared/model/color/Color';
 import { Image } from '../../../shared/model/image/types';
 import { TextBox } from '../../../shared/model/textbox/types';
 
 const objForColor = {
-	color: '#000',
+	color: '#fff',
 };
 
 function createSlide(): Slide {
 	const currentColor = objForColor.color;
-	objForColor.color = getNextDarkerColor(objForColor.color, -20);
+	// objForColor.color = getNextDarkerColor(objForColor.color, -20);
 	return {
 		objects: {},
 		layersOfSlide: [],

@@ -6,14 +6,17 @@ import { Image } from '../model/image/types';
 import { Rect } from '../model/geometry/rect/model/types';
 import { Background } from '../model/background/Background';
 import { RootState } from '../../entities/presentation/model/rootState';
+import { SlidesState } from '../../entities/presentation/model/slideSlice';
 
 export type PresAction = {
 	setPresState: (state: RootState) => void;
+	setSlideState: (state: SlidesState) => void;
 
 	addSlide: () => void;
 	deleteSlides: () => void;
 
 	setNamePresentation: (newName: string) => void;
+	setIdPresentation: (id: string) => void;
 	setPositionSlide: (newPos: Array<{ fromIndex: number; toIndex: number }>) => void;
 
 	setSelectedSlide: (idSLide: Id) => void;

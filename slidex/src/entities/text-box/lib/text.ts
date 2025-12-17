@@ -8,7 +8,7 @@ import {
 	setUnderlinedFont,
 } from '../../../shared/model/font/Font';
 import { generateId } from '../../../shared/model/id/Id';
-import { Text } from '../model/types';
+import { Text } from '../../../shared/model/textbox/types';
 
 function createText(content: string, font: Font): Text {
 	const id = generateId();

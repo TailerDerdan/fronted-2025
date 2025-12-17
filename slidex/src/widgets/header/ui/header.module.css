@@ -8,7 +8,7 @@
 }
 
 .header__presName {
-	padding: 0 1.623648121% 0;
+	padding: 0 1.623648121%;
 }
 
 .header__toolbar {
@@ -23,5 +23,6 @@
 	min-width: 10%;
 	height: 5em;
 	padding: 0% 1.2% 0;
+
 	/* border: 1px solid black; */
 }

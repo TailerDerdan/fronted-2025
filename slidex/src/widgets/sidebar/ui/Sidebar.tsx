@@ -17,8 +17,10 @@ type SidebarProps = {
 export const Sidebar = (props: SidebarProps) => {
 	const { isToggleOfBack } = props;
 
-	const [imageFile, setImageFile] = useState<File>();
+	const [newBack, setBack] = useState('fff');
 	const [imageFileBack, setImageFileBack] = useState<File>();
+
+	const [imageFile, setImageFile] = useState<File>();
 
 	const [objId, setObjId] = useState<Id>('');
 	const [selectedImage, setSelectedImage] = useState<Image | null>(null);
@@ -26,7 +28,6 @@ export const Sidebar = (props: SidebarProps) => {
 	const [classes, setClasses] = useState('');
 
 	const actions = useContext(PresActionContext);
-
 	const { selection, slides } = useAppSelector(state => state);
 	const currentSlide = getCurrentSlide(selection.selectedSlides, slides.slideList);
 
@@ -42,6 +43,9 @@ export const Sidebar = (props: SidebarProps) => {
 				// 	setImageFile(obj.file);
 				// }
 			}
+		}
+		if (!isToggleOfBack) {
+			actions?.setBackground(newBack);
 		}
 		if (isToggle || isToggleOfBack) {
 			setClasses(`${styles.sidebar} ${styles.sidebar_open}`);
@@ -71,7 +75,11 @@ export const Sidebar = (props: SidebarProps) => {
 		<div className={classes}>
 			{isToggle && <SettingsObj obj={obj} setImageFile={setImageFile} />}
 			{isToggleOfBack && currentSlide && (
-				<SettingsBack background={currentSlide.background} setImageFileBack={setImageFileBack} />
+				<SettingsBack
+					background={currentSlide.background}
+					setImageFileBack={setImageFileBack}
+					setBackground={setBack}
+				/>
 			)}
 		</div>
 	);

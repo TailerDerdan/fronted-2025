@@ -116,6 +116,7 @@ export const SlideView = (props: SlideProps) => {
 	const onEnd = useCallback(
 		(args: OnEndArgs) => {
 			if ('x' in args && 'y' in args) return;
+			if (args.newPos.length == 0) return;
 			actions?.setPositionSlide(args.newPos);
 		},
 		[actions],

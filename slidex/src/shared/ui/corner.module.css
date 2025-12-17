@@ -63,10 +63,7 @@
 	background-color: white;
 	border: 1px solid #2a39b8;
 	z-index: 100;
-	top: '';
-	bottom: -10px;
-	left: 50%;
-	right: '';
+	inset: '' '' -10px 50%;
 }
 
 .cornerBottomRight {
@@ -76,10 +73,7 @@
 	background-color: white;
 	border: 1px solid #2a39b8;
 	z-index: 100;
-	top: '';
-	bottom: -10px;
-	right: -10px;
-	left: '';
+	inset: '' -10px '' -10px;
 }
 
 .cornerLeftCenter {
@@ -89,8 +83,5 @@
 	background-color: white;
 	border: 1px solid #2a39b8;
 	z-index: 100;
-	top: 50%;
-	bottom: '';
-	left: -10px;
-	right: '';
+	inset: 50% '' '' -10px;
 }
