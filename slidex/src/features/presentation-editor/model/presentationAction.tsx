@@ -50,6 +50,8 @@ export const usePresentationActions = (): PresAction => {
 			dispatch(setPres(state));
 		},
 
+		navigateToList: () => {},
+
 		setSlideState: (newState: SlidesState) => {
 			dispatch(setSlidesState(newState));
 		},

@@ -24,9 +24,10 @@ const presentationSlices = createSlice({
 		setPres: (state, action: PayloadAction<RootState>) => {
 			state.name = action.payload.presentation.name;
 		},
+		navigateToList: () => {},
 	},
 });
 
-export const { setNamePresentation, setIdPres, setPres } = presentationSlices.actions;
+export const { setNamePresentation, setIdPres, setPres, navigateToList } = presentationSlices.actions;
 
 export default presentationSlices.reducer;

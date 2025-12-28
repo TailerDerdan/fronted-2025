@@ -25,6 +25,7 @@ export const Header = () => {
 						autoSave(state);
 						setTimeout(() => {
 							navigate('/list');
+							actions?.navigateToList();
 							actions?.setPresState(emptyPresState);
 						}, 350);
 					}}

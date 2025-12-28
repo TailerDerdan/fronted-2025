@@ -1,15 +1,27 @@
 import { Middleware } from 'redux';
 import { RootState } from '../model/rootState';
 import { push } from '../../history/history';
-import { setPres } from '../model/presentationSlice';
+import { navigateToList, setIdPres, setPres } from '../model/presentationSlice';
 import { setSlidesState } from '../model/slideSlice';
 import { setSelectionState } from '../model/selectionSlice';
-import { autoSave, DEBOUNCE_DELAY } from '../../../shared/appwrite/autoSave';
+import { autoSave, saveTimeout, setupSaveTimeout } from '../../../shared/appwrite/autoSave';
 
-export let saveTimeout: NodeJS.Timeout | null = null;
-//вынести autoSave
 export const historyMiddleware: Middleware<{}, RootState> = store => next => action => {
-	if (setPres.match(action) || setSlidesState.match(action) || setSelectionState.match(action)) {
+	if (
+		setPres.match(action) ||
+		setSlidesState.match(action) ||
+		setSelectionState.match(action) ||
+		setIdPres.match(action)
+	) {
+		return next(action);
+	}
+
+	if (navigateToList.match(action)) {
+		console.log(navigateToList);
+		if (saveTimeout) {
+			clearTimeout(saveTimeout);
+			setupSaveTimeout();
+		}
 		return next(action);
 	}
 
@@ -22,14 +34,7 @@ export const historyMiddleware: Middleware<{}, RootState> = store => next => act
 		stateBefore.presentation.name != stateAfter.presentation.name ||
 		stateBefore.slides.slideOrder != stateAfter.slides.slideOrder
 	) {
-		if (saveTimeout) {
-			clearTimeout(saveTimeout);
-		}
-
-		saveTimeout = setTimeout(() => {
-			autoSave(stateAfter);
-		}, DEBOUNCE_DELAY);
-
+		autoSave(stateAfter);
 		push(stateAfter);
 	}
 

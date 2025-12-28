@@ -10,6 +10,7 @@ import { SlidesState } from '../../entities/presentation/model/slideSlice';
 
 export type PresAction = {
 	setPresState: (state: RootState) => void;
+	navigateToList: () => void;
 	setSlideState: (state: SlidesState) => void;
 
 	addSlide: () => void;

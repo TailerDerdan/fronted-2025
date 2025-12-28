@@ -13,10 +13,11 @@ type PropsPreviewPres = {
 	user_id: string;
 	$createdAt: string;
 	$updatedAt: string;
+	updateListAfterDelete: (id: string) => void;
 };
 
 const PreviewPres = (props: PropsPreviewPres) => {
-	const { title, email, $createdAt, $updatedAt, $id } = props;
+	const { title, email, $createdAt, $updatedAt, $id, updateListAfterDelete } = props;
 
 	const navigate = useNavigate();
 
@@ -27,6 +28,15 @@ const PreviewPres = (props: PropsPreviewPres) => {
 				navigate(`/list/${$id}`);
 			}}
 		>
+			<button
+				onClick={event => {
+					event.stopPropagation();
+					updateListAfterDelete($id);
+					db['presenation'].delete($id);
+				}}
+			>
+				Удалить презентацию
+			</button>
 			<div className={styles.card_data}>
 				<p>Название: {title}</p>
 				<p>Email: {email}</p>
@@ -45,16 +55,33 @@ export const ListPresentations = () => {
 	const infoAboutUser = useUser();
 
 	useEffect(() => {
+		if (!isLoading) {
+			if (!infoAboutUser.current) {
+				navigate('/');
+			}
+		}
+	}, [infoAboutUser.current, isLoading]);
+
+	const updateListAfterDelete = (deletedId: string) => {
+		setListOfPres(prevList => prevList.filter(pres => pres.$id !== deletedId));
+	};
+
+	useEffect(() => {
 		const init = async () => {
-			const response = await db['presenation'].list();
-			setTimeout(() => {
+			try {
+				const response = await db['presenation'].list();
 				setListOfPres(response.rows);
+			} catch (error) {
+				console.error('ошибка при загрузке презентаций:', error);
+			} finally {
 				setIsLoading(false);
-			}, 2000);
+			}
 		};
 		console.log(infoAboutUser.current);
-		init();
-	}, []);
+		if (infoAboutUser.current) {
+			init();
+		}
+	}, [infoAboutUser.current]);
 
 	const handleCreatePres = () => {
 		const addPres = async () => {
@@ -85,31 +112,34 @@ export const ListPresentations = () => {
 	return (
 		<div className={styles.container}>
 			<h1 className={styles.header}>Список презентаций</h1>
-			<div className={styles.grid}>
-				<button className={styles.create_button} onClick={handleCreatePres}>
-					Создать
-					<br />
-					презентацию
-				</button>
-				{isLoading ? (
-					<p>Загрузка презентаций...</p>
-				) : (
-					listOfPres.map(
-						pres =>
-							pres.user_id == infoAboutUser.current?.$id && (
-								<PreviewPres
-									key={pres.$id}
-									$id={pres.$id}
-									user_id={pres.user_id}
-									content={pres.content}
-									title={pres.title}
-									email={infoAboutUser.current?.email || ''}
-									$createdAt={pres.$createdAt}
-									$updatedAt={pres.$updatedAt}
-								/>
-							),
-					)
-				)}
+			<div className={styles.scrollable_container}>
+				<div className={styles.grid}>
+					<button className={styles.create_button} onClick={handleCreatePres}>
+						Создать
+						<br />
+						презентацию
+					</button>
+					{isLoading ? (
+						<p>Загрузка презентаций...</p>
+					) : (
+						listOfPres.map(
+							pres =>
+								pres.user_id == infoAboutUser.current?.$id && (
+									<PreviewPres
+										key={pres.$id}
+										$id={pres.$id}
+										user_id={pres.user_id}
+										content={pres.content}
+										title={pres.title}
+										email={infoAboutUser.current?.email || ''}
+										$createdAt={pres.$createdAt}
+										$updatedAt={pres.$updatedAt}
+										updateListAfterDelete={updateListAfterDelete}
+									/>
+								),
+						)
+					)}
+				</div>
 			</div>
 		</div>
 	);

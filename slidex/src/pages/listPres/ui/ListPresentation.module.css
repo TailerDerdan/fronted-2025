@@ -23,6 +23,12 @@
 	padding-top: 1%;
 }
 
+.scrollable_container {
+	max-height: 80vh;
+	overflow-y: auto;
+	width: 100%;
+}
+
 .create_button {
 	grid-column: 1;
 	grid-row: 1;
@@ -57,8 +63,10 @@
 }
 
 .card {
-	width: 100%;
+	min-width: 100%;
+	/* min-height: 200px; */
 	padding: 10% 1%;
+	/* padding: 20px 2px; */
 
 	border-radius: 12px;
 	border: 2px solid #2a39b8;
@@ -83,11 +91,12 @@
 .card_data {
 	display: flex;
 	flex-direction: column;
-	gap: 2%;
+	gap: 15px;
 }
 
 .card_data p {
 	margin: 0;
+	padding-bottom: 1.5%;
 	font-size: 1.667rem;
 	color: #333;
 	line-height: 1.4;

@@ -8,13 +8,16 @@ import { useDeleteHandler } from '../../../features/presentation-editor/lib/hand
 import { clear, push } from '../../../entities/history/history';
 import { useAppSelector } from '../../../entities/presentation/model/store';
 import { useHistoryHandler } from '../../../features/presentation-editor/lib/handleHistory';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { usePresentationActions } from '../../../features/presentation-editor/model/presentationAction';
 import db from '../../../shared/appwrite/database';
 import { validate } from '../lib/validatePres';
+import { SlidesState } from '../../../entities/presentation/model/slideSlice';
+import { RootState } from '../../../entities/presentation/model/rootState';
 
 export const PresentationMaker = () => {
 	const [isToggleOfBack, setIsToggleOfBack] = useState(false);
+	const navigate = useNavigate();
 
 	const { id } = useParams<{ id: string }>();
 
@@ -25,18 +28,30 @@ export const PresentationMaker = () => {
 
 	useEffect(() => {
 		clear();
-		console.log(state, 'we tuta');
 		push(state);
 		const init = async () => {
 			if (id) {
 				actions.setIdPresentation(id);
 
 				const row = await db['presenation'].get(id);
-				actions.setNamePresentation(row.title);
 
 				if (validate(JSON.parse(row.content))) {
-					actions.setSlideState(JSON.parse(row.content));
+					const slideState: SlidesState = JSON.parse(row.content);
+					const mainState: RootState = {
+						slides: slideState,
+						selection: {
+							selectedObj: [],
+							selectedSlides:
+								slideState.slideOrder.length == 0 ? [] : [slideState.slideOrder[0]],
+						},
+						presentation: {
+							name: row.title,
+							id: id,
+						},
+					};
+					actions.setPresState(mainState);
 				} else {
+					navigate('/list');
 					console.log(row.errors);
 				}
 			}

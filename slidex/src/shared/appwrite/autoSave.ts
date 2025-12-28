@@ -2,7 +2,13 @@ import { RootState } from '../../entities/presentation/model/rootState';
 import { account } from './appwrite';
 import db from './database';
 
-export const autoSave = async (state: RootState) => {
+export let saveTimeout: NodeJS.Timeout | null = null;
+
+export const setupSaveTimeout = () => {
+	saveTimeout = null;
+};
+
+const save = async (state: RootState) => {
 	try {
 		await db['presenation'].create(
 			{
@@ -17,4 +23,14 @@ export const autoSave = async (state: RootState) => {
 	}
 };
 
-export const DEBOUNCE_DELAY = 30 * 1000;
+export const autoSave = async (state: RootState) => {
+	if (saveTimeout) {
+		clearTimeout(saveTimeout);
+	}
+
+	saveTimeout = setTimeout(() => {
+		save(state);
+	}, DEBOUNCE_DELAY);
+};
+
+export const DEBOUNCE_DELAY = 5 * 1000;

@@ -25,7 +25,9 @@ export function ImageButton() {
 		if (imageFile) {
 			const newId = generateId();
 			actions?.addObjOnCurrentSlide(createImage(imageFile, createRect(100, 100, 100, 100)), newId);
-			actions?.setSelectedObj(newId);
+			setTimeout(() => {
+				actions?.setSelectedObj(newId);
+			}, 1000);
 		}
 	}, [imageFile]);
 
