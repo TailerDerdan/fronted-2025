@@ -18,6 +18,21 @@ export const store = configureStore({
 		getDefaultMiddleware().concat(compositeMiddleware).concat(historyMiddleware),
 });
 
+export const emptyPresState: RootState = {
+	selection: {
+		selectedObj: [],
+		selectedSlides: [],
+	},
+	slides: {
+		slideList: {},
+		slideOrder: [],
+	},
+	presentation: {
+		name: '',
+		id: '',
+	},
+};
+
 export type AppDispatch = typeof store.dispatch;
 
 export const useAppDispatch = () => useDispatch<AppDispatch>();

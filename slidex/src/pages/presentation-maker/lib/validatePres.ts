@@ -1,32 +1,18 @@
 import { SlidesState } from '../../../entities/presentation/model/slideSlice';
 import Ajv, { JSONSchemaType } from 'ajv';
 import { Background } from '../../../shared/model/background/Background';
-import { Picture } from '../../../shared/model/picture/Picture';
 import { Rect } from '../../../shared/model/geometry/rect/model/types';
 import { Font } from '../../../shared/model/font/Font';
 import { Text, TextBox } from '../../../shared/model/textbox/types';
 import { Image } from '../../../shared/model/image/types';
 import { SlideObj } from '../../../shared/model/objOnSlide';
 import { Slide } from '../../../entities/slide/model/types';
-import { Color } from 'react-color';
 import { Alignment } from '../../../shared/model/alignment/Alignment';
 
 const ajv = new Ajv();
 
-const colorSchema: JSONSchemaType<Color> = {
-	type: 'string',
-};
-
-const pictureSchema: JSONSchemaType<Picture> = {
-	type: 'object',
-	properties: {
-		src: { type: 'string' },
-	},
-	required: ['src'],
-};
-
 const backgroundSchema: JSONSchemaType<Background> = {
-	anyOf: [colorSchema, pictureSchema],
+	type: 'string',
 };
 
 const rectSchema: JSONSchemaType<Rect> = {

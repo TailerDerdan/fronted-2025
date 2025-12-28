@@ -17,4 +17,4 @@ export const autoSave = async (state: RootState) => {
 	}
 };
 
-export const DEBOUNCE_DELAY = 5 * 1000;
+export const DEBOUNCE_DELAY = 30 * 1000;

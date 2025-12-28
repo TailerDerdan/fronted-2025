@@ -1,14 +1,17 @@
 import { useLocation, useNavigate } from 'react-router-dom';
-import { useAppSelector } from '../../../entities/presentation/model/store';
+import { emptyPresState, useAppSelector } from '../../../entities/presentation/model/store';
 import { autoSave } from '../../../shared/appwrite/autoSave';
 import { IconButton } from '../../../shared/ui/iconButton';
 import { PresentationNameView } from '../../presentation-name/ui/PresentationName';
 import { Toolbar } from '../../toolbar/ui/ToolBar';
 import { IconPresent } from '../lib/iconComponent';
 import styles from './header.module.css';
+import { useContext } from 'react';
+import { PresActionContext } from '../../../shared/lib/presentationContext';
 
 export const Header = () => {
 	const state = useAppSelector(state => state);
+	const actions = useContext(PresActionContext);
 	const navigate = useNavigate();
 	const location = useLocation();
 	return (
@@ -20,7 +23,10 @@ export const Header = () => {
 				<button
 					onClick={() => {
 						autoSave(state);
-						navigate('/list');
+						setTimeout(() => {
+							navigate('/list');
+							actions?.setPresState(emptyPresState);
+						}, 350);
 					}}
 				>
 					Назад

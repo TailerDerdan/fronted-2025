@@ -39,6 +39,7 @@ const PreviewPres = (props: PropsPreviewPres) => {
 
 export const ListPresentations = () => {
 	const [listOfPres, setListOfPres] = useState<PropsPreviewPres[]>([]);
+	const [isLoading, setIsLoading] = useState(true);
 	const navigate = useNavigate();
 
 	const infoAboutUser = useUser();
@@ -46,7 +47,10 @@ export const ListPresentations = () => {
 	useEffect(() => {
 		const init = async () => {
 			const response = await db['presenation'].list();
-			setListOfPres(response.rows);
+			setTimeout(() => {
+				setListOfPres(response.rows);
+				setIsLoading(false);
+			}, 2000);
 		};
 		console.log(infoAboutUser.current);
 		init();
@@ -87,20 +91,24 @@ export const ListPresentations = () => {
 					<br />
 					презентацию
 				</button>
-				{listOfPres.map(
-					pres =>
-						pres.user_id == infoAboutUser.current?.$id && (
-							<PreviewPres
-								key={pres.$id}
-								$id={pres.$id}
-								user_id={pres.user_id}
-								content={pres.content}
-								title={pres.title}
-								email={infoAboutUser.current?.email || ''}
-								$createdAt={pres.$createdAt}
-								$updatedAt={pres.$updatedAt}
-							/>
-						),
+				{isLoading ? (
+					<p>Загрузка презентаций...</p>
+				) : (
+					listOfPres.map(
+						pres =>
+							pres.user_id == infoAboutUser.current?.$id && (
+								<PreviewPres
+									key={pres.$id}
+									$id={pres.$id}
+									user_id={pres.user_id}
+									content={pres.content}
+									title={pres.title}
+									email={infoAboutUser.current?.email || ''}
+									$createdAt={pres.$createdAt}
+									$updatedAt={pres.$updatedAt}
+								/>
+							),
+					)
 				)}
 			</div>
 		</div>

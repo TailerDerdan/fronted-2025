@@ -25,6 +25,7 @@ export const PresentationMaker = () => {
 
 	useEffect(() => {
 		clear();
+		console.log(state, 'we tuta');
 		push(state);
 		const init = async () => {
 			if (id) {
@@ -41,7 +42,7 @@ export const PresentationMaker = () => {
 			}
 		};
 		init();
-	}, []);
+	}, [id]);
 
 	useEffect(() => {
 		window.addEventListener('keydown', handleDelete);

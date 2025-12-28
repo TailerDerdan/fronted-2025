@@ -6,7 +6,7 @@ import { IconButton } from '../../../shared/ui/iconButton';
 import { IconFullScreen } from '../lib/iconComponent';
 import { exitFullscreen, openFullscreen } from '../lib/fullscreen';
 import db from '../../../shared/appwrite/database';
-import { getReactNodeObjs } from '../../../entities/slide/lib/getSlideObjs';
+import { getReactNodeObjs, getStyleBackground } from '../../../entities/slide/lib/getSlideObjs';
 
 //сделать
 export const ViewPres = () => {
@@ -21,6 +21,8 @@ export const ViewPres = () => {
 	const { slideList, slideOrder } = useAppSelector(state => state.slides);
 
 	const slide = slideList[slideOrder[indexOfSlide]];
+
+	console.log(slide);
 
 	if (!slide) {
 		const lastIndex = location.pathname.lastIndexOf('view');
@@ -137,6 +139,8 @@ export const ViewPres = () => {
 		isSlideShow: true,
 	});
 
+	const styleSlide = slide ? getStyleBackground(slide.background) : {};
+
 	return (
 		<div className={styles.slidePreview}>
 			<div className={`${styles.header} ${showUI ? styles.show : styles.hide}`}>
@@ -162,7 +166,9 @@ export const ViewPres = () => {
 					</IconButton>
 				</div>
 			</div>
-			<div className={styles.workspaceContainer}>{objsOnSlide}</div>
+			<div className={styles.workspaceContainer} style={styleSlide}>
+				{objsOnSlide}
+			</div>
 			<div className={`${styles.pagination} ${showUI ? styles.show : styles.hide}`}>
 				<div className={styles.pagination__numberSlides}>
 					<button

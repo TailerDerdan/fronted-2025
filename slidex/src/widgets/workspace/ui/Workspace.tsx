@@ -57,7 +57,6 @@ export const Workspace = (props: WorkspaceProps) => {
 	});
 
 	const styleSlide = slide ? getStyleBackground(slide.background) : {};
-	// console.log(styleSlide, 'workspace');
 
 	return (
 		<div className={styles.wrapper_workspace}>
