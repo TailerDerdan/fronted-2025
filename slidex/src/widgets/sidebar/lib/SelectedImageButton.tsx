@@ -1,40 +1,20 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import { TextButton } from '../../../shared/ui/textButton';
 import styles from './SelectedImageButton.module.css';
+import { useDownloadImage } from '../../../shared/lib/useDownloadImage';
 
 type SelectedImageButtonProps = {
-	setSelectedImageUrlRef: (file: File) => void;
+	setSelectedImageUrlRef: (URL: string) => void;
 };
 
 export function SelectImageButton(props: SelectedImageButtonProps) {
 	const { setSelectedImageUrlRef } = props;
-
 	const inputRef = useRef<HTMLInputElement>(null);
-	const selectedImageUrlRef = useRef<string>();
-	const [loading, setLoading] = useState(false);
 
-	const revokeImageUrl = useCallback(() => {
-		if (selectedImageUrlRef.current != null) {
-			window.URL.revokeObjectURL(selectedImageUrlRef.current);
-		}
-	}, [selectedImageUrlRef]);
-
-	function openSelectImageModal() {
-		if (inputRef.current) {
-			setLoading(true);
-			inputRef.current.click();
-		}
-	}
-
-	function updateSelectedImage() {
-		revokeImageUrl();
-		if (inputRef.current && inputRef.current.files) {
-			const image = inputRef.current.files[0];
-			selectedImageUrlRef.current = window.URL.createObjectURL(image);
-			setSelectedImageUrlRef(image);
-		}
-		setLoading(false);
-	}
+	const { revokeImageUrl, openSelectImageModal, loading, updateSelectedImage } = useDownloadImage({
+		inputRef,
+		setSelectedImageUrlRef,
+	});
 
 	useEffect(() => revokeImageUrl, [revokeImageUrl]);
 

@@ -4,16 +4,16 @@ import styles from './sidebar.module.css';
 
 type PropsSettingsObj = {
 	obj: SlideObj | undefined;
-	setImageFile: (file: File) => void;
+	setImageURL: (URL: string) => void;
 };
 
 export const SettingsObj = (props: PropsSettingsObj) => {
-	const { obj, setImageFile } = props;
+	const { obj, setImageURL } = props;
 	if (obj && obj.type == 'image') {
 		return (
 			<>
 				<div className={styles.fill_image}>
-					<SelectImageButton setSelectedImageUrlRef={setImageFile} />
+					<SelectImageButton setSelectedImageUrlRef={setImageURL} />
 				</div>
 				<div className={styles.stroke}>
 					<input type="color" value={obj.borderColor} />

@@ -28,6 +28,7 @@ export const useDeleteHandler = () => {
 					dispatch(deleteSlides(selection.selectedSlides));
 				} else {
 					if (selection.selectedSlides.length == 0) return;
+					console.log('delete objs');
 					dispatch(
 						deleteObjs({ idSlide: selection.selectedSlides[0], ids: selection.selectedObj }),
 					);

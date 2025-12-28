@@ -43,7 +43,7 @@ export const SlideView = (props: SlideProps) => {
 	const slideEl = useRef<HTMLDivElement>(null);
 	const originalStyleRef = useRef({ position: '', top: '', left: '' });
 
-	const objsOnSlide = getReactNodeObjs({ slide, scaleX, scaleY });
+	const objsOnSlide = getReactNodeObjs({ slide, scaleX, scaleY, isSlideShow: false });
 	const styleSlide = getStyleBackground(slide.background);
 	const styleForSelected = isSelected ? styles.slide_selected : ``;
 	const actions = useContext(PresActionContext);

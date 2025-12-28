@@ -1,4 +1,4 @@
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useAppSelector } from '../../../entities/presentation/model/store';
 import { autoSave } from '../../../shared/appwrite/autoSave';
 import { IconButton } from '../../../shared/ui/iconButton';
@@ -10,6 +10,7 @@ import styles from './header.module.css';
 export const Header = () => {
 	const state = useAppSelector(state => state);
 	const navigate = useNavigate();
+	const location = useLocation();
 	return (
 		<div className={styles.header}>
 			<div className={styles.header__presName}>
@@ -31,7 +32,7 @@ export const Header = () => {
 			<div className={styles.header__slideShow}>
 				<IconButton
 					onClick={() => {
-						console.log('Показ слайдов');
+						navigate(location.pathname + '/view');
 					}}
 					className="icon_toolbar_present"
 					icon={<IconPresent />}

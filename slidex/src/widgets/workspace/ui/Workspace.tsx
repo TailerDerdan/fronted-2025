@@ -14,10 +14,11 @@ type WorkspaceProps = {
 	slide: Slide;
 	isToggleOfBack: boolean;
 	setIsToggleOfBack: (state: boolean) => void;
+	isSlideShow: boolean;
 };
 
 export const Workspace = (props: WorkspaceProps) => {
-	const { slide, setIsToggleOfBack, isToggleOfBack } = props;
+	const { slide, setIsToggleOfBack, isToggleOfBack, isSlideShow } = props;
 	const { selectedObj } = useAppSelector(state => state.selection);
 
 	const arrOfInfoObj = useRef<Array<InfoAboutRect>>([]);
@@ -47,6 +48,7 @@ export const Workspace = (props: WorkspaceProps) => {
 		slide,
 		scaleX: SCALE_X,
 		scaleY: SCALE_Y,
+		isSlideShow,
 		onClickImageView: handleClickImage,
 		onClickTextBoxView: handleClickTextBox,
 		selectedObj: selectedObj,
@@ -55,6 +57,7 @@ export const Workspace = (props: WorkspaceProps) => {
 	});
 
 	const styleSlide = slide ? getStyleBackground(slide.background) : {};
+	// console.log(styleSlide, 'workspace');
 
 	return (
 		<div className={styles.wrapper_workspace}>
@@ -85,18 +88,20 @@ export const Workspace = (props: WorkspaceProps) => {
 					{objsOnSlide}
 				</div>
 			</div>
-			<div className={styles.wrapper_workspace__background}>
-				<div className={styles.group_buttons}>
-					<div className={styles.background__button}>
-						<TextButton
-							onClick={() => setIsToggleOfBack(!isToggleOfBack)}
-							className="icon_background"
-						>
-							<span className={styles.button_text}>Фон слайд</span>
-						</TextButton>
+			{!isSlideShow && (
+				<div className={styles.wrapper_workspace__background}>
+					<div className={styles.group_buttons}>
+						<div className={styles.background__button}>
+							<TextButton
+								onClick={() => setIsToggleOfBack(!isToggleOfBack)}
+								className="icon_background"
+							>
+								<span className={styles.button_text}>Фон слайд</span>
+							</TextButton>
+						</div>
 					</div>
 				</div>
-			</div>
+			)}
 		</div>
 	);
 };

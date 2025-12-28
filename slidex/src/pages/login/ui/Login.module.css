@@ -5,7 +5,7 @@
 	justify-content: center;
 	min-height: 100vh;
 	background-color: white;
-	background-image: url('../lib/back.png');
+	background-image: url('../data/back.png');
 	background-repeat: no-repeat;
 	background-size: cover;
 }

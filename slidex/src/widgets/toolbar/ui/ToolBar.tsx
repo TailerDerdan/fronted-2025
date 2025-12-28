@@ -1,20 +1,13 @@
 import { useContext } from 'react';
-import { createImage } from '../../../entities/image/lib/image';
 import { createTextBox } from '../../../entities/text-box/lib/textbox';
 import { createRect } from '../../../shared/model/geometry/rect/model/types';
 import { IconButton } from '../../../shared/ui/iconButton';
-import {
-	FileExportIcon,
-	FileImportIcon,
-	ImageIcon,
-	RedoIcon,
-	TextIcon,
-	UndoIcon,
-} from '../lib/iconComponent';
+import { FileExportIcon, FileImportIcon, RedoIcon, TextIcon, UndoIcon } from '../lib/iconComponent';
 import styles from './toolbar.module.css';
 import { PresActionContext } from '../../../shared/lib/presentationContext';
 import { generateId } from '../../../shared/model/id/Id';
 import { redo, undo } from '../../../entities/history/history';
+import { ImageButton } from '../lib/ImageButton';
 
 export const Toolbar = () => {
 	const actions = useContext(PresActionContext);
@@ -34,17 +27,7 @@ export const Toolbar = () => {
 				</IconButton>
 			</div>
 			<div className={styles.wrapper_button_icon}>
-				<IconButton
-					onClick={() => {
-						const newId = generateId();
-						actions?.addObjOnCurrentSlide(createImage('', createRect(100, 100, 100, 100)), newId);
-						actions?.setSelectedObj(newId);
-					}}
-					className="icon_toolbar"
-					icon={<ImageIcon />}
-				>
-					<p className={styles.text_button_icon}>Медиа</p>
-				</IconButton>
+				<ImageButton />
 			</div>
 			<div className={styles.wrapper_button_icon}>
 				<IconButton

@@ -45,7 +45,7 @@ function deleteObjsImp(
 	let indexInLayers = 0;
 
 	ids.forEach((idObj: Id) => {
-		indexInLayers = slideList[idSlide].layersOfSlide.indexOf(idSlide);
+		indexInLayers = slideList[idSlide].layersOfSlide.indexOf(idObj);
 		if (indexInLayers != -1) {
 			delete slideList[idSlide].objects[idObj];
 			slideList[idSlide].layersOfSlide.splice(indexInLayers, 1);
@@ -140,7 +140,7 @@ function setBackgroundImp(
 	const { idSlide, newBack } = action.payload;
 
 	const currentObjSlide: Slide = slideList[idSlide];
-
+	// console.log(JSON.stringify(currentObjSlide), 'implementation');
 	currentObjSlide.background = newBack;
 
 	slideList[idSlide] = currentObjSlide;

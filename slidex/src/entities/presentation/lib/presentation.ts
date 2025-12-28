@@ -47,6 +47,7 @@ function getSelectedSlides(selectediIdSlides: Array<Id>, slideList: Record<Id, S
 }
 
 function getCurrentSlide(selectediIdSlides: Array<Id>, slideList: Record<Id, Slide>): Slide | undefined {
+	// console.log(selectediIdSlides, slideList, 'getCurrentSlide');
 	if (selectediIdSlides[0]) {
 		return slideList[selectediIdSlides[0]];
 	}

@@ -11,6 +11,7 @@ type PropsForSlideObj = {
 	slide: Slide;
 	scaleX: number;
 	scaleY: number;
+	isSlideShow: boolean;
 	onClickImageView?: (id: Id, event: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
 	onClickTextBoxView?: (id: Id, event: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
 	selectedObj?: Array<Id>;
@@ -23,6 +24,7 @@ export function getReactNodeObjs(props: PropsForSlideObj): Array<ReactNode> {
 		scaleX,
 		scaleY,
 		slide,
+		isSlideShow,
 		onClickImageView,
 		onClickTextBoxView,
 		selectedObj,
@@ -35,7 +37,7 @@ export function getReactNodeObjs(props: PropsForSlideObj): Array<ReactNode> {
 	const objsOnSlide: Array<ReactNode> = slide.layersOfSlide.map((elem: string) => {
 		const objOnSlide = slide.objects[elem];
 		isSelected = false;
-		if (selectedObj && selectedObj.indexOf(elem) >= 0) {
+		if (!isSlideShow && selectedObj && selectedObj.indexOf(elem) >= 0) {
 			isSelected = true;
 		}
 		if (objOnSlide?.type == 'image') {
@@ -80,13 +82,13 @@ export function getReactNodeObjs(props: PropsForSlideObj): Array<ReactNode> {
 }
 
 export function getStyleBackground(background: Background): React.CSSProperties {
-	if (background && typeof background === 'object' && 'src' in background) {
+	// console.log(background, 'ewew');
+	if (background[0] == '#') {
 		return {
-			background: `center / cover no-repeat url("${background.src}")`,
-		};
-	} else {
-		return {
-			background: background,
+			backgroundColor: `${background}`,
 		};
 	}
+	return {
+		background: `center / cover no-repeat url("${background}")`,
+	};
 }

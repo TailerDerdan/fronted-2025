@@ -1,6 +1,6 @@
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
 import styles from './sidebar.module.css';
-import { setFileImage } from '../../../entities/image/lib/image';
+import { setSrcImage } from '../../../entities/image/lib/image';
 import { Background } from '../../../shared/model/background/Background';
 import { SettingsBack } from './SettingBack';
 import { SettingsObj } from './SettingObj';
@@ -17,10 +17,9 @@ type SidebarProps = {
 export const Sidebar = (props: SidebarProps) => {
 	const { isToggleOfBack } = props;
 
-	const [newBack, setBack] = useState('fff');
-	const [imageFileBack, setImageFileBack] = useState<File>();
+	const [URLBack, setURLBack] = useState<Background>('#fff');
 
-	const [imageFile, setImageFile] = useState<File>();
+	const [imageFile, setImageFile] = useState<string>();
 
 	const [objId, setObjId] = useState<Id>('');
 	const [selectedImage, setSelectedImage] = useState<Image | null>(null);
@@ -39,13 +38,7 @@ export const Sidebar = (props: SidebarProps) => {
 			if (obj && obj.type == 'image') {
 				setSelectedImage(obj);
 				setObjId(selection.selectedObj[0]);
-				// if (obj.src.length > 0 && imageFile && window.URL.createObjectURL(imageFile).length == 0) {
-				// 	setImageFile(obj.file);
-				// }
 			}
-		}
-		if (!isToggleOfBack) {
-			actions?.setBackground(newBack);
 		}
 		if (isToggle || isToggleOfBack) {
 			setClasses(`${styles.sidebar} ${styles.sidebar_open}`);
@@ -56,29 +49,37 @@ export const Sidebar = (props: SidebarProps) => {
 
 	useEffect(() => {
 		if (imageFile) {
-			actions?.updateImage(objId, setFileImage(imageFile, selectedImage!));
+			actions?.updateImage(objId, setSrcImage(imageFile, selectedImage!));
 		}
 	}, [imageFile]);
 
+	const currentSlideIdRef = useRef<string | null>(null);
+
 	useEffect(() => {
-		if (imageFileBack) {
-			const newBack: Background = {
-				src: window.URL.createObjectURL(imageFileBack),
-			};
-			actions?.setBackground(newBack);
+		if (currentSlide) {
+			if (selection.selectedSlides[0] !== currentSlideIdRef.current) {
+				currentSlideIdRef.current = selection.selectedSlides[0];
+				setURLBack(currentSlide.background);
+			}
 		}
-	}, [imageFileBack]);
+	}, [selection.selectedSlides[0], currentSlide]);
+
+	const handleBackgroundChange = (newBackground: Background) => {
+		if (actions?.setBackground && currentSlide && currentSlide.background !== newBackground) {
+			actions.setBackground(newBackground);
+		}
+	};
 
 	const obj = currentSlide ? currentSlide.objects[selection.selectedObj[0]] : undefined;
 
 	return (
 		<div className={classes}>
-			{isToggle && <SettingsObj obj={obj} setImageFile={setImageFile} />}
+			{isToggle && <SettingsObj obj={obj} setImageURL={setImageFile} />}
 			{isToggleOfBack && currentSlide && (
 				<SettingsBack
-					background={currentSlide.background}
-					setImageFileBack={setImageFileBack}
-					setBackground={setBack}
+					background={URLBack}
+					setURLBack={setURLBack}
+					onBackgroundChange={handleBackgroundChange}
 				/>
 			)}
 		</div>

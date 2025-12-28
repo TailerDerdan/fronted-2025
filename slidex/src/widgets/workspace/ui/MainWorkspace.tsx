@@ -19,6 +19,7 @@ export const MainWorkspace = (props: PorpsWorkSpace) => {
 					slide={currentSlide}
 					isToggleOfBack={isToggleOfBack}
 					setIsToggleOfBack={setIsToggleOfBack}
+					isSlideShow={false}
 				/>
 			) : (
 				<EmptyWorkspace />
