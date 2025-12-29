@@ -24,6 +24,13 @@ function setSrcImage(src: string, image: Image): Image {
 	};
 }
 
+function setIdImage(id: string, image: Image): Image {
+	return {
+		...image,
+		id: id,
+	};
+}
+
 function setFileImage(file: File, image: Image): Image {
 	return {
 		...image,
@@ -83,4 +90,5 @@ export {
 	setXImage,
 	setYImage,
 	setFileImage,
+	setIdImage,
 };

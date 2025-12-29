@@ -82,13 +82,13 @@ export function getReactNodeObjs(props: PropsForSlideObj): Array<ReactNode> {
 }
 
 export function getStyleBackground(background: Background): React.CSSProperties {
-	// console.log(background, 'ewew');
-	if (background[0] == '#') {
+	console.log(background, 'ewew');
+	if (background.src[0] == '#') {
 		return {
-			backgroundColor: `${background}`,
+			backgroundColor: `${background.src}`,
 		};
 	}
 	return {
-		background: `center / cover no-repeat url("${background}")`,
+		background: `center / cover no-repeat url("${background.src}")`,
 	};
 }

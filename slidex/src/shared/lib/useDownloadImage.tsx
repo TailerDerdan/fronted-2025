@@ -3,13 +3,12 @@ import { createFile, getFileURL } from '../appwrite/storage';
 
 type downloadImageProps = {
 	inputRef: RefObject<HTMLInputElement>;
-	setSelectedImageUrlRef: (URL: string) => void;
-	setIdImage: (id: string) => void;
+	setSelectedImageUrlRef: (newBack: { URL: string; id: string }) => void;
 };
 
 //вынести функции saveImageToStorage в отдельный файл
 export const useDownloadImage = (props: downloadImageProps) => {
-	const { inputRef, setSelectedImageUrlRef, setIdImage } = props;
+	const { inputRef, setSelectedImageUrlRef } = props;
 
 	const selectedImageUrlRef = useRef<string>();
 	const [loading, setLoading] = useState(false);
@@ -30,17 +29,17 @@ export const useDownloadImage = (props: downloadImageProps) => {
 	async function saveImageToStorage(file: File) {
 		const response = await createFile({ file: file });
 		const result = getFileURL(response.$id);
-		setIdImage(response.$id);
-		return result;
+		const newBack = { URL: result, id: response.$id };
+		return newBack;
 	}
 
 	async function updateSelectedImage() {
 		revokeImageUrl();
 		if (inputRef.current && inputRef.current.files) {
 			const image = inputRef.current.files[0];
-			const urlToSave = await saveImageToStorage(image);
-			selectedImageUrlRef.current = urlToSave;
-			setSelectedImageUrlRef(urlToSave);
+			const back = await saveImageToStorage(image);
+			selectedImageUrlRef.current = back.URL;
+			setSelectedImageUrlRef(back);
 		}
 		setLoading(false);
 	}

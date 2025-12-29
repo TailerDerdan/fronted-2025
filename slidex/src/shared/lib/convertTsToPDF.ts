@@ -5,6 +5,7 @@ import { SlidesState } from '../../entities/presentation/model/slideSlice';
 import { TextBox } from '../model/textbox/types';
 import { Image as ImageType } from '../model/image/types';
 import { getFileBlob } from '../appwrite/storage';
+import { Background } from '../model/background/Background';
 
 export const slidesConvertor = async (
 	doc: jsPDF,
@@ -14,12 +15,12 @@ export const slidesConvertor = async (
 ) => {
 	const slideArray = getSlidesArray(slideList);
 	for (const slide of slideArray) {
-		if (slide.background[0] === '#') {
-			doc.setFillColor(slide.background);
-			doc.setDrawColor(slide.background);
+		if (slide.background.src[0] === '#') {
+			doc.setFillColor(slide.background.src);
+			doc.setDrawColor(slide.background.src);
 			doc.rect(0, 0, slideSize.width, slideSize.height, 'F');
 		} else {
-			await doc.addImage(slide.background, 'png', 0, 0, toPt(slideSize.width), toPt(slideSize.height));
+			await imageBackground(slide.background, doc, slideSize);
 		}
 
 		const elemArray = getArrayElementsOnLayers(slide);
@@ -39,6 +40,32 @@ const slideElemConvertor = async (obj: SlideObj, doc: jsPDF, scaleConst: number)
 		case 'textbox':
 			await textCovertor(obj, doc, scaleConst);
 			break;
+	}
+};
+
+const imageBackground = async (
+	background: Background,
+	doc: jsPDF,
+	slideSize: { width: number; height: number },
+) => {
+	try {
+		const file = await getFileBlob(background.id);
+		const blobUrl = URL.createObjectURL(file);
+		const img = new Image();
+		img.src = blobUrl;
+		await new Promise<void>((resolve, reject) => {
+			img.onload = () => {
+				doc.addImage(img, 'PNG', 0, 0, toPt(slideSize.width), toPt(slideSize.height));
+				URL.revokeObjectURL(blobUrl);
+				resolve();
+			};
+
+			img.onerror = () => {
+				reject(new Error('Ошибка загрузки изображения'));
+			};
+		});
+	} catch (error) {
+		console.error('Ошибка при загрузке изображения:', error);
 	}
 };
 

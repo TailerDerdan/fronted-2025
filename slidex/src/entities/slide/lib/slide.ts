@@ -4,18 +4,22 @@ import { Id } from '../../../shared/model/id/Id';
 import { Color } from '../../../shared/model/color/Color';
 import { Image } from '../../../shared/model/image/types';
 import { TextBox } from '../../../shared/model/textbox/types';
+import { Background } from '../../../shared/model/background/Background';
 
 const objForColor = {
-	color: '#fff',
+	color: '#ffffff',
 };
 
 function createSlide(): Slide {
-	const currentColor = objForColor.color;
+	const back: Background = {
+		src: objForColor.color,
+		id: '',
+	};
 	// objForColor.color = getNextDarkerColor(objForColor.color, -20);
 	return {
 		objects: {},
 		layersOfSlide: [],
-		background: currentColor,
+		background: back,
 	};
 }
 
@@ -68,7 +72,8 @@ function moveObjectToBackground(slide: Slide, id: Id): Slide {
 
 function setBackgroundColor(slide: Slide, color: Color): Slide {
 	const newSlide = { ...slide };
-	newSlide.background = color;
+	newSlide.background.src = color;
+	newSlide.background.id = '';
 	return newSlide;
 }
 

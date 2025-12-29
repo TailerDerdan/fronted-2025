@@ -1,6 +1,6 @@
 import { useContext, useEffect, useRef, useState } from 'react';
 import styles from './sidebar.module.css';
-import { setSrcImage } from '../../../entities/image/lib/image';
+import { setIdImage, setSrcImage } from '../../../entities/image/lib/image';
 import { Background } from '../../../shared/model/background/Background';
 import { SettingsBack } from './SettingBack';
 import { SettingsObj } from './SettingObj';
@@ -17,9 +17,9 @@ type SidebarProps = {
 export const Sidebar = (props: SidebarProps) => {
 	const { isToggleOfBack } = props;
 
-	const [URLBack, setURLBack] = useState<Background>('#fff');
+	const [URLBack, setURLBack] = useState<Background>({ src: '#fff', id: '' });
 
-	const [imageFile, setImageFile] = useState<string>();
+	const [imageFile, setImageFile] = useState<{ URL: string; id: string }>();
 
 	const [objId, setObjId] = useState<Id>('');
 	const [selectedImage, setSelectedImage] = useState<Image | null>(null);
@@ -49,7 +49,7 @@ export const Sidebar = (props: SidebarProps) => {
 
 	useEffect(() => {
 		if (imageFile) {
-			actions?.updateImage(objId, setSrcImage(imageFile, selectedImage!));
+			actions?.updateImage(objId, setIdImage(imageFile.id, setSrcImage(imageFile.URL, selectedImage!)));
 		}
 	}, [imageFile]);
 

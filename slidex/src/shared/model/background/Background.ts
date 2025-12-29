@@ -1,1 +1,4 @@
-export type Background = string;
+export type Background = {
+	src: string;
+	id: string;
+};

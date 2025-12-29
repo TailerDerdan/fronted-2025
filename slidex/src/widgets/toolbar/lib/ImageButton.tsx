@@ -9,8 +9,7 @@ import { createImage } from '../../../entities/image/lib/image';
 import { createRect } from '../../../shared/model/geometry/rect/model/types';
 
 export function ImageButton() {
-	const [imageFile, setImageFile] = useState<string>();
-	const [idImage, setIdImage] = useState<string>('');
+	const [imageFile, setImageFile] = useState<{ URL: string; id: string }>({ URL: '', id: '' });
 	const inputRef = useRef<HTMLInputElement>(null);
 
 	const actions = useContext(PresActionContext);
@@ -18,16 +17,15 @@ export function ImageButton() {
 	const { revokeImageUrl, openSelectImageModal, loading, updateSelectedImage } = useDownloadImage({
 		inputRef,
 		setSelectedImageUrlRef: setImageFile,
-		setIdImage,
 	});
 
 	useEffect(() => revokeImageUrl, [revokeImageUrl]);
 
 	useEffect(() => {
-		if (imageFile) {
+		if (imageFile.URL) {
 			const newId = generateId();
 			actions?.addObjOnCurrentSlide(
-				createImage(imageFile, idImage, createRect(100, 100, 100, 100)),
+				createImage(imageFile.URL, imageFile.id, createRect(100, 100, 100, 100)),
 				newId,
 			);
 			setTimeout(() => {

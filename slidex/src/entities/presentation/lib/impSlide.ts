@@ -140,7 +140,6 @@ function setBackgroundImp(
 	const { idSlide, newBack } = action.payload;
 
 	const currentObjSlide: Slide = slideList[idSlide];
-	// console.log(JSON.stringify(currentObjSlide), 'implementation');
 	currentObjSlide.background = newBack;
 
 	slideList[idSlide] = currentObjSlide;

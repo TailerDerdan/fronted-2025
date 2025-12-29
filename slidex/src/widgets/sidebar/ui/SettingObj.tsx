@@ -4,7 +4,7 @@ import styles from './sidebar.module.css';
 
 type PropsSettingsObj = {
 	obj: SlideObj | undefined;
-	setImageURL: (URL: string) => void;
+	setImageURL: (back: { URL: string; id: string }) => void;
 };
 
 export const SettingsObj = (props: PropsSettingsObj) => {

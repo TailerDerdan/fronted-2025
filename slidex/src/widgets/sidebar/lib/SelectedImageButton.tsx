@@ -4,7 +4,7 @@ import styles from './SelectedImageButton.module.css';
 import { useDownloadImage } from '../../../shared/lib/useDownloadImage';
 
 type SelectedImageButtonProps = {
-	setSelectedImageUrlRef: (URL: string) => void;
+	setSelectedImageUrlRef: (newBack: { URL: string; id: string }) => void;
 };
 
 export function SelectImageButton(props: SelectedImageButtonProps) {

@@ -12,7 +12,12 @@ import { Alignment } from '../../../shared/model/alignment/Alignment';
 const ajv = new Ajv();
 
 const backgroundSchema: JSONSchemaType<Background> = {
-	type: 'string',
+	type: 'object',
+	properties: {
+		src: { type: 'string' },
+		id: { type: 'string' },
+	},
+	required: ['src', 'id'],
 };
 
 const rectSchema: JSONSchemaType<Rect> = {
