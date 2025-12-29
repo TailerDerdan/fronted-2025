@@ -1,5 +1,5 @@
 import { RefObject, useCallback, useRef, useState } from 'react';
-import { createFile, getFileURL } from '../appwrite/storage';
+import { saveImageToStorage } from '../appwrite/storage';
 
 type downloadImageProps = {
 	inputRef: RefObject<HTMLInputElement>;
@@ -24,13 +24,6 @@ export const useDownloadImage = (props: downloadImageProps) => {
 			setLoading(true);
 			inputRef.current.click();
 		}
-	}
-
-	async function saveImageToStorage(file: File) {
-		const response = await createFile({ file: file });
-		const result = getFileURL(response.$id);
-		const newBack = { URL: result, id: response.$id };
-		return newBack;
 	}
 
 	async function updateSelectedImage() {

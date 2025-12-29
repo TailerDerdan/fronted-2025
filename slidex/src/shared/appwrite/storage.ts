@@ -37,3 +37,10 @@ export const deleteFile = (id: string) => {
 		fileId: id,
 	});
 };
+
+export async function saveImageToStorage(file: File) {
+	const response = await createFile({ file: file });
+	const result = getFileURL(response.$id);
+	const newBack = { URL: result, id: response.$id };
+	return newBack;
+}
