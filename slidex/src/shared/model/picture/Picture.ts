@@ -1,10 +1,12 @@
 type Picture = {
 	src: string;
+	id: string;
 };
 
-function createPicture(src: string): Picture {
+function createPicture(src: string, id: string): Picture {
 	return {
 		src: src,
+		id: id,
 	};
 }
 

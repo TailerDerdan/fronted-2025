@@ -68,6 +68,7 @@ const imageSchema: JSONSchemaType<Image> = {
 	properties: {
 		type: { type: 'string', const: 'image' },
 		src: { type: 'string' },
+		id: { type: 'string' },
 		rect: rectSchema,
 		borderColor: { type: 'string' },
 	},

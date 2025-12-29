@@ -4,11 +4,12 @@ import { createFile, getFileURL } from '../appwrite/storage';
 type downloadImageProps = {
 	inputRef: RefObject<HTMLInputElement>;
 	setSelectedImageUrlRef: (URL: string) => void;
+	setIdImage: (id: string) => void;
 };
 
 //вынести функции saveImageToStorage в отдельный файл
 export const useDownloadImage = (props: downloadImageProps) => {
-	const { inputRef, setSelectedImageUrlRef } = props;
+	const { inputRef, setSelectedImageUrlRef, setIdImage } = props;
 
 	const selectedImageUrlRef = useRef<string>();
 	const [loading, setLoading] = useState(false);
@@ -29,7 +30,7 @@ export const useDownloadImage = (props: downloadImageProps) => {
 	async function saveImageToStorage(file: File) {
 		const response = await createFile({ file: file });
 		const result = getFileURL(response.$id);
-		console.log(result, 'url - save image');
+		setIdImage(response.$id);
 		return result;
 	}
 

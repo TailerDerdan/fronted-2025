@@ -7,10 +7,11 @@ import {
 } from '../../../shared/model/geometry/rect/model/types';
 import { Image } from '../../../shared/model/image/types';
 
-function createImage(src: string, rect: Rect): Image {
+function createImage(src: string, id: string, rect: Rect): Image {
 	return {
 		type: 'image',
 		src: src,
+		id: id,
 		rect: rect,
 		borderColor: '',
 	};

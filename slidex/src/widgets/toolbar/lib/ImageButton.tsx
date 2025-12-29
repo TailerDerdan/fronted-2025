@@ -10,6 +10,7 @@ import { createRect } from '../../../shared/model/geometry/rect/model/types';
 
 export function ImageButton() {
 	const [imageFile, setImageFile] = useState<string>();
+	const [idImage, setIdImage] = useState<string>('');
 	const inputRef = useRef<HTMLInputElement>(null);
 
 	const actions = useContext(PresActionContext);
@@ -17,6 +18,7 @@ export function ImageButton() {
 	const { revokeImageUrl, openSelectImageModal, loading, updateSelectedImage } = useDownloadImage({
 		inputRef,
 		setSelectedImageUrlRef: setImageFile,
+		setIdImage,
 	});
 
 	useEffect(() => revokeImageUrl, [revokeImageUrl]);
@@ -24,7 +26,10 @@ export function ImageButton() {
 	useEffect(() => {
 		if (imageFile) {
 			const newId = generateId();
-			actions?.addObjOnCurrentSlide(createImage(imageFile, createRect(100, 100, 100, 100)), newId);
+			actions?.addObjOnCurrentSlide(
+				createImage(imageFile, idImage, createRect(100, 100, 100, 100)),
+				newId,
+			);
 			setTimeout(() => {
 				actions?.setSelectedObj(newId);
 			}, 1000);
