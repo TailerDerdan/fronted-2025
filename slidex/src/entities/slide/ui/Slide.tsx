@@ -44,7 +44,6 @@ export const SlideView = (props: SlideProps) => {
 	const originalStyleRef = useRef({ position: '', top: '', left: '' });
 
 	const objsOnSlide = getReactNodeObjs({ slide, scaleX, scaleY, isSlideShow: false });
-	console.log(slide, 'slideview');
 	const styleSlide = getStyleBackground(slide.background);
 	const styleForSelected = isSelected ? styles.slide_selected : ``;
 	const actions = useContext(PresActionContext);

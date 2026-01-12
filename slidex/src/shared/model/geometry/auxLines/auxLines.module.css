@@ -1,0 +1,19 @@
+.aux_line {
+	position: absolute;
+	pointer-events: none;
+	z-index: 1000;
+}
+
+.vertical {
+	width: 1px;
+	height: 100%;
+	top: 0;
+	background: repeating-linear-gradient(to bottom, red 0, red 2px, transparent 2px, transparent 4px);
+}
+
+.horizontal {
+	height: 1px;
+	width: 100%;
+	left: 0;
+	background: repeating-linear-gradient(to right, red 0, red 2px, transparent 2px, transparent 4px);
+}

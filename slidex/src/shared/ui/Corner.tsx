@@ -11,12 +11,15 @@ type PropsCorner = {
 	rect: Rect;
 	rectEl: MutableRefObject<HTMLDivElement | null>;
 	updateDataRect?: (idObj: Id, newRect: Rect) => void;
+	setIsMoving: (state: boolean) => void;
+	setIsResizing: (state: boolean) => void;
+	onChangeRect?: (newRect: Rect) => void;
 };
 
 export const MARGIN_CORNER = 10;
 
 export const Corner = (props: PropsCorner) => {
-	const { type, rectEl, rect, updateDataRect, idRect } = props;
+	const { type, rectEl, rect, updateDataRect, idRect, setIsMoving, setIsResizing, onChangeRect } = props;
 	const cornerRef = useRef(null);
 
 	let style: string = '';
@@ -57,6 +60,9 @@ export const Corner = (props: PropsCorner) => {
 		rect: rect,
 		updateRectOnEnd: updateDataRect,
 		idRect: idRect,
+		setIsMoving: setIsMoving,
+		setIsResizing: setIsResizing,
+		onChangeRect: onChangeRect,
 	});
 
 	return <div className={style} ref={cornerRef} />;

@@ -67,6 +67,8 @@ type PropsDragAndDrop = {
 
 	stateEditing?: boolean;
 	arrOfInfoObj?: MutableRefObject<Array<InfoAboutRect>>;
+
+	setIsMoving?: (state: boolean) => void;
 };
 
 export const useDragAndDrop = (props: PropsDragAndDrop) => {
@@ -83,6 +85,7 @@ export const useDragAndDrop = (props: PropsDragAndDrop) => {
 		handleDetectTarget,
 		infoSelectedSlides,
 		sizeOfSlides,
+		setIsMoving,
 	} = props;
 
 	const startsCoord = useRef({ x: 0, y: 0 });
@@ -150,6 +153,10 @@ export const useDragAndDrop = (props: PropsDragAndDrop) => {
 				if (isNaN(deltaX) || isNaN(deltaY)) {
 					console.error('invalid:', deltaX, deltaY);
 					return;
+				}
+
+				if (setIsMoving && Math.abs(deltaX) >= 0.01 && Math.abs(deltaY) >= 0.01) {
+					setIsMoving(true);
 				}
 
 				if (infoSelectedSlides?.current) {
@@ -225,6 +232,10 @@ export const useDragAndDrop = (props: PropsDragAndDrop) => {
 
 			const onDrop = (event: MouseEvent) => {
 				if (isObjOnSlideBar) return;
+
+				if (setIsMoving) {
+					setIsMoving(false);
+				}
 
 				window.removeEventListener('mouseup', onDrop);
 				window.removeEventListener('mousemove', onDragging);

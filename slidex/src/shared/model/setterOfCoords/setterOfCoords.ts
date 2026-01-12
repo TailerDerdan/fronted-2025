@@ -8,6 +8,7 @@ export type InfoAboutRect = {
 	id: Id;
 	refObj: MutableRefObject<HTMLDivElement | null>;
 	coordsObj: { x: number; y: number };
+	size: { width: number; height: number };
 	setCoordsObj: SetCoordsFn;
 	onEnd: (args: OnEndArgs) => void;
 };

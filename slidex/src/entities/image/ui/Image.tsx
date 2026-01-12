@@ -13,10 +13,24 @@ type ImageProps = Image & {
 	isSelected?: boolean;
 	handleUpdateRect?: (idObj: Id, newRect: Rect) => void;
 	arrOfInfoObj?: MutableRefObject<Array<InfoAboutRect>>;
+	allRects?: Record<Id, Rect>;
+	movingRects?: Record<Id, Rect>;
 };
 
 export const ImageView = (props: ImageProps) => {
-	const { rect, src, scaleX, scaleY, onClick, id, isSelected, handleUpdateRect, arrOfInfoObj } = props;
+	const {
+		rect,
+		src,
+		scaleX,
+		scaleY,
+		onClick,
+		id,
+		isSelected,
+		handleUpdateRect,
+		arrOfInfoObj,
+		allRects,
+		movingRects,
+	} = props;
 
 	const styleForImage: CSSProperties = {
 		width: '100%',
@@ -33,6 +47,8 @@ export const ImageView = (props: ImageProps) => {
 			isSelected={isSelected}
 			dispatchUpdateObject={handleUpdateRect}
 			arrOfInfoObj={arrOfInfoObj}
+			allRects={allRects}
+			movingRects={movingRects}
 		>
 			<img src={src} alt="image" style={styleForImage} />
 		</RectView>

@@ -21,6 +21,7 @@
 	width: 93.0485969%;
 	height: 36.787028074vw;
 	position: relative;
+	overflow: visible;
 }
 
 .wrapper_workspace__background {

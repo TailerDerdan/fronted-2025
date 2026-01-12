@@ -34,6 +34,33 @@ export function getReactNodeObjs(props: PropsForSlideObj): Array<ReactNode> {
 
 	let isSelected: boolean = false;
 
+	const allObjects: Record<Id, Rect> = {};
+	Object.entries(slide.objects).forEach(([id, slideObj]) => {
+		allObjects[id as Id] = {
+			x: slideObj.rect.x,
+			y: slideObj.rect.y,
+			width: slideObj.rect.width,
+			height: slideObj.rect.height,
+		};
+	});
+
+	const selectedRects: Record<Id, Rect> = selectedObj
+		? selectedObj.reduce(
+				(acc, id) => {
+					if (id in slide.objects) {
+						acc[id as Id] = {
+							x: slide.objects[id].rect.x,
+							y: slide.objects[id].rect.y,
+							width: slide.objects[id].rect.width,
+							height: slide.objects[id].rect.height,
+						};
+					}
+					return acc;
+				},
+				{} as Record<Id, Rect>,
+			)
+		: {};
+
 	const objsOnSlide: Array<ReactNode> = slide.layersOfSlide.map((elem: string) => {
 		const objOnSlide = slide.objects[elem];
 		isSelected = false;
@@ -55,6 +82,8 @@ export function getReactNodeObjs(props: PropsForSlideObj): Array<ReactNode> {
 					isSelected={isSelected}
 					handleUpdateRect={handleUpdateRect}
 					arrOfInfoObj={arrOfInfoObj}
+					allRects={allObjects}
+					movingRects={selectedRects}
 				/>
 			);
 		}
@@ -82,7 +111,6 @@ export function getReactNodeObjs(props: PropsForSlideObj): Array<ReactNode> {
 }
 
 export function getStyleBackground(background: Background): React.CSSProperties {
-	console.log(background, 'ewew');
 	if (background.src[0] == '#') {
 		return {
 			backgroundColor: `${background.src}`,

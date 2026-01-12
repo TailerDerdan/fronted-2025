@@ -1,4 +1,4 @@
-import { MutableRefObject, useCallback, useEffect, useLayoutEffect, useState } from 'react';
+import { MutableRefObject, useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { OnEndArgs, useDragAndDrop } from './useDragAndDrop';
 import { Rect } from '../model/geometry/rect/model/types';
 import { TCorner } from '../model/corner/corner';
@@ -11,13 +11,55 @@ type PropsResize = {
 	cornerEl: MutableRefObject<HTMLDivElement | null>;
 	typeCorner: TCorner;
 	rect: Rect;
+	setIsMoving: (state: boolean) => void;
+	setIsResizing: (state: boolean) => void;
 	updateRectOnEnd?: (idObj: Id, newRect: Rect) => void;
+	onChangeRect?: (newRect: Rect) => void;
 };
 
 export const useResize = (props: PropsResize) => {
-	const { idRect, rectEl, typeCorner, cornerEl, rect, updateRectOnEnd } = props;
+	const {
+		idRect,
+		rectEl,
+		typeCorner,
+		cornerEl,
+		rect,
+		updateRectOnEnd,
+		setIsMoving,
+		setIsResizing,
+		onChangeRect,
+	} = props;
 	const [coordsOfCorner, setCoordsOfCorner] = useState({ x: 0, y: 0 });
 	const [newRect, setNewRect] = useState({ ...rect });
+
+	useEffect(() => {
+		if (coordsOfCorner.x === 0 && coordsOfCorner.y === 0) {
+			const rectChanged =
+				rect.x !== newRect.x ||
+				rect.y !== newRect.y ||
+				rect.width !== newRect.width ||
+				rect.height !== newRect.height;
+
+			if (rectChanged) {
+				setNewRect({ ...rect });
+			}
+		}
+	}, [rect, coordsOfCorner.x, coordsOfCorner.y, newRect]);
+
+	const isInitialMount = useRef(true);
+
+	useEffect(() => {
+		if (isInitialMount.current) {
+			isInitialMount.current = false;
+			return;
+		}
+
+		if (coordsOfCorner.x !== 0 || coordsOfCorner.y !== 0) {
+			setIsResizing(true);
+		} else {
+			setTimeout(() => setIsResizing(false), 0);
+		}
+	}, [coordsOfCorner]);
 
 	const updateStyleCorner = (cornerEl: MutableRefObject<HTMLDivElement | null>, typeCorner: TCorner) => {
 		if (!cornerEl.current) return;
@@ -194,12 +236,15 @@ export const useResize = (props: PropsResize) => {
 			if ('newPos' in args) return;
 			if (!updateRectOnEnd) return;
 			const { x, y } = args;
+
 			const updatedRect = calcNewRect(rect, { x: x, y: y }, typeCorner);
+
 			updateRectOnEnd(idRect, updatedRect);
 			setNewRect(updatedRect);
 			setCoordsOfCorner({ x: 0, y: 0 });
+			setIsResizing(false);
 		},
-		[rect, typeCorner],
+		[rect, typeCorner, updateRectOnEnd, idRect],
 	);
 
 	useDragAndDrop({
@@ -210,6 +255,7 @@ export const useResize = (props: PropsResize) => {
 		isObjOnSlideBar: false,
 		onEnd: stableOnEnd,
 		typeCorner: typeCorner,
+		setIsMoving: setIsMoving,
 	});
 
 	useLayoutEffect(() => {
@@ -222,7 +268,20 @@ export const useResize = (props: PropsResize) => {
 		}
 	}, [newRect, setNewRect]);
 
+	const baseRectRef = useRef(rect);
 	useEffect(() => {
-		setNewRect(calcNewRect(rect, coordsOfCorner, typeCorner));
-	}, [coordsOfCorner, rect, typeCorner]);
+		if (coordsOfCorner.x === 0 && coordsOfCorner.y === 0) {
+			baseRectRef.current = rect;
+		}
+	}, [rect, coordsOfCorner.x, coordsOfCorner.y]);
+
+	useEffect(() => {
+		if (coordsOfCorner.x == 0 && coordsOfCorner.y == 0) return;
+
+		const calculatedRect = calcNewRect(baseRectRef.current, coordsOfCorner, typeCorner);
+		setNewRect(calculatedRect);
+		if (onChangeRect) {
+			onChangeRect(calculatedRect);
+		}
+	}, [coordsOfCorner, typeCorner, onChangeRect]);
 };
