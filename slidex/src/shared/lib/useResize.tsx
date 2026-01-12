@@ -4,6 +4,8 @@ import { Rect } from '../model/geometry/rect/model/types';
 import { TCorner } from '../model/corner/corner';
 import { MARGIN_CORNER } from '../ui/Corner';
 import { Id } from '../model/id/Id';
+import { snapToLines } from '../model/geometry/auxLines/AuxLines';
+import { AuxLine } from '../model/geometry/auxLines/model/auxLine';
 
 type PropsResize = {
 	idRect: Id;
@@ -15,6 +17,7 @@ type PropsResize = {
 	setIsResizing: (state: boolean) => void;
 	updateRectOnEnd?: (idObj: Id, newRect: Rect) => void;
 	onChangeRect?: (newRect: Rect) => void;
+	auxLines?: AuxLine[];
 };
 
 export const useResize = (props: PropsResize) => {
@@ -28,6 +31,7 @@ export const useResize = (props: PropsResize) => {
 		setIsMoving,
 		setIsResizing,
 		onChangeRect,
+		auxLines,
 	} = props;
 	const [coordsOfCorner, setCoordsOfCorner] = useState({ x: 0, y: 0 });
 	const [newRect, setNewRect] = useState({ ...rect });
@@ -238,9 +242,10 @@ export const useResize = (props: PropsResize) => {
 			const { x, y } = args;
 
 			const updatedRect = calcNewRect(rect, { x: x, y: y }, typeCorner);
+			const snappedRect = snapToLines(updatedRect, auxLines);
 
-			updateRectOnEnd(idRect, updatedRect);
-			setNewRect(updatedRect);
+			updateRectOnEnd(idRect, snappedRect);
+			setNewRect(snappedRect);
 			setCoordsOfCorner({ x: 0, y: 0 });
 			setIsResizing(false);
 		},
@@ -279,9 +284,10 @@ export const useResize = (props: PropsResize) => {
 		if (coordsOfCorner.x == 0 && coordsOfCorner.y == 0) return;
 
 		const calculatedRect = calcNewRect(baseRectRef.current, coordsOfCorner, typeCorner);
-		setNewRect(calculatedRect);
+		const snappedRect = snapToLines(calculatedRect, auxLines);
+		setNewRect(snappedRect);
 		if (onChangeRect) {
-			onChangeRect(calculatedRect);
+			onChangeRect(snappedRect);
 		}
 	}, [coordsOfCorner, typeCorner, onChangeRect]);
 };

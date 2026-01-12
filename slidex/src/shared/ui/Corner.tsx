@@ -4,6 +4,7 @@ import styles from './corner.module.css';
 import { TCorner } from '../model/corner/corner';
 import { Rect } from '../model/geometry/rect/model/types';
 import { Id } from '../model/id/Id';
+import { AuxLine } from '../model/geometry/auxLines/model/auxLine';
 
 type PropsCorner = {
 	idRect: Id;
@@ -14,12 +15,14 @@ type PropsCorner = {
 	setIsMoving: (state: boolean) => void;
 	setIsResizing: (state: boolean) => void;
 	onChangeRect?: (newRect: Rect) => void;
+	auxLines?: AuxLine[];
 };
 
 export const MARGIN_CORNER = 10;
 
 export const Corner = (props: PropsCorner) => {
-	const { type, rectEl, rect, updateDataRect, idRect, setIsMoving, setIsResizing, onChangeRect } = props;
+	const { type, rectEl, rect, updateDataRect, idRect, setIsMoving, setIsResizing, onChangeRect, auxLines } =
+		props;
 	const cornerRef = useRef(null);
 
 	let style: string = '';
@@ -63,6 +66,7 @@ export const Corner = (props: PropsCorner) => {
 		setIsMoving: setIsMoving,
 		setIsResizing: setIsResizing,
 		onChangeRect: onChangeRect,
+		auxLines: auxLines,
 	});
 
 	return <div className={style} ref={cornerRef} />;

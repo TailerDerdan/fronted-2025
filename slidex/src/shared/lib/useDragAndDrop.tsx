@@ -1,43 +1,8 @@
 import { MutableRefObject, useEffect, useLayoutEffect, useRef } from 'react';
 import { TCorner } from '../model/corner/corner';
 import { InfoAboutRect, InfoAboutSlide } from '../model/setterOfCoords/setterOfCoords';
-
-const getCorrectPositions = (
-	infoSelectedSlides: MutableRefObject<Array<InfoAboutSlide>>,
-	totalSlidesCount: number,
-) => {
-	if (infoSelectedSlides.current.length == 0) return;
-	const sortedSelectedSlides = infoSelectedSlides.current.sort(
-		(a, b) => a.fromIndexOfSlide - b.fromIndexOfSlide,
-	);
-	const firstInsertIndex = sortedSelectedSlides[0].toIndexOfSlide;
-	const isPosAfterForFirstInsertIndex = sortedSelectedSlides[0].positionAroundOfToIndex === 'after';
-
-	const nonSelectedIndexes = Array.from({ length: totalSlidesCount }, (value, index) => index).filter(
-		index => !sortedSelectedSlides.some(slide => slide.fromIndexOfSlide === index),
-	);
-
-	let firstInsertPos = nonSelectedIndexes.indexOf(firstInsertIndex);
-	if (firstInsertPos === -1) {
-		firstInsertPos = nonSelectedIndexes.findIndex(index => index > firstInsertIndex);
-		if (firstInsertPos === -1) firstInsertPos = nonSelectedIndexes.length;
-	}
-
-	const minOriginalIndex = sortedSelectedSlides[0].fromIndexOfSlide;
-	let insertPosition = firstInsertPos;
-	if (isPosAfterForFirstInsertIndex) insertPosition++;
-
-	const newOrder = [...nonSelectedIndexes];
-
-	sortedSelectedSlides.forEach(slide => {
-		const offset = slide.fromIndexOfSlide - minOriginalIndex;
-		const newPosition = insertPosition + offset;
-
-		newOrder.splice(newPosition, 0, slide.fromIndexOfSlide);
-
-		slide.toIndexOfSlide = newPosition;
-	});
-};
+import { AuxLine } from '../model/geometry/auxLines/model/auxLine';
+import { snapToLines } from '../model/geometry/auxLines/AuxLines';
 
 export type OnEndArgs = { x: number; y: number } | { newPos: Array<{ fromIndex: number; toIndex: number }> };
 
@@ -69,6 +34,8 @@ type PropsDragAndDrop = {
 	arrOfInfoObj?: MutableRefObject<Array<InfoAboutRect>>;
 
 	setIsMoving?: (state: boolean) => void;
+
+	auxLines?: AuxLine[];
 };
 
 export const useDragAndDrop = (props: PropsDragAndDrop) => {
@@ -86,10 +53,13 @@ export const useDragAndDrop = (props: PropsDragAndDrop) => {
 		infoSelectedSlides,
 		sizeOfSlides,
 		setIsMoving,
+		auxLines,
 	} = props;
 
 	const startsCoord = useRef({ x: 0, y: 0 });
 	const initialCoords = useRef<Array<{ x: number; y: number }>>([]);
+	const auxLinesRef = useRef<AuxLine[]>([]);
+	auxLinesRef.current = auxLines || [];
 
 	useLayoutEffect(() => {
 		if (arrOfInfoObj) {
@@ -200,7 +170,11 @@ export const useDragAndDrop = (props: PropsDragAndDrop) => {
 							const newY = initial.y + deltaY;
 
 							if (!isNaN(newX) && !isNaN(newY)) {
-								elem.setCoordsObj({ x: newX, y: newY });
+								const snappedCoords = snapToLines(
+									{ x: newX, y: newY, width: 0, height: 0 },
+									auxLinesRef.current,
+								);
+								elem.setCoordsObj({ x: snappedCoords.x, y: snappedCoords.y });
 							}
 						}
 					});
@@ -256,8 +230,13 @@ export const useDragAndDrop = (props: PropsDragAndDrop) => {
 						if (initial) {
 							const newX = initial.x + deltaX;
 							const newY = initial.y + deltaY;
+
 							if (!isNaN(newX) && !isNaN(newY)) {
-								elem.onEnd({ x: newX, y: newY });
+								const snappedCoords = snapToLines(
+									{ x: newX, y: newY, width: elem.size.width, height: elem.size.height },
+									auxLinesRef.current,
+								);
+								elem.onEnd({ x: snappedCoords.x, y: snappedCoords.y });
 							}
 						}
 					});
@@ -317,5 +296,42 @@ export const useDragAndDrop = (props: PropsDragAndDrop) => {
 				rectEl.current.removeEventListener('mousedown', onDrag);
 			}
 		};
+	});
+};
+
+const getCorrectPositions = (
+	infoSelectedSlides: MutableRefObject<Array<InfoAboutSlide>>,
+	totalSlidesCount: number,
+) => {
+	if (infoSelectedSlides.current.length == 0) return;
+	const sortedSelectedSlides = infoSelectedSlides.current.sort(
+		(a, b) => a.fromIndexOfSlide - b.fromIndexOfSlide,
+	);
+	const firstInsertIndex = sortedSelectedSlides[0].toIndexOfSlide;
+	const isPosAfterForFirstInsertIndex = sortedSelectedSlides[0].positionAroundOfToIndex === 'after';
+
+	const nonSelectedIndexes = Array.from({ length: totalSlidesCount }, (value, index) => index).filter(
+		index => !sortedSelectedSlides.some(slide => slide.fromIndexOfSlide === index),
+	);
+
+	let firstInsertPos = nonSelectedIndexes.indexOf(firstInsertIndex);
+	if (firstInsertPos === -1) {
+		firstInsertPos = nonSelectedIndexes.findIndex(index => index > firstInsertIndex);
+		if (firstInsertPos === -1) firstInsertPos = nonSelectedIndexes.length;
+	}
+
+	const minOriginalIndex = sortedSelectedSlides[0].fromIndexOfSlide;
+	let insertPosition = firstInsertPos;
+	if (isPosAfterForFirstInsertIndex) insertPosition++;
+
+	const newOrder = [...nonSelectedIndexes];
+
+	sortedSelectedSlides.forEach(slide => {
+		const offset = slide.fromIndexOfSlide - minOriginalIndex;
+		const newPosition = insertPosition + offset;
+
+		newOrder.splice(newPosition, 0, slide.fromIndexOfSlide);
+
+		slide.toIndexOfSlide = newPosition;
 	});
 };

@@ -6,7 +6,8 @@ import styles from './rect.module.css';
 import { OnEndArgs, useDragAndDrop } from '../../../../lib/useDragAndDrop';
 import { InfoAboutRect } from '../../../setterOfCoords/setterOfCoords';
 import { Corner } from '../../../../ui/Corner';
-import { AuxLines } from '../../auxLines/AuxLines';
+import { AuxLines, getAuxLines } from '../../auxLines/AuxLines';
+import { AuxLine } from '../../auxLines/model/auxLine';
 
 type RectProps = {
 	rect: Rect;
@@ -66,12 +67,6 @@ export const RectView = (props: RectProps) => {
 			lastExternalRect.current = rect;
 		}
 	}, [rect]);
-
-	// useEffect(() => {
-	// 	if (!isMoving && !isResizing) {
-	// 		setCurrentRect(rect);
-	// 	}
-	// }, [rect.x, rect.y, rect.width, rect.height, isMoving, isResizing]);
 
 	const handleResizeChange = useCallback(
 		(newRect: Rect) => {
@@ -157,6 +152,51 @@ export const RectView = (props: RectProps) => {
 		isObjOnSlideBar = true;
 	}
 
+	const getAllObjectsRecord = (): Record<string, Rect> => {
+		if (!allRects) return {};
+
+		const result: Record<string, Rect> = {};
+		for (const [objId, objRect] of Object.entries(allRects)) {
+			if ((isMoving || isResizing) && objId === id) {
+				result[objId] = {
+					...objRect,
+					x: coords.x,
+					y: coords.y,
+					width: currentRect.width,
+					height: currentRect.height,
+				};
+			} else {
+				result[objId] = objRect;
+			}
+		}
+		return result;
+	};
+
+	const getMovingObjectsRecord = (): Record<string, Rect> => {
+		if (!movingRects) return {};
+
+		const result: Record<string, Rect> = {};
+		for (const [objId, objRect] of Object.entries(movingRects)) {
+			if (objId === id) {
+				result[objId] = {
+					...objRect,
+					x: coords.x,
+					y: coords.y,
+					width: currentRect.width,
+					height: currentRect.height,
+				};
+			} else {
+				result[objId] = objRect;
+			}
+		}
+		return result;
+	};
+
+	const auxLines: AuxLine[] = getAuxLines({
+		allObjects: getAllObjectsRecord(),
+		movingObjects: getMovingObjectsRecord(),
+	});
+
 	useDragAndDrop({
 		rectEl: rectEl,
 		rectCoords: coords,
@@ -167,6 +207,7 @@ export const RectView = (props: RectProps) => {
 		stateEditing: stateEditing,
 		arrOfInfoObj: arrOfInfoObj,
 		setIsMoving: setIsMoving,
+		auxLines: auxLines,
 	});
 
 	const styleRect = {
@@ -186,51 +227,9 @@ export const RectView = (props: RectProps) => {
 
 	const styleForSelected = isSelected ? styles.obj_selected : ``;
 
-	const getAllObjectsArray = () => {
-		if (!allRects) return [];
-
-		const allObjectsArray = Object.entries(allRects).map(([objId, objRect]) => {
-			if ((isMoving || isResizing) && objId === id) {
-				return {
-					...objRect,
-					x: coords.x,
-					y: coords.y,
-					width: currentRect.width,
-					height: currentRect.height,
-				};
-			}
-			return objRect;
-		});
-
-		return allObjectsArray;
-	};
-
-	const getMovingObjectsArray = () => {
-		if (!movingRects) return [];
-
-		const movingObjectsArray = Object.entries(movingRects).map(([objId, objRect]) => {
-			if (objId === id) {
-				return {
-					...objRect,
-					x: coords.x,
-					y: coords.y,
-					width: currentRect.width,
-					height: currentRect.height,
-				};
-			}
-			return objRect;
-		});
-
-		return movingObjectsArray;
-	};
-
 	return (
 		<>
-			{isMoving || isResizing ? (
-				<AuxLines allObjects={getAllObjectsArray()} movingObjects={getMovingObjectsArray()} />
-			) : (
-				<></>
-			)}
+			{isMoving || isResizing ? <AuxLines auxLines={auxLines} /> : <></>}
 			<div
 				style={styleRect}
 				className={styleForSelected}
@@ -257,6 +256,7 @@ export const RectView = (props: RectProps) => {
 							setIsMoving={setIsMoving}
 							setIsResizing={setIsResizing}
 							onChangeRect={handleResizeChange}
+							auxLines={auxLines}
 						/>
 						<Corner
 							type="top_center"
@@ -267,6 +267,7 @@ export const RectView = (props: RectProps) => {
 							setIsMoving={setIsMoving}
 							setIsResizing={setIsResizing}
 							onChangeRect={handleResizeChange}
+							auxLines={auxLines}
 						/>
 						<Corner
 							type="top_right"
@@ -277,6 +278,7 @@ export const RectView = (props: RectProps) => {
 							setIsMoving={setIsMoving}
 							setIsResizing={setIsResizing}
 							onChangeRect={handleResizeChange}
+							auxLines={auxLines}
 						/>
 						<Corner
 							type="right_center"
@@ -287,6 +289,7 @@ export const RectView = (props: RectProps) => {
 							setIsMoving={setIsMoving}
 							setIsResizing={setIsResizing}
 							onChangeRect={handleResizeChange}
+							auxLines={auxLines}
 						/>
 						<Corner
 							type="bottom_left"
@@ -297,6 +300,7 @@ export const RectView = (props: RectProps) => {
 							setIsMoving={setIsMoving}
 							setIsResizing={setIsResizing}
 							onChangeRect={handleResizeChange}
+							auxLines={auxLines}
 						/>
 						<Corner
 							type="bottom_center"
@@ -307,6 +311,7 @@ export const RectView = (props: RectProps) => {
 							setIsMoving={setIsMoving}
 							setIsResizing={setIsResizing}
 							onChangeRect={handleResizeChange}
+							auxLines={auxLines}
 						/>
 						<Corner
 							type="bottom_right"
@@ -317,6 +322,7 @@ export const RectView = (props: RectProps) => {
 							setIsMoving={setIsMoving}
 							setIsResizing={setIsResizing}
 							onChangeRect={handleResizeChange}
+							auxLines={auxLines}
 						/>
 						<Corner
 							type="left_center"
@@ -327,6 +333,7 @@ export const RectView = (props: RectProps) => {
 							setIsMoving={setIsMoving}
 							setIsResizing={setIsResizing}
 							onChangeRect={handleResizeChange}
+							auxLines={auxLines}
 						/>
 					</>
 				) : (
