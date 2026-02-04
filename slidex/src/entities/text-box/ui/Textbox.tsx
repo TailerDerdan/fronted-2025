@@ -1,10 +1,11 @@
-import { MutableRefObject, useEffect, useRef, useState } from 'react';
+import { MutableRefObject, useContext, useEffect, useRef, useState } from 'react';
 import { Rect } from '../../../shared/model/geometry/rect/model/types';
 import { RectView } from '../../../shared/model/geometry/rect/ui/rect';
 import { Id } from '../../../shared/model/id/Id';
 import { InfoAboutRect } from '../../../shared/model/setterOfCoords/setterOfCoords';
 import { TextBox } from '../../../shared/model/textbox/types';
-// import { TextView } from './Text';
+import Tiptap from './TipTap';
+import { PresActionContext } from '../../../shared/lib/presentationContext';
 
 type TextboxProps = TextBox & {
 	scaleX: number;
@@ -14,26 +15,27 @@ type TextboxProps = TextBox & {
 	isSelected?: boolean;
 	handleUpdateRect?: (idObj: Id, newRect: Rect) => void;
 	arrOfInfoObj?: MutableRefObject<Array<InfoAboutRect>>;
+	allRects?: Record<Id, Rect>;
+	movingRects?: Record<Id, Rect>;
 };
 
 export const TextboxView = (props: TextboxProps) => {
-	const { rect, alignment, scaleX, scaleY, onClick, id, isSelected, handleUpdateRect, arrOfInfoObj } =
-		props;
+	const {
+		rect,
+		scaleX,
+		scaleY,
+		onClick,
+		id,
+		isSelected,
+		handleUpdateRect,
+		arrOfInfoObj,
+		allRects,
+		movingRects,
+		text,
+	} = props;
 	const refOnRichText = useRef<HTMLDivElement>(null);
 	const [stateEditing, setStateEditing] = useState(false);
-
-	// console.log(texts);
-
-	// const renderedTexts = texts.map((elem: Text) => (
-	// 	<TextView key={elem.id} content={elem.content} id={elem.id} font={elem.font} scaleX={scaleX} />
-	// ));
-
-	useEffect(() => {
-		if (refOnRichText.current) {
-			// console.log(refOnRichText.current.children);
-			// console.log(refOnRichText.current);
-		}
-	});
+	const actions = useContext(PresActionContext);
 
 	const handleDoubleClick = () => {
 		setStateEditing(true);
@@ -49,10 +51,13 @@ export const TextboxView = (props: TextboxProps) => {
 		}
 	};
 
+	const handleUpdate = (newContent: string) => {
+		actions?.updateTextBox(id, { type: 'textbox', rect: rect, text: newContent });
+	};
+
 	return (
 		<RectView
 			rect={rect}
-			aligment={alignment}
 			scaleX={scaleX}
 			scaleY={scaleY}
 			onClick={onClick}
@@ -63,8 +68,10 @@ export const TextboxView = (props: TextboxProps) => {
 			handleDoubleClick={handleDoubleClick}
 			handleOnBlur={handleOnBlur}
 			arrOfInfoObj={arrOfInfoObj}
+			allRects={allRects}
+			movingRects={movingRects}
 		>
-			<div contentEditable="true" ref={refOnRichText}></div>
+			<Tiptap updateText={handleUpdate} textView={text} scaleX={scaleX} />
 		</RectView>
 	);
 };

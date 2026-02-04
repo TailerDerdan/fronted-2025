@@ -12,8 +12,7 @@ type Text = {
 type TextBox = {
 	type: 'textbox';
 	rect: Rect;
-	texts: Array<Text>;
-	alignment: Alignment;
+	text: string;
 };
 
 export type { Text, TextBox };

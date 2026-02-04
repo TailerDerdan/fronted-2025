@@ -6,6 +6,7 @@ import { TextBox } from '../model/textbox/types';
 import { Image as ImageType } from '../model/image/types';
 import { getFileBlob } from '../appwrite/storage';
 import { Background } from '../model/background/Background';
+import html2canvas from 'html2canvas';
 
 export const slidesConvertor = async (
 	doc: jsPDF,
@@ -38,7 +39,7 @@ const slideElemConvertor = async (obj: SlideObj, doc: jsPDF, scaleConst: number)
 			await imageCovertor(obj, doc);
 			break;
 		case 'textbox':
-			await textCovertor(obj, doc, scaleConst);
+			await textConverter(obj, doc, scaleConst);
 			break;
 	}
 };
@@ -100,50 +101,40 @@ const imageCovertor = async (image: ImageType, doc: jsPDF) => {
 	}
 };
 
-const textCovertor = async (textbox: TextBox, doc: jsPDF, scaleConst: number) => {
-	const { rect, texts } = textbox;
+const textConverter = async (textbox: TextBox, doc: jsPDF, scaleConst: number) => {
+	const { rect, text } = textbox;
 
-	const canvas = document.createElement('canvas');
-	const ctx = canvas.getContext('2d');
-	if (!ctx) {
-		console.error('Canvas 2D context не поддерживается');
-		return;
+	const tempDiv = document.createElement('div');
+	tempDiv.style.position = 'absolute';
+	tempDiv.style.width = `${rect.width * 10}px`;
+	tempDiv.style.height = `${rect.height * 10}px`;
+	tempDiv.style.overflow = 'hidden';
+	tempDiv.style.fontSize = '24px';
+	tempDiv.innerHTML = text;
+
+	document.body.appendChild(tempDiv);
+
+	try {
+		const canvas = await html2canvas(tempDiv, {
+			scale: scaleConst,
+			useCORS: true,
+			allowTaint: true,
+			backgroundColor: null,
+		});
+
+		const imgData = canvas.toDataURL('image/png');
+
+		doc.addImage(
+			imgData,
+			'PNG',
+			toPt(rect.x * scaleConst),
+			toPt(rect.y * scaleConst),
+			toPt(canvas.width),
+			toPt(canvas.height),
+		);
+	} finally {
+		document.body.removeChild(tempDiv);
 	}
-
-	const canvasWidth = rect.width * scaleConst;
-	const canvasHeight = rect.height * scaleConst;
-	canvas.width = canvasWidth;
-	canvas.height = canvasHeight;
-
-	ctx.clearRect(0, 0, canvasWidth, canvasHeight);
-
-	let x = 0;
-	const y = 0;
-
-	texts.forEach(textItem => {
-		const { content, font } = textItem;
-
-		const fontStyle = [];
-		if (font.isBold) fontStyle.push('bold');
-		if (font.isItalic) fontStyle.push('italic');
-
-		ctx.font = `${fontStyle.join(' ')} ${font.fontSize * scaleConst}px ${font.fontFamily}`;
-		ctx.fillStyle = font.fontColor;
-
-		ctx.fillText(content, x, y + font.fontSize * scaleConst);
-		x += ctx.measureText(content).width;
-	});
-
-	const imgData = canvas.toDataURL('image/png');
-
-	doc.addImage(
-		imgData,
-		'PNG',
-		toPt(rect.x * scaleConst),
-		toPt(rect.y * scaleConst),
-		toPt(canvasWidth),
-		toPt(canvasHeight),
-	);
 };
 
 const getSlidesArray = (state: SlidesState): Slide[] => {

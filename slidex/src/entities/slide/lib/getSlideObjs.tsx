@@ -88,13 +88,15 @@ export function getReactNodeObjs(props: PropsForSlideObj): Array<ReactNode> {
 			);
 		}
 		if (objOnSlide?.type == 'textbox') {
+			if (!onClickImageView) {
+				console.log(objOnSlide);
+			}
 			return (
 				<TextboxView
 					key={elem}
 					type={objOnSlide.type}
-					texts={objOnSlide.texts}
+					text={objOnSlide.text}
 					rect={objOnSlide.rect}
-					alignment={objOnSlide.alignment}
 					scaleX={scaleX}
 					scaleY={scaleY}
 					onClick={onClickTextBoxView}
@@ -102,6 +104,8 @@ export function getReactNodeObjs(props: PropsForSlideObj): Array<ReactNode> {
 					isSelected={isSelected}
 					handleUpdateRect={handleUpdateRect}
 					arrOfInfoObj={arrOfInfoObj}
+					allRects={allObjects}
+					movingRects={selectedRects}
 				/>
 			);
 		}
